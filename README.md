@@ -8,7 +8,7 @@ Coloca el Link en el navegador de la PS4
 
 Coloca el Link en el navegador de la PS4
 
-**Link**:  https://mafyot.github.io/ps4/psfree2/
+**Link**:  https://mafyot.github.io/ps4/PSFree2/
 
 ## PSFree
 
