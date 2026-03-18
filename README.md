@@ -11,3 +11,9 @@ Coloca el Link en el navegador de la PS4
 Coloca el Link en el navegador de la PS4
 
 **Link**:  https://mafyot.github.io/ps4/psfree/
+
+**PSFree** para **PS4 FMW solo 9.00**
+
+Coloca el Link en el navegador de la PS4
+
+**Link**:  https://mafyot.github.io/ps4/psfree900/
