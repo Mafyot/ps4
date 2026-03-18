@@ -9,7 +9,7 @@ function hide(){
 function awaitpl2(){
 	    document.getElementById('notify').style.display = ''
 	    document.getElementById('notify').className = 'notification'
-      setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89>*Loading Binloader...</h1>'; }, 50);
+      setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89>*Cargando Binloader...</h1>'; }, 50);
       setTimeout(function(){document.getElementById("log").innerHTML="<h1 style=color:#ebfa89>"+LoadedMSG+"</h1>"; }, 800);
       setTimeout(ani2, 4000);
 }
@@ -17,7 +17,7 @@ function awaitpl2(){
 function awaitpl(){
 	    document.getElementById('notify').style.display = ''
 	    document.getElementById('notify').className = 'notification'
-      setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89><br>★ Loading Payload...</h1>'; }, 50);
+      setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89><br>★ Cargando Payload...</h1>'; }, 50);
       setTimeout(function(){document.getElementById("log").innerHTML="<h1 style=color:#ebfa89>"+LoadedMSG+"</h1>"; }, 800);
       setTimeout(ani2, 4000);
 }
@@ -25,14 +25,14 @@ function awaitpl(){
 function load_exploit(){
     document.getElementById('notify').style.display = ''
     document.getElementById('notify').className = 'notification'
-    setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89;padding-top:7px;>★ Loading Exfathax<br>Please Wait ...</h1>'; }, 50);
+    setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89;padding-top:7px;>★ Cargando Exfathax<br>Espere por favor ...</h1>'; }, 50);
     setTimeout(webkitExploit,1000);
 }
 
 function load_exploit_done(){
     document.getElementById('notify').style.display = ''
     document.getElementById('notify').className = 'notification'
-    setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89><br>*Jailbreak Loaded !!!</h1>'; }, 50);
+    setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89><br>*Jailbreak Cargado !!!</h1>'; }, 50);
     setTimeout(loadHomeBrew, 100);
 }
 
@@ -47,7 +47,7 @@ function loadHomeBrew() {
     }else {
         document.getElementById('notify').style.display = ''
         document.getElementById('notify').className = 'notification'
-        setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89;padding-top:7px;>★ Jailbreak Done!<br> Select GoldHEN Manually! ★</h1>'; }, 50);
+        setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89;padding-top:7px;>★ Jailbreak Listo!<br> Seleccione GoldHEN manualmente! ★</h1>'; }, 50);
         setTimeout(ani2, 4000);
     }
 }
@@ -60,42 +60,42 @@ function autopl(){
 }
 
 function load_bin(){
-LoadedMSG="Send A Payload To Port 9020 Now !!!";
+LoadedMSG="Enviar una carga útil al puerto 9020 !!!";
 runBinLoader();
 }
 
 function load_goldhen224(){
-LoadedMSG="<br>★GoldHEN v2.2.4 Loaded !!!";
+LoadedMSG="<br>★GoldHEN v2.2.4 Activado !!!";
 PLfile = "goldhen224.bin";
 toogle_payload();
 }
 
 function load_goldhen23(){
-LoadedMSG="<br>★GoldHEN v2.3 Loaded !!!";
+LoadedMSG="<br>★GoldHEN v2.3 Activado !!!";
 PLfile = "goldhen23.bin";
 toogle_payload();
 }
 
 function load_goldhen222(){
-LoadedMSG="<br>★GoldHEN v2.2.2 Loaded !!!";
+LoadedMSG="<br>★GoldHEN v2.2.2 Activado!!!";
 PLfile = "goldhen222.bin";
 toogle_payload();
 }
 
 function load_goldhen212(){
-LoadedMSG="<br>★GoldHEN v2.1.2 Loaded !!!";
+LoadedMSG="<br>★GoldHEN v2.1.2 Activado !!!";
 PLfile = "goldhen212.bin";
 toogle_payload();
 }
 
 function load_goldhen2b2(){
-LoadedMSG="<br>★GoldHEN v2.0B2 Loaded !!!";
+LoadedMSG="<br>★GoldHEN v2.0B2 Activado !!!";
 PLfile = "goldhen2b2.bin";
 toogle_payload();
 }
 
 function load_goldhen20b(){
-LoadedMSG="<br>★GoldHEN v2.0B Loaded !!!";
+LoadedMSG="<br>★GoldHEN v2.0B Activado !!!";
 PLfile = "goldhen20b.bin";
 toogle_payload();
 }
@@ -113,7 +113,7 @@ $(document).ready(function() {
 });
 
 function load_goldhen24b182(){
-LoadedMSG="<br>★GoldHEN v2.4b18.2 Loaded";
+LoadedMSG="<br>★GoldHEN v2.4b18.2 Activado !!!";
 PLfile = "goldhen24b182.bin";
 toogle_payload();
 }
