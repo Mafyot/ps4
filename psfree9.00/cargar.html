@@ -3,16 +3,8 @@
 <head>
     <title>Cargando Payload...</title>
     <style>
-        body { 
-            background: #000b1a; 
-            color: white; 
-            font-family: sans-serif; 
-            text-align: center; 
-            padding-top: 100px; 
-            margin: 0;
-        }
+        body { background: #000b1a; color: white; font-family: sans-serif; text-align: center; padding-top: 100px; margin: 0; }
         #msgs { font-size: 25px; text-shadow: 0 0 10px red; font-weight: bold; }
-        /* Mantenemos la consola necesaria para utils.mjs */
         #console { display: block; opacity: 0; height: 1px; pointer-events: none; }
     </style>
 </head>
@@ -21,27 +13,32 @@
     <h1 id="msgs">Limpiando Memoria RAM...</h1>
 
     <script>
-        // LEEMOS DE LA MEMORIA INTERNA EL PAYLOAD SELECCIONADO
         const pName = localStorage.getItem('payload_a_cargar');
 
         if (!pName || pName === "null") {
-            document.getElementById("msgs").innerHTML = "<span style='color:yellow'>ERROR: No se seleccionó ningún archivo.</span><br>Regresa al menú principal.";
+            document.getElementById("msgs").innerHTML = "Error: No se seleccionó archivo.";
         } else {
-            // Variables globales necesarias para Lapse y Psfree
             window.nombrePayload = pName;
             window.payloadfile = pName;
-            
-            // Función de lanzamiento con retardo para estabilidad
-            window.onload = function() {
-                setTimeout(function(){
-                    document.getElementById("msgs").innerHTML = "Inyectando " + pName + "...<br>Por favor, no toques nada.";
-                    
-                    var script = document.createElement('script');
-                    script.type = 'module';
-                    script.src = 'alert.mjs'; 
-                    document.body.appendChild(script);
-                }, 1500); // 1.5 segundos de pausa para estabilizar la RAM
-            };
+
+            // CONTROL ANTI-BUCLE
+            if (!sessionStorage.getItem('exploit_lanzado')) {
+                sessionStorage.setItem('exploit_lanzado', 'true');
+                
+                window.onload = function() {
+                    setTimeout(function(){
+                        document.getElementById("msgs").innerHTML = "Inyectando " + pName + "...<br>No toques nada.";
+                        
+                        var script = document.createElement('script');
+                        script.type = 'module';
+                        script.src = 'alert.mjs'; 
+                        document.body.appendChild(script);
+                    }, 1500); 
+                };
+            } else {
+                // Si ya se intentó, limpiamos el interruptor para la próxima vez
+                sessionStorage.removeItem('exploit_lanzado');
+            }
         }
     </script>
 </body>
