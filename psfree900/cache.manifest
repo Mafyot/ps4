@@ -1,17 +1,17 @@
 CACHE MANIFEST 
-# v40.0 - JS Compatibility Fix
+# v60.0 - Reordenado para test
 
 CACHE: 
 index.html
 cache.html
-goldhen.bin
-disable-updates.bin
-aio_patches.bin
 alert.js
 config.js
 lapse.js
 psfree.js
 send.js
+goldhen.bin
+disable-updates.bin
+aio_patches.bin
 kpatch/900.elf
 module/chain.js
 module/constants.js
