@@ -35,27 +35,27 @@
 <script>
     if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 
-    // PASO 1: Bloqueamos cualquier ejecución automática del exploit
+    // Esta variable la leerá el motor de psfree.mjs automáticamente
     window.nombrePayload = "";
 
     function lanzar_payload(nombre_bin) {
-        // PASO 2: Guardamos el nombre del payload
         window.nombrePayload = nombre_bin;
-        document.getElementById("msgs").innerHTML = "Payload: " + nombre_bin + "<br>Iniciando Exploit... No toques nada";
+        document.getElementById("msgs").innerHTML = "Preparando memoria para: " + nombre_bin + "...<br>No toques nada";
         
-        // PASO 3: Pequeño retraso de 500ms para limpiar la memoria antes de cargar el motor
+        // PASO CLAVE: Solo cargamos el gestor de errores y el exploit al pulsar el botón
+        // Esto evita el error UAF y el de múltiples blurs
         setTimeout(function(){
             var script = document.createElement('script');
             script.type = 'module';
             script.src = 'alert.mjs'; 
             document.body.appendChild(script);
-        }, 500);
+        }, 800); // 800ms de calma para la RAM
     }
 </script>
 
 <h1>PS4 9.00 GoldHEN Host</h1>
 <hr>
-<h1 id="msgs">Seleccione un Payload para comenzar</h1>
+<h1 id="msgs">Seleccione un Payload</h1>
 
 <div class="btn-container">
     <button class="btn" onclick="lanzar_payload('goldhen.bin')">Cargar GoldHEN</button>
@@ -63,7 +63,6 @@
     <button class="btn" onclick="lanzar_payload('webRTE.bin')">WebRTE</button>
 </div>
 
-<!-- NO HAY SCRIPTS AQUÍ. Solo se cargan al pulsar el botón para evitar el error UAF -->
-
+<!-- IMPORTANTE: Aquí NO debe haber ningún <script src="alert.mjs"> -->
 </body>
 </html>
