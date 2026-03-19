@@ -2,23 +2,32 @@
 <html>
 <head>
 <title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
-<link rel="stylesheet" href="../style.css">
 
 <style>
-    /* Personalización del Fondo y Cuerpo */
     body {
-        background-color: #000b1a; /* Azul muy oscuro tipo PS4 */
+        background-color: #000b1a; 
         background-image: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
+        background-attachment: fixed;
+        background-size: cover;
         color: white;
         font-family: sans-serif;
         text-align: center;
         margin: 0;
-        padding: 20px;
+        padding: 40px 20px;
     }
 
-    /* Estilo de los Botones */
+    hr { border: 1px solid #f31414; width: 60%; margin: 20px auto; }
+
+    #msgs {
+        font-size: 30px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        color: white;
+    }
+
     .btn-container {
-        margin-top: 50px;
+        margin-top: 30px;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -26,7 +35,7 @@
     }
 
     .btn {
-        background: #f31414; /* Rojo GamerHack */
+        background: #f31414;
         color: white;
         padding: 15px 40px;
         border: 2px solid transparent;
@@ -35,7 +44,8 @@
         font-weight: bold;
         cursor: pointer;
         transition: all 0.3s ease;
-        min-width: 200px;
+        min-width: 220px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 
     .btn:hover {
@@ -44,33 +54,44 @@
         border: 2px solid #f31414;
         transform: scale(1.05);
     }
-
-    /* Ajuste para los mensajes */
-    #msgs {
-        font-size: 30px;
-        margin-top: 50px;
-        margin-bottom: 30px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
 </style>
 </head>
 
 <body>
 <script>
-if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+    if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </script>
 
 <pre id='console'></pre>
 
-<h1>PS4 9.00 GoldHEN Host </h1>
+<h1>PS4 9.00 GoldHEN Host</h1>
 <hr>
 
-<!-- Mensaje de estado -->
-<h1 id="msgs">Cargando Sistema... Por favor, espere</h1>
+<h1 id="msgs">Esperando para Cargar Payload...</h1>
 
-<!-- SECCIÓN DE BOTONES AÑADIDA -->
 <div class="btn-container">
-    <button class="btn" onclick="location.href='goldhen.html'">Cargar GoldHEN</button>
-    <button class="btn" onclick="location.href='cheats.html'">Menú Trampas</button>
-    <button class="btn" onclick="location.href='settings.html'">Ajustes Host</button>
+    <!-- Aquí he cambiado el onclick para que llame a los archivos .bin -->
+    <button class="btn" onclick="load_payload('goldhen.bin')">Cargar GoldHEN</button>
+    <button class="btn" onclick="load_payload('cheats.bin')">Menú Trampas</button>
+    <button class="btn" onclick="load_payload('webRTE.bin')">WebRTE</button>
 </div>
+
+<script>
+    // Función para manejar la carga de los archivos .bin
+    function load_payload(payload_name) {
+        document.getElementById("msgs").innerHTML = "Cargando " + payload_name + "... Por favor, espere";
+        
+        // Esta función debe existir en tus archivos .js/mjs originales
+        // Si usas el sistema de GamerHack, generalmente la función es 'runPayload' o 'load_payload'
+        if (typeof runPayload !== "undefined") {
+            runPayload(payload_name);
+        } else {
+            // Intento alternativo según la estructura estándar
+            location.href = payload_name; 
+        }
+    }
+</script>
+
+<script type='module' src='alert.mjs'></script>
+</body>
+</html>
