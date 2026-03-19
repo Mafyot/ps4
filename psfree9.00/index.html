@@ -34,11 +34,25 @@
 
 <script>
     if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+
+    // VARIABLE GLOBAL PARA EL MOTOR DE GAMERHACK
+    window.nombrePayload = "";
+
+    function lanzar_payload(nombre_bin) {
+        window.nombrePayload = nombre_bin;
+        document.getElementById("msgs").innerHTML = "Payload seleccionado: " + nombre_bin + "<br>Iniciando Exploit... Espere";
+        
+        // CARGAMOS EL EXPLOIT SOLO CUANDO PULSAS EL BOTÓN
+        var script = document.createElement('script');
+        script.type = 'module';
+        script.src = 'alert.mjs';
+        document.body.appendChild(script);
+    }
 </script>
 
 <h1>PS4 9.00 GoldHEN Host</h1>
 <hr>
-<h1 id="msgs">Esperando para Cargar Payload...</h1>
+<h1 id="msgs">Seleccione un Payload para comenzar</h1>
 
 <div class="btn-container">
     <button class="btn" onclick="lanzar_payload('goldhen.bin')">Cargar GoldHEN</button>
@@ -46,33 +60,7 @@
     <button class="btn" onclick="lanzar_payload('webRTE.bin')">WebRTE</button>
 </div>
 
-<script type="module">
-    // Importamos directamente el motor desde psfree.mjs
-    import * as psfree from './psfree.mjs';
-
-    window.lanzar_payload = function(nombre_bin) {
-        document.getElementById("msgs").innerHTML = "Enviando " + nombre_bin + "...";
-        
-        // En los hosts de Psfree, la función suele llamarse run o loadPayload
-        // Intentamos ejecutarla desde el módulo importado
-        try {
-            if (psfree.run) {
-                psfree.run(nombre_bin);
-            } else if (psfree.loadPayload) {
-                psfree.loadPayload(nombre_bin);
-            } else {
-                // Si el módulo no deja usar la función, la llamamos vía URL controlada
-                window.location.hash = nombre_bin; 
-                // Nota: Algunos hosts de Psfree cargan el .bin al detectar el hash
-            }
-        } catch(e) {
-            alert("Error al conectar con psfree.mjs: " + e);
-        }
-    };
-</script>
-
-<!-- Cargamos el manejador de errores original -->
-<script type='module' src='alert.mjs'></script>
+<!-- HEMOS QUITADO EL SCRIPT DE ABAJO PARA QUE NO SE EJECUTE SOLO -->
 
 </body>
 </html>
