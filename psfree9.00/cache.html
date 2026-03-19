@@ -1,54 +1,27 @@
 <!DOCTYPE html>
 <html manifest="cache.manifest">
 <head>
-<title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
-
+<title>PS4 9.00 GoldHEN Host | Instalando...</title>
 <style>
-    /* Diseño único: Imagen de fondo + Estilo moderno */
     body {
-        background-image: url('../img.jpg'); /* Tu imagen restaurada */
+        background-image: url('../img.jpg');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
-        background-color: #000b1a; /* Color de fondo por si la imagen tarda en cargar */
+        background-color: #24272b;
         color: white;
         font-family: sans-serif;
         text-align: center;
-        margin: 0;
-        padding: 40px 20px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        height: 100vh; /* Ocupa toda la pantalla */
-        overflow: hidden;
+        height: 100vh;
+        margin: 0;
     }
-
-    h1 { 
-        text-shadow: 0.1em 0.1em 0.2em black;
-        margin-bottom: 10px; 
-    }
-    
-    hr { 
-        border: 1px solid #f31414; 
-        width: 50%; 
-        margin: 20px auto 40px auto; 
-    }
-
-    #msgs {
-        font-size: 30px;
-        font-weight: bold;
-        color: white;
-        text-shadow: 2px 2px 8px black; /* Sombra para que resalte sobre la imagen */
-        margin-bottom: 20px;
-    }
-
-    .loader-info {
-        font-size: 18px;
-        color: #cccccc;
-        text-shadow: 1px 1px 3px black;
-    }
+    h1 { text-shadow: 0.1em 0.1em 0.2em black; }
+    hr { border: 1px solid #f31414; width: 50%; margin: 20px auto; }
+    #msgs { font-size: 30px; text-shadow: 2px 2px 8px black; }
 </style>
-
 <script>
     history.replaceState(null,null,'index.html');
     var histlength=history.length;
@@ -56,31 +29,24 @@
 
     function DLProgress(e){
         Percent=(Math.round(e.loaded / e.total * 100));
-        setTimeout(function(){
-            window.msgs.innerHTML = "Instalando Caché Offline: " + Percent + "%";
-        }, 500);
+        window.msgs.innerHTML="Instalando Caché Offline: " + Percent + "%";
     }
 
     function DisplayCacheProgress(){
+        window.msgs.innerHTML="¡Caché Instalada con Éxito! ✔";
         setTimeout(function(){
-            window.msgs.innerHTML = "¡Caché Instalada Correctamente! ✔";
-        }, 1500);
-        setTimeout(function(){
-            window.msgs.innerHTML = "Cierra y Reabre el Navegador ahora...";
-        }, 3500);
+            window.msgs.innerHTML="Cierra y Reabre el Navegador ahora...";
+        }, 2500);
     }
 
-    window.applicationCache.addEventListener("progress", DLProgress, false);
-    window.applicationCache.oncached = function(e){ DisplayCacheProgress(); };
-    window.applicationCache.onupdateready = function(e){ DisplayCacheProgress(); };
+    window.applicationCache.addEventListener("progress",DLProgress,false);
+    window.applicationCache.oncached=function(e){DisplayCacheProgress();};
+    window.applicationCache.onupdateready=function(e){DisplayCacheProgress();};
 </script>
 </head>
-
 <body>
-    <h1>PS4 9.00 GoldHEN Host</h1>
+    <h1>PS4 9.00 FW GoldHEN Host</h1>
     <hr>
-    
-    <div id="msgs">Preparando Instalación...</div>
-    <div class="loader-info">Por favor, no cierres el navegador hasta que termine.</div>
+    <h1 id="msgs">Preparando archivos...</h1>
 </body>
 </html>
