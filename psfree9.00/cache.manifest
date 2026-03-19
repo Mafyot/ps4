@@ -1,10 +1,9 @@
 CACHE MANIFEST 
-# v1.2
+# v1.3
 
 CACHE: 
 index.html
 cache.html
-cargar.html
 ../img.jpg
 ../style.css
 aio_patches.bin
