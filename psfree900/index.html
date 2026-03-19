@@ -3,66 +3,50 @@
 <head>
     <title>PS4 9.00 GoldHEN | Psfree</title>
     <style>
-        body {
-            margin: 0; height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; text-align: center;
-            background-color: #111; color: white; font-family: sans-serif;
-        }
+        body { margin: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: #111; color: white; font-family: sans-serif; }
         #menu { display: flex; flex-direction: column; gap: 12px; width: 310px; }
-        .btn {
-            padding: 15px; cursor: pointer; border: 1px solid #444;
-            background: #222; color: white; border-radius: 8px;
-            transition: 0.3s; font-weight: bold; font-size: 14px;
-        }
+        .btn { padding: 15px; cursor: pointer; border: 1px solid #444; background: #222; color: white; border-radius: 8px; transition: 0.3s; font-weight: bold; }
         .btn:hover { border-color: gold; background: #333; transform: scale(1.03); }
-        .btn-gold { border: 2px solid gold; color: gold; box-shadow: 0 0 10px rgba(255,215,0,0.2); }
-        h1 { font-size: 26px; margin-bottom: 5px; }
-        hr { width: 50%; border: 0; border-top: 1px solid #444; margin: 20px 0; }
+        .btn-gold { border: 2px solid gold; color: gold; }
         .status { color: gold; font-size: 14px; margin-bottom: 20px; height: 20px; }
     </style>
 </head>
 <body>
-    <script>
-        if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
-
-        async function cargar(nombreArchivo) {
-            document.getElementById('status').innerHTML = "CARGANDO: " + nombreArchivo.toUpperCase() + "...";
-            
-            try {
-                // Truco: Leemos el archivo elegido y lo guardamos temporalmente
-                const response = await fetch(nombreArchivo);
-                const buffer = await response.arrayBuffer();
-                window.payload_data = buffer; 
-                
-                // Sobrescribimos la función fetch original para que cuando el exploit
-                // pida "goldhen.bin", el navegador le entregue el que elegimos.
-                const originalFetch = window.fetch;
-                window.fetch = async (url) => {
-                    if (url.includes('goldhen.bin')) {
-                        return new Response(window.payload_data);
-                    }
-                    return originalFetch(url);
-                };
-
-                // Lanzamos el exploit
-                let script = document.createElement('script');
-                script.type = 'module';
-                script.src = 'alert.mjs'; 
-                document.body.appendChild(script);
-            } catch (e) {
-                document.getElementById('status').innerHTML = "ERROR AL CARGAR EL ARCHIVO";
-            }
-        }
-    </script>
-
     <h1 id="msgs">PS4 9.00 Exploit Host</h1>
     <div id="status" class="status">Selecciona una opción</div>
-    <hr>
-    
     <div id="menu">
         <button class="btn btn-gold" onclick="cargar('goldhen.bin')">ACTIVAR GOLDHEN v2.4</button>
         <button class="btn" onclick="cargar('disable-updates.bin')">BLOQUEAR ACTUALIZACIONES</button>
         <button class="btn" onclick="cargar('aio_patches.bin')">AIO PATCHES</button>
     </div>
+
+    <script>
+        if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+        
+        async function cargar(nombreArchivo) {
+            document.getElementById('status').innerHTML = "CARGANDO: " + nombreArchivo.toUpperCase() + "...";
+            try {
+                const response = await fetch(nombreArchivo);
+                const buffer = await response.arrayBuffer();
+                window.payload_data = buffer; 
+                
+                // Interceptamos el fetch para que el exploit reciba nuestro archivo elegido
+                const originalFetch = window.fetch;
+                window.fetch = async (url) => {
+                    if (url.includes('goldhen.bin') || url.includes('.bin')) {
+                        return new Response(window.payload_data);
+                    }
+                    return originalFetch(url);
+                };
+
+                let script = document.createElement('script');
+                script.type = 'module';
+                script.src = 'alert.mjs'; 
+                document.body.appendChild(script);
+            } catch (e) {
+                document.getElementById('status').innerHTML = "ERROR: ARCHIVO NO ENCONTRADO";
+            }
+        }
+    </script>
 </body>
 </html>
