@@ -1,37 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cargando...</title>
+    <title>Cargando Payload...</title>
     <style>
-        body { background: #000b1a; color: white; font-family: sans-serif; text-align: center; padding-top: 100px; }
-        #msgs { font-size: 25px; text-shadow: 0 0 10px red; }
-        #console { display: block; opacity: 0; height: 1px; }
+        body { 
+            background: #000b1a; 
+            color: white; 
+            font-family: sans-serif; 
+            text-align: center; 
+            padding-top: 100px; 
+            margin: 0;
+        }
+        #msgs { font-size: 25px; text-shadow: 0 0 10px red; font-weight: bold; }
+        /* Mantenemos la consola necesaria para utils.mjs */
+        #console { display: block; opacity: 0; height: 1px; pointer-events: none; }
     </style>
 </head>
 <body>
     <pre id="console"></pre>
-    <h1 id="msgs">Iniciando Exploit...</h1>
+    <h1 id="msgs">Limpiando Memoria RAM...</h1>
 
     <script>
-        // LEEMOS DE LA MEMORIA INTERNA
+        // LEEMOS DE LA MEMORIA INTERNA EL PAYLOAD SELECCIONADO
         const pName = localStorage.getItem('payload_a_cargar');
 
-        if (!pName) {
-            document.getElementById("msgs").innerHTML = "Error: No hay payload en memoria.<br>Vuelve al menú principal.";
+        if (!pName || pName === "null") {
+            document.getElementById("msgs").innerHTML = "<span style='color:yellow'>ERROR: No se seleccionó ningún archivo.</span><br>Regresa al menú principal.";
         } else {
-            // Variables para el motor Lapse / Psfree
+            // Variables globales necesarias para Lapse y Psfree
             window.nombrePayload = pName;
             window.payloadfile = pName;
             
-            document.getElementById("msgs").innerHTML = "Inyectando: " + pName + "<br>Espere...";
-
-            // Lanzamos el motor de GamerHack
-            setTimeout(function(){
-                var script = document.createElement('script');
-                script.type = 'module';
-                script.src = 'alert.mjs'; 
-                document.body.appendChild(script);
-            }, 500);
+            // Función de lanzamiento con retardo para estabilidad
+            window.onload = function() {
+                setTimeout(function(){
+                    document.getElementById("msgs").innerHTML = "Inyectando " + pName + "...<br>Por favor, no toques nada.";
+                    
+                    var script = document.createElement('script');
+                    script.type = 'module';
+                    script.src = 'alert.mjs'; 
+                    document.body.appendChild(script);
+                }, 1500); // 1.5 segundos de pausa para estabilizar la RAM
+            };
         }
     </script>
 </body>
