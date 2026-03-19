@@ -10,21 +10,20 @@
 </head>
 <body>
     <pre id="console"></pre>
-    <h1 id="msgs">Preparando Exploit...</h1>
+    <h1 id="msgs">Iniciando Exploit...</h1>
 
     <script>
-        // Capturamos el nombre del payload desde la URL
-        const params = new URLSearchParams(window.location.search);
-        const pName = params.get('p');
+        // LEEMOS DE LA MEMORIA INTERNA
+        const pName = localStorage.getItem('payload_a_cargar');
 
-        if (!pName || pName === "null") {
-            document.getElementById("msgs").innerHTML = "Error: No se recibió el nombre del archivo.";
+        if (!pName) {
+            document.getElementById("msgs").innerHTML = "Error: No hay payload en memoria.<br>Vuelve al menú principal.";
         } else {
-            // Definimos las variables que Lapse y Psfree necesitan
+            // Variables para el motor Lapse / Psfree
             window.nombrePayload = pName;
             window.payloadfile = pName;
             
-            document.getElementById("msgs").innerHTML = "Inyectando: " + pName + "<br>Espere a que termine el proceso...";
+            document.getElementById("msgs").innerHTML = "Inyectando: " + pName + "<br>Espere...";
 
             // Lanzamos el motor de GamerHack
             setTimeout(function(){
