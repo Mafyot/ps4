@@ -1,19 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>PS4 9.00 FW GoldHEN Host by GamerHack | Psfree + Lapse</title>
+<title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
+
+<style>
+    /* Personalización del Fondo y Cuerpo */
+    body {
+        background-color: #000b1a; /* Azul muy oscuro tipo PS4 */
+        background-image: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
+        color: white;
+        font-family: sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+    }
+
+    /* Estilo de los Botones */
+    .btn-container {
+        margin-top: 50px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .btn {
+        background: #f31414; /* Rojo GamerHack */
+        color: white;
+        padding: 15px 40px;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 200px;
+    }
+
+    .btn:hover {
+        background: white;
+        color: #f31414;
+        border: 2px solid #f31414;
+        transform: scale(1.05);
+    }
+
+    /* Ajuste para los mensajes */
+    #msgs {
+        font-size: 30px;
+        margin-top: 50px;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+</style>
 </head>
+
 <body>
 <script>
 if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </script>
+
 <pre id='console'></pre>
-<h1>PS4 9.00 FW GoldHEN Host by GamerHack</h1>
+
+<h1>PS4 9.00 GoldHEN Host </h1>
 <hr>
-<br>
-<h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
-<h1 style="margin-top: 43px;">Special Thanks to:<a href="https://twitter.com/sleirsgoevy" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@sleirsgoevy</a>ChendoChap<a href="https://twitter.com/Znullptr" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Znullptr</a>SiSTR0<a href="https://x.com/Kameleonre_" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Kameleonre_</a>Abc</h1>
-<script type='module' src='alert.mjs'></script>
-</body>
-</html>
+
+<!-- Mensaje de estado -->
+<h1 id="msgs">Cargando Sistema... Por favor, espere</h1>
+
+<!-- SECCIÓN DE BOTONES AÑADIDA -->
+<div class="btn-container">
+    <button class="btn" onclick="location.href='goldhen.html'">Cargar GoldHEN</button>
+    <button class="btn" onclick="location.href='cheats.html'">Menú Trampas</button>
+    <button class="btn" onclick="location.href='settings.html'">Ajustes Host</button>
+</div>
