@@ -35,18 +35,21 @@
 <script>
     if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 
-    // VARIABLE GLOBAL PARA EL MOTOR DE GAMERHACK
+    // PASO 1: Bloqueamos cualquier ejecución automática del exploit
     window.nombrePayload = "";
 
     function lanzar_payload(nombre_bin) {
+        // PASO 2: Guardamos el nombre del payload
         window.nombrePayload = nombre_bin;
-        document.getElementById("msgs").innerHTML = "Payload seleccionado: " + nombre_bin + "<br>Iniciando Exploit... Espere";
+        document.getElementById("msgs").innerHTML = "Payload: " + nombre_bin + "<br>Iniciando Exploit... No toques nada";
         
-        // CARGAMOS EL EXPLOIT SOLO CUANDO PULSAS EL BOTÓN
-        var script = document.createElement('script');
-        script.type = 'module';
-        script.src = 'alert.mjs';
-        document.body.appendChild(script);
+        // PASO 3: Pequeño retraso de 500ms para limpiar la memoria antes de cargar el motor
+        setTimeout(function(){
+            var script = document.createElement('script');
+            script.type = 'module';
+            script.src = 'alert.mjs'; 
+            document.body.appendChild(script);
+        }, 500);
     }
 </script>
 
@@ -60,7 +63,7 @@
     <button class="btn" onclick="lanzar_payload('webRTE.bin')">WebRTE</button>
 </div>
 
-<!-- HEMOS QUITADO EL SCRIPT DE ABAJO PARA QUE NO SE EJECUTE SOLO -->
+<!-- NO HAY SCRIPTS AQUÍ. Solo se cargan al pulsar el botón para evitar el error UAF -->
 
 </body>
 </html>
