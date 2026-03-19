@@ -1,8 +1,7 @@
 CACHE MANIFEST 
-# v5.0 Final - Estructura Completa
+# v9.0 Final
 
 CACHE: 
-../style.css
 index.html
 cache.html
 goldhen.bin
