@@ -1,62 +1,19 @@
 <!DOCTYPE html>
-<html manifest="cache.manifest">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Host PsFree + Lapse PS4 9.00</title>
-    <style>
-        body {
-            background: url('../img.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            font-family: sans-serif;
-            text-align: center;
-            margin: 0;
-        }
-        .menu {
-            margin-top: 15%;
-            background: rgba(0, 0, 0, 0.6);
-            display: inline-block;
-            padding: 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
-        .btn {
-            width: 200px;
-            padding: 15px;
-            margin: 10px;
-            background: #003791;
-            border: 1px solid #fff;
-            color: white;
-            cursor: pointer;
-            font-size: 18px;
-            border-radius: 5px;
-        }
-        .btn:hover { background: #0056e0; }
-    </style>
+<title>PS4 9.00 FW GoldHEN Host by GamerHack | Psfree + Lapse</title>
+<link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    <h1>PS4 9.00 - PSFree + Lapse</h1>
-    
-    <div class="menu">
-        <button class="btn" onclick="load_payload('goldhen.bin')">GoldHEN</button>
-        <button class="btn" onclick="load_payload('ftp.bin')">Servidor FTP</button>
-        <button class="btn" onclick="load_payload('dumper.bin')">Dumper</button>
-        <!-- Añade aquí más botones si quieres -->
-    </div>
-
-  <!-- CARGA DE MÓDULOS (.mjs) -->
-<script type="module" src="module/psfree.mjs"></script>
-<script type="module" src="module/lapse.mjs"></script>
-
-<!-- CARGA DE SCRIPTS CLÁSICOS (.js) -->
-<script src="src/malloc.js"></script>
-<script src="src/900.js"></script>
-<script src="src/kexploit.js"></script>
-    <script>
-        function load_payload(file) {
-            alert("Lanzando exploit... espera el mensaje de éxito.");
-            // Aquí la función interna de kexploit.js cargará el .bin de la carpeta /payloads/
-        }
-    </script>
+<script>
+if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+</script>
+<pre id='console'></pre>
+<h1>PS4 9.00 FW GoldHEN Host by GamerHack</h1>
+<hr>
+<br>
+<h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
+<h1 style="margin-top: 43px;">Special Thanks to:<a href="https://twitter.com/sleirsgoevy" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@sleirsgoevy</a>ChendoChap<a href="https://twitter.com/Znullptr" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Znullptr</a>SiSTR0<a href="https://x.com/Kameleonre_" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Kameleonre_</a>Abc</h1>
+<script type='module' src='alert.mjs'></script>
 </body>
 </html>
