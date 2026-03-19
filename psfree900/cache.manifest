@@ -9,9 +9,9 @@ config.js
 lapse.js
 psfree.js
 send.js
-goldhen.bin
-disable-updates.bin
-aio_patches.bin
+goldhen.js
+disable-updates.js
+aio_patches.js
 kpatch/900.elf
 module/chain.js
 module/constants.js
