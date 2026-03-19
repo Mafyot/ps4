@@ -34,18 +34,19 @@
     if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 
     function lanzar_payload(nombre_bin) {
-        // 1. LIMPIAMOS EL INTERRUPTOR ANTI-BUCLE ANTES DE EMPEZAR
+        // 1. Limpieza de seguridad
         sessionStorage.removeItem('exploit_lanzado');
-        
-        // 2. GUARDAMOS EL NOMBRE DEL PAYLOAD
         localStorage.setItem('payload_a_cargar', nombre_bin);
         
-        document.getElementById("msgs").innerHTML = "Preparando " + nombre_bin + "...";
+        // 2. Vaciado manual de RAM (QUITAMOS EL FONDO)
+        document.body.style.backgroundImage = "none";
+        document.body.style.backgroundColor = "black";
+        document.getElementById("msgs").innerHTML = "Vaciando RAM para " + nombre_bin + "...";
         
-        // 3. SALTAMOS A CARGAR.HTML
+        // 3. Salto limpio a cargar.html
         setTimeout(function(){
-            window.location.href = "cargar.html";
-        }, 300);
+            window.location.replace("cargar.html");
+        }, 500);
     }
 </script>
 
