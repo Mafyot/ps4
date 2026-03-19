@@ -3,13 +3,22 @@
 <head>
     <title>Cargando...</title>
     <style>
-        body { background: black; color: white; font-family: sans-serif; text-align: center; padding-top: 150px; margin: 0; }
+        body { 
+            background: black; 
+            color: white; 
+            font-family: sans-serif; 
+            text-align: center; 
+            padding-top: 150px; 
+            margin: 0; 
+        }
         #msgs { font-size: 25px; text-shadow: 0 0 10px red; }
         #console { display: none; }
     </style>
 </head>
 <body>
+    <!-- Elemento necesario para evitar el error de 'null evaluating console.append' -->
     <pre id="console"></pre>
+    
     <h1 id="msgs">Estabilizando Memoria RAM...</h1>
 
     <script>
@@ -20,17 +29,22 @@
 
         if (pName && !sessionStorage.getItem('exploit_lanzado')) {
             sessionStorage.setItem('exploit_lanzado', 'true');
+            
             window.nombrePayload = pName;
             window.payloadfile = pName;
 
-            // Espera larga de 2.5 segundos. Es aburrido, pero asegura el éxito.
+            // LA PAUSA DE 2.5 SEGUNDOS (2500 milisegundos)
+            // Esto es vital para evitar el error 'Could not leak a reqs2'
             setTimeout(function(){
-                document.getElementById("msgs").innerHTML = "Inyectando " + pName + "...";
+                document.getElementById("msgs").innerHTML = "Inyectando " + pName + "...<br>No toques nada";
+                
                 var script = document.createElement('script');
                 script.type = 'module';
                 script.src = 'alert.mjs'; 
                 document.body.appendChild(script);
             }, 2500); 
+        } else if (!pName) {
+            document.getElementById("msgs").innerHTML = "Error: No hay payload en memoria.";
         }
     </script>
 </body>
