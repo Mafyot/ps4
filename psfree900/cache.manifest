@@ -1,26 +1,29 @@
 CACHE MANIFEST 
+# v5.0 Final - Estructura Completa
 
 CACHE: 
-../img.jpg
 ../style.css
+index.html
+cache.html
+goldhen.bin
+disable-updates.bin
 aio_patches.bin
 alert.mjs
 config.mjs
-disable-updates.js
-enable-updates.js
-goldhen.bin
-index.html
 lapse.mjs
 psfree.mjs
 send.mjs
-kpatch\900.elf
-module\chain.mjs
-module\constants.mjs
-module\int64.mjs
-module\mem.mjs
-module\memtools.mjs
-module\offset.mjs
-module\rw.mjs
-module\utils.mjs
-module\view.mjs
-rop\900.mjs
+kpatch/900.elf
+module/chain.mjs
+module/constants.mjs
+module/int64.mjs
+module/mem.mjs
+module/memtools.mjs
+module/offset.mjs
+module/rw.mjs
+module/utils.mjs
+module/view.mjs
+rop/900.mjs
+
+NETWORK: 
+*
