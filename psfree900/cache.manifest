@@ -1,5 +1,5 @@
 CACHE MANIFEST 
-# v30.0 FINAL
+# v40.0 - JS Compatibility Fix
 
 CACHE: 
 index.html
@@ -7,22 +7,22 @@ cache.html
 goldhen.bin
 disable-updates.bin
 aio_patches.bin
-alert.mjs
-config.mjs
-lapse.mjs
-psfree.mjs
-send.mjs
+alert.js
+config.js
+lapse.js
+psfree.js
+send.js
 kpatch/900.elf
-module/chain.mjs
-module/constants.mjs
-module/int64.mjs
-module/mem.mjs
-module/memtools.mjs
-module/offset.mjs
-module/rw.mjs
-module/utils.mjs
-module/view.mjs
-rop/900.mjs
+module/chain.js
+module/constants.js
+module/int64.js
+module/mem.js
+module/memtools.js
+module/offset.js
+module/rw.js
+module/utils.js
+module/view.js
+rop/900.js
 
 NETWORK: 
 *
