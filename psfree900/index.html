@@ -1,60 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
+<title>PS4 9.00 GoldHEN | Psfree + Payloads</title>
 <link rel="stylesheet" href="../style.css">
 <style>
-    /* Centramos el contenido igual que en el index principal */
-    body {
-        margin: 0;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-    }
-    #menu {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    .btn-gold { background-color: #d4af37; color: black; font-weight: bold; }
+    body { margin: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background-color: #1a1a1a; color: white; font-family: sans-serif; }
+    #menu { display: flex; flex-direction: column; gap: 12px; width: 300px; }
+    .btn { padding: 10px; cursor: pointer; border: 1px solid #555; background: #333; color: white; border-radius: 4px; }
+    .btn:hover { background: #444; border-color: gold; }
+    .btn-gold { border: 2px solid gold; color: gold; font-weight: bold; }
+    hr { width: 80%; opacity: 0.3; }
 </style>
 </head>
 <body>
 
-<h1 id="msgs">PS4 9.00 GoldHEN (Psfree)</h1>
+<h1 id="msgs">PS4 9.00 Exploit (Psfree)</h1>
 <hr>
 
 <div id="menu">
-    <!-- BOTÓN PRINCIPAL: Activa el exploit y GoldHEN -->
-    <button class="btn btn-gold" onclick="load_goldhen()"> Cargar GoldHEN v2.4b18 </button>
+    <h3 style="color: gold; margin-bottom: 5px;">PASO 1: Jailbreak</h3>
+    <button class="btn btn-gold" onclick="run_payload('goldhen.bin')">ACTIVAR GOLDHEN</button>
     
-    <br>
-    <h2 style="font-size: 18px; color: yellow;">Payloads Adicionales</h2>
+    <div style="margin: 10px 0;"></div>
     
-    <!-- Aquí puedes añadir los botones que quieras -->
-    <button class="btn" onclick="load_payload('ftp.bin')"> Servidor FTP </button>
-    <button class="btn" onclick="load_payload('appmounter.bin')"> App Mounter </button>
-    <button class="btn" onclick="load_payload('disableupdates.bin')"> Desactivar Updates </button>
+    <h3 style="color: #aaa; margin-bottom: 5px;">PASO 2: Payloads</h3>
+    <button class="btn" onclick="run_payload('ftp.bin')">Servidor FTP</button>
+    <button class="btn" onclick="run_payload('appmounter.bin')">App Mounter</button>
+    <button class="btn" onclick="run_payload('disableupdates.bin')">Bloquear Updates</button>
 </div>
 
 <script>
-    // Esta función llama al script que ya tienes para activar GoldHEN
-    function load_goldhen() {
-        msgs.innerHTML = "Cargando Psfree + GoldHEN... Por favor espera";
-        let script = document.createElement('script');
-        script.type = 'module';
-        script.src = 'alert.mjs'; // Usamos tu script original
-        document.body.appendChild(script);
-    }
+    function run_payload(nombreBin) {
+        // Guardamos el nombre del payload en una variable global que el exploit pueda leer
+        window.selected_payload = nombreBin; 
+        
+        msgs.innerHTML = "Lanzando exploit para " + nombreBin + "...";
+        
+        // Eliminamos scripts previos si existen para evitar conflictos
+        let oldScript = document.getElementById('exploit_script');
+        if(oldScript) oldScript.remove();
 
-    // Función genérica para cargar otros archivos .bin
-    function load_payload(file) {
-        msgs.innerHTML = "Enviando " + file + "...";
-        // Aquí necesitarías tener un cargador de payloads (PLoader) 
-        // común en estas carpetas. Si no lo tienes, el botón no hará nada.
+        // Cargamos el lanzador original (alert.mjs)
+        let script = document.createElement('script');
+        script.id = 'exploit_script';
+        script.type = 'module';
+        script.src = 'alert.mjs'; 
+        document.body.appendChild(script);
     }
 </script>
 
