@@ -1,53 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html manifest="cache.manifest">
 <head>
-<title>PS4 9.00 GoldHEN | Psfree + Payloads</title>
-<link rel="stylesheet" href="../style.css">
-<style>
-    body { margin: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background-color: #1a1a1a; color: white; font-family: sans-serif; }
-    #menu { display: flex; flex-direction: column; gap: 12px; width: 300px; }
-    .btn { padding: 10px; cursor: pointer; border: 1px solid #555; background: #333; color: white; border-radius: 4px; }
-    .btn:hover { background: #444; border-color: gold; }
-    .btn-gold { border: 2px solid gold; color: gold; font-weight: bold; }
-    hr { width: 80%; opacity: 0.3; }
-</style>
+    <title>PS4 9.00 GoldHEN | Psfree</title>
+    <style>
+        body {
+            margin: 0; height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            background-color: #111; color: white; font-family: sans-serif;
+        }
+        #menu { display: flex; flex-direction: column; gap: 12px; width: 310px; }
+        .btn {
+            padding: 15px; cursor: pointer; border: 1px solid #444;
+            background: #222; color: white; border-radius: 8px;
+            transition: 0.3s; font-weight: bold; font-size: 14px;
+        }
+        .btn:hover { border-color: gold; background: #333; transform: scale(1.03); }
+        .btn-gold { border: 2px solid gold; color: gold; box-shadow: 0 0 10px rgba(255,215,0,0.2); }
+        h1 { font-size: 26px; margin-bottom: 5px; }
+        hr { width: 50%; border: 0; border-top: 1px solid #444; margin: 20px 0; }
+        .status { color: gold; font-size: 14px; margin-bottom: 20px; height: 20px; }
+    </style>
 </head>
 <body>
+    <script>
+        if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 
-<h1 id="msgs">PS4 9.00 Exploit (Psfree)</h1>
-<hr>
+        async function cargar(nombreArchivo) {
+            document.getElementById('status').innerHTML = "CARGANDO: " + nombreArchivo.toUpperCase() + "...";
+            
+            try {
+                // Truco: Leemos el archivo elegido y lo guardamos temporalmente
+                const response = await fetch(nombreArchivo);
+                const buffer = await response.arrayBuffer();
+                window.payload_data = buffer; 
+                
+                // Sobrescribimos la función fetch original para que cuando el exploit
+                // pida "goldhen.bin", el navegador le entregue el que elegimos.
+                const originalFetch = window.fetch;
+                window.fetch = async (url) => {
+                    if (url.includes('goldhen.bin')) {
+                        return new Response(window.payload_data);
+                    }
+                    return originalFetch(url);
+                };
 
-<div id="menu">
-    <h3 style="color: gold; margin-bottom: 5px;">PASO 1: Jailbreak</h3>
-    <button class="btn btn-gold" onclick="run_payload('goldhen.bin')">ACTIVAR GOLDHEN</button>
+                // Lanzamos el exploit
+                let script = document.createElement('script');
+                script.type = 'module';
+                script.src = 'alert.mjs'; 
+                document.body.appendChild(script);
+            } catch (e) {
+                document.getElementById('status').innerHTML = "ERROR AL CARGAR EL ARCHIVO";
+            }
+        }
+    </script>
+
+    <h1 id="msgs">PS4 9.00 Exploit Host</h1>
+    <div id="status" class="status">Selecciona una opción</div>
+    <hr>
     
-    <div style="margin: 10px 0;"></div>
-    
-    <h3 style="color: #aaa; margin-bottom: 5px;">PASO 2: Payloads</h3>
-    <button class="btn" onclick="run_payload('ftp.bin')">Servidor FTP</button>
-    <button class="btn" onclick="run_payload('appmounter.bin')">App Mounter</button>
-    <button class="btn" onclick="run_payload('disableupdates.bin')">Bloquear Updates</button>
-</div>
-
-<script>
-    function run_payload(nombreBin) {
-        // Guardamos el nombre del payload en una variable global que el exploit pueda leer
-        window.selected_payload = nombreBin; 
-        
-        msgs.innerHTML = "Lanzando exploit para " + nombreBin + "...";
-        
-        // Eliminamos scripts previos si existen para evitar conflictos
-        let oldScript = document.getElementById('exploit_script');
-        if(oldScript) oldScript.remove();
-
-        // Cargamos el lanzador original (alert.mjs)
-        let script = document.createElement('script');
-        script.id = 'exploit_script';
-        script.type = 'module';
-        script.src = 'alert.mjs'; 
-        document.body.appendChild(script);
-    }
-</script>
-
+    <div id="menu">
+        <button class="btn btn-gold" onclick="cargar('goldhen.bin')">ACTIVAR GOLDHEN v2.4</button>
+        <button class="btn" onclick="cargar('disable-updates.bin')">BLOQUEAR ACTUALIZACIONES</button>
+        <button class="btn" onclick="cargar('aio_patches.bin')">AIO PATCHES</button>
+    </div>
 </body>
 </html>
