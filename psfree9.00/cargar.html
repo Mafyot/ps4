@@ -3,41 +3,32 @@
 <head>
     <title>Cargando Payload...</title>
     <style>
-        body { 
-            background: #000b1a; 
-            color: white; 
-            font-family: sans-serif; 
-            text-align: center; 
-            padding-top: 100px; 
-        }
-        #msgs { font-size: 30px; text-shadow: 0 0 10px red; }
-        /* Consola invisible para que psfree.mjs pueda escribir sin dar error */
-        #console {
-            display: block;
-            opacity: 0;
-            height: 1px;
-            pointer-events: none;
-        }
+        body { background: #000b1a; color: white; font-family: sans-serif; text-align: center; padding-top: 100px; }
+        #msgs { font-size: 25px; text-shadow: 0 0 10px red; }
+        /* Consola necesaria para utils.mjs */
+        #console { display: block; opacity: 0; height: 1px; }
     </style>
 </head>
 <body>
-    <!-- ESTO ES LO QUE FALTA Y EVITA EL ERROR NULL -->
+    <!-- IMPORTANTE: El script busca este ID exacto -->
     <pre id="console"></pre>
-
-    <h1 id="msgs">Iniciando Exploit... Espere</h1>
+    
+    <h1 id="msgs">Iniciando Exploit...<br>Por favor, no toques nada.</h1>
 
     <script>
-        // Leemos el payload de la URL
-        var urlParams = new URLSearchParams(window.location.search);
+        // Capturamos el payload de la URL (ejemplo: cargar.html?p=goldhen.bin)
+        const urlParams = new URLSearchParams(window.location.search);
         window.nombrePayload = urlParams.get('p'); 
 
-        // Pequeña pausa para que el DOM (la consola) esté listo
-        setTimeout(function(){
-            var script = document.createElement('script');
-            script.type = 'module';
-            script.src = 'alert.mjs'; 
-            document.body.appendChild(script);
-        }, 300);
+        // Forzamos que el DOM esté cargado antes de llamar al exploit
+        window.onload = function() {
+            setTimeout(function(){
+                var script = document.createElement('script');
+                script.type = 'module';
+                script.src = 'alert.mjs'; 
+                document.body.appendChild(script);
+            }, 500);
+        };
     </script>
 </body>
 </html>
