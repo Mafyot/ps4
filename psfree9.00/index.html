@@ -2,7 +2,9 @@
 <html>
 <head>
 <title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
+
 <style>
+    /* Diseño con tu imagen original */
     body {
         background-image: url('../img.jpg'); 
         background-size: cover;
@@ -17,40 +19,74 @@
         height: 100vh;
         overflow: hidden;
     }
+
     hr { border: 1px solid #f31414; width: 60%; margin: 20px auto; }
-    #msgs { font-size: 30px; margin-top: 40px; margin-bottom: 40px; text-shadow: 2px 2px 8px black; }
-    .btn-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
-    .btn {
-        background: #003263; color: white; padding: 15px 40px; border: none;
-        border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer;
-        min-width: 220px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transition: 0.3s ease;
+
+    #msgs {
+        font-size: 30px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+        text-shadow: 2px 2px 8px black;
     }
-    .btn:hover { background: #0069d9; transform: scale(1.05); }
+
+    .btn-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .btn {
+        background: #003263; /* Tu azul original */
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        min-width: 220px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        transition: 0.3s ease;
+    }
+
+    .btn:hover {
+        background: #0069d9;
+        transform: scale(1.05);
+    }
 </style>
 </head>
-<!-- ... tus estilos CSS se mantienen igual ... -->
+
 <body>
 <script>
+    // Si no hay caché, redirige a la instalación
     if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 
-    function lanzar_payload(archivo) {
-        // Mostramos que estamos preparando el salto
-        document.getElementById("msgs").innerHTML = "Enviando: " + archivo;
+    // FUNCIÓN CORREGIDA: Guarda el nombre en la memoria del navegador
+    function lanzar_payload(nombre_bin) {
+        // Guardamos el nombre internamente para que cargar.html lo lea
+        localStorage.setItem('payload_a_cargar', nombre_bin);
         
-        // Redirigimos a cargar.html pasando el nombre exacto
+        document.getElementById("msgs").innerHTML = "Preparando " + nombre_bin + "...";
+        
+        // Saltamos a la página de carga limpia
         setTimeout(function(){
-            window.location.href = "cargar.html?p=" + archivo;
+            window.location.href = "cargar.html";
         }, 300);
     }
 </script>
 
 <h1>PS4 9.00 GoldHEN Host</h1>
 <hr>
-<h1 id="msgs">Seleccione un Payload</h1>
+
+<h1 id="msgs">Seleccione un Payload para comenzar</h1>
 
 <div class="btn-container">
-    <!-- Usamos el nombre exacto en minúsculas -->
+    <!-- Asegúrate de que el nombre coincide con tu archivo en GitHub -->
     <button class="btn" onclick="lanzar_payload('goldhen.bin')">Cargar GoldHEN</button>
+    <button class="btn" onclick="lanzar_payload('cheats.bin')">Menú Trampas</button>
+    <button class="btn" onclick="lanzar_payload('webRTE.bin')">WebRTE</button>
 </div>
+
 </body>
 </html>
