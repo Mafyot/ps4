@@ -6,6 +6,8 @@ CACHE:
 aio_patches.bin
 alert.mjs
 config.mjs
+disable-updates.js
+enable-updates.js
 goldhen.bin
 index.html
 lapse.mjs
