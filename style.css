@@ -1,4 +1,9 @@
-html {
+/* Configuración General y Fondo */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    /* Tu imagen original restaurada */
     background-image: url('../img.jpg');
     background-position: center;
     background-size: cover;
@@ -6,103 +11,75 @@ html {
     background-repeat: no-repeat;
     background-color: #24272b;
     color: white;
+    font-family: sans-serif;
     text-align: center;
-    overflow: hidden;
 }
 
+/* Forzar transparencia para eliminar recuadros oscuros de otros elementos */
+div, section, main, .container {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Títulos con sombra para que se lean sobre la imagen */
 h1 {
     text-shadow: 0.1em 0.1em 0.2em black;
+    font-size: 30px;
+    margin-top: 20px;
+}
+
+hr {
+    border: 1px solid #f31414;
+    width: 60%;
+    margin: 20px auto;
+}
+
+/* Mensajes de estado */
+#msgs {
     font-size: 25px;
-    color: white;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px black;
+    margin: 30px 0;
 }
 
-a {
-    text-decoration: none;
+/* Contenedor de botones actualizado */
+.btn-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
 }
 
-#progress {
-    display: block;
-}
-
-#menu {
-    display: block;
-}
-
-#crypto {
-    display: none;
-}
-
-#tools {
-    display: none;
-}
-
-#lnx {
-    display: none;
-}
-
-#mods {
-    display: none;
-}
-
-#console {
-    display: none;
-}
-
+/* Estilo de los botones basado en tu configuración original pero mejorado */
 .btn {
-    background-color: #003263;
+    background-color: #003263; /* Tu azul original */
     color: white;
-    width: 227px;
-    height: 46px;
-    padding-bottom: 5px;
-    text-align: center;
-    font-size: 20px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    margin-left: 5px;
-    margin-right: 5px;
-    border-style: none;
-    transition-duration: 0.4s;
+    width: 230px;
+    height: 50px;
+    font-size: 19px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    border-radius: 4px;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
 .btn:hover {
     background-color: #0069d9;
+    transform: scale(1.05);
 }
 
-.btn-alt {
-    background-color: #b10000;
+/* Variantes de colores que tenías (por si quieres usarlas) */
+.btn-alt { background-color: #b10000; }
+.btn-alt:hover { background-color: #f31414; }
+
+.btn-onln { background-color: #076300; }
+.btn-onln:hover { background-color: #18891b; }
+
+/* Ocultar elementos innecesarios */
+#console, #crypto, #tools, #lnx, #mods {
+    display: none;
 }
-
-.btn-alt:hover {
-    background-color: #f31414;
-}
-
-.btn-onln {
-    background-color: #076300;
-}
-
-.btn-onln:hover {
-    background-color: #18891b;
-}
-
-.btn-toolbox {
-    background-color: #ae2301;
-}
-
-.btn-toolbox:hover {
-    background-color: #d42a01;
-}
-
-.btn-ps5 {
-    background-color: #3d3f4e;
-}
-
-.btn-ps5:hover {
-    background-color: #c2c2c2;
-    color: #303030;
-}
-
-
-
-
