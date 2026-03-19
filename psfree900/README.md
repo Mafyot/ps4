@@ -1,22 +1,14 @@
-# PSFree version 1.5.0b
+# PS4 - PS5 Exploit Host
+PS4 Firmwares: `5.05` `6.72` `7.02` `7.5X` `9.00`
 
-Lapse Kex ported to 9.00
+PS5 Firmwares: `1.XX` `5.XX`
 
-Very fast and reliable! Around 80% stability rate.
+## Steps:
 
-Update: I've added an payload having some process_dtor_handler patches related to aio bugs.. Now all games should work properly.. patches were made by abc for 8.0x and I ported to 9.00. Thx a lot to Sistro and CTN for some explanation on low level coding!!! :)
+- In the console browser go to: https://gamerhack.github.io/
+- Select the firmware of your console.
+- Immediately all content will be installed in the offline cache, once finished exit the browser and turn off the Internet.
+- Then go back to Access Browser and Enjoy.
 
-PSFree is a collection of exploits for the PS4 console. The main focus of the 
-repo is for the PS4 but we try to make things portable to PS5.
-
-* Exploits
-  * PSFree: src/psfree.mjs
-  * Lapse (kernel): src/scripts/lapse.mjs
-
-# COPYRIGHT AND AUTHORS:
-AGPL-3.0-or-later (see src/COPYING). This repo belongs to the group
-`anonymous`. We refer to anonymous contributors as "anonymous" as well.
-# CREDITS:
-* anonymous for PS4 firmware kernel dumps
-* Check the appropriate files for any **extra** contributors. Unless otherwise
-  stated, everything here can also be credited to us.
+Download link for the PS5 host shortcut .pkg file:
+https://www.mediafire.com/file/dh3tzdvfmcznmrs/NPXS40138_%2528UMTX2%2529.pkg/file
