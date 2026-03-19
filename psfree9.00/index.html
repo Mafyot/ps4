@@ -5,7 +5,6 @@
 
 <style>
     body {
-        /* CORRECCIÓN: Fondo con tu imagen original */
         background-image: url('../img.jpg'); 
         background-size: cover;
         background-position: center;
@@ -27,11 +26,9 @@
         margin-top: 40px;
         margin-bottom: 40px;
         text-shadow: 2px 2px 8px black;
-        color: white;
     }
 
     .btn-container {
-        margin-top: 30px;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -42,21 +39,16 @@
         background: #f31414;
         color: white;
         padding: 15px 40px;
-        border: 2px solid transparent;
+        border: none;
         border-radius: 8px;
         font-size: 18px;
         font-weight: bold;
         cursor: pointer;
-        transition: 0.3s ease;
         min-width: 220px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     }
 
-    .btn:hover {
-        background: white;
-        color: #f31414;
-        transform: scale(1.05);
-    }
+    .btn:hover { background: white; color: #f31414; }
 </style>
 </head>
 
@@ -65,39 +57,41 @@
     if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </script>
 
-<pre id='console'></pre>
-
 <h1>PS4 9.00 GoldHEN Host</h1>
 <hr>
 
 <h1 id="msgs">Esperando para Cargar Payload...</h1>
 
 <div class="btn-container">
-    <!-- Si vas a usar carpetas, recuerda poner 'payloads/goldhen.bin' -->
-    <button class="btn" onclick="load_payload('goldhen.bin')">Cargar GoldHEN</button>
-    <button class="btn" onclick="load_payload('cheats.bin')">Menú Trampas</button>
-    <button class="btn" onclick="load_payload('webRTE.bin')">WebRTE</button>
+    <!-- El onclick ahora llama a una función que crearemos abajo -->
+    <button class="btn" onclick="lanzar_payload('goldhen.bin')">Cargar GoldHEN</button>
+    <button class="btn" onclick="lanzar_payload('cheats.bin')">Menú Trampas</button>
+    <button class="btn" onclick="lanzar_payload('webRTE.bin')">WebRTE</button>
 </div>
 
-<!-- LÓGICA DE CARGA CORREGIDA -->
-<script>
-    function load_payload(payload_name) {
-        document.getElementById("msgs").innerHTML = "Cargando " + payload_name + "...";
+<script type="module">
+    // Importamos TODO lo que exporta alert.mjs
+    import * as host de './alert.mjs';
+
+    // Hacemos que la función sea visible para los botones del HTML
+    window.lanzar_payload = function(nombre_bin) {
+        document.getElementById("msgs").innerHTML = "Enviando " + nombre_bin + "...";
         
-        // Buscamos la función que suele inyectar alert.mjs o los scripts de GamerHack
-        if (window.runPayload) {
-            window.runPayload(payload_name);
-        } else if (window.PL_Type) { 
-            // Algunos hosts usan este formato
-            window.payloadfile = payload_name;
-            window.loadPayload();
+        // Buscamos la función de carga dentro del archivo de GamerHack
+        // Normalmente se llama 'loadPayload' o 'runPayload'
+        if (host.loadPayload) {
+            host.loadPayload(nombre_bin);
+        } else if (host.runPayload) {
+            host.runPayload(nombre_bin);
         } else {
-            // Si llega aquí y sale pantalla blanca, falta un archivo .js de soporte
-            alert("Error: El motor de carga no está listo. Revisa alert.mjs");
+            // Si el nombre es distinto, lo forzamos por URL (pero esto suele dar pantalla blanca)
+            location.href = nombre_bin;
         }
-    }
+    };
 </script>
 
+<!-- Cargamos el motor del exploit -->
 <script type='module' src='alert.mjs'></script>
+
 </body>
 </html>
