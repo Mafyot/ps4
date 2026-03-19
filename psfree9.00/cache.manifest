@@ -1,25 +1,20 @@
-CACHE MANIFEST 
+CACHE MANIFEST
+# v1.0
 
-CACHE: 
-../img.jpg
-aio_patches.bin
-alert.mjs
-config.mjs
-goldhen_2.4b18.9.bin
+CACHE:
 index.html
-lapse.mjs
-psfree.mjs
-send.mjs
-kpatch\900.elf
-module\chain.mjs
-module\constants.mjs
-module\int64.mjs
-module\mem.mjs
-module\memtools.mjs
-module\offset.mjs
-module\rw.mjs
-module\utils.mjs
-module\view.mjs
-src\900.mjs
-src\kexploit.js
-src\psfree.mjs
+../img.jpg
+module/lapse.mjs
+module/utils.mjs
+module/int64.mjs
+module/constants.mjs
+module/psfree.js
+src/kexploit.js
+src/malloc.js
+src/900.js
+payloads/goldhen.bin
+payloads/ftp.bin
+payloads/dumper.bin
+
+NETWORK:
+*
