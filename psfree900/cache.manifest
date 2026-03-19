@@ -1,7 +1,8 @@
 CACHE MANIFEST 
-# v10.0 - Fix GitHub Pages
+# v11.0 - Estilo Recuperado
 
 CACHE: 
+../style.css
 index.html
 cache.html
 goldhen.bin
