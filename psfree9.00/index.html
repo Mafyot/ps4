@@ -19,6 +19,17 @@
         overflow: hidden;
     }
 
+    /* Consola invisible pero presente para evitar el error 'null is not an object' */
+    #console {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
     hr { border: 1px solid #f31414; width: 60%; margin: 20px auto; }
 
     #msgs {
@@ -53,6 +64,9 @@
 </head>
 
 <body>
+<!-- IMPORTANTE: El elemento 'console' debe estar al principio -->
+<pre id="console"></pre>
+
 <script>
     if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </script>
@@ -63,34 +77,30 @@
 <h1 id="msgs">Esperando para Cargar Payload...</h1>
 
 <div class="btn-container">
-    <!-- El onclick ahora llama a una función que crearemos abajo -->
     <button class="btn" onclick="lanzar_payload('goldhen.bin')">Cargar GoldHEN</button>
     <button class="btn" onclick="lanzar_payload('cheats.bin')">Menú Trampas</button>
     <button class="btn" onclick="lanzar_payload('webRTE.bin')">WebRTE</button>
 </div>
 
 <script type="module">
-    // Importamos TODO lo que exporta alert.mjs
-    import * as host de './alert.mjs';
+    // Importamos el archivo de GamerHack
+    import * as host from './alert.mjs';
 
-    // Hacemos que la función sea visible para los botones del HTML
     window.lanzar_payload = function(nombre_bin) {
         document.getElementById("msgs").innerHTML = "Enviando " + nombre_bin + "...";
         
-        // Buscamos la función de carga dentro del archivo de GamerHack
-        // Normalmente se llama 'loadPayload' o 'runPayload'
+        // Intentamos usar la función de carga del módulo
         if (host.loadPayload) {
             host.loadPayload(nombre_bin);
         } else if (host.runPayload) {
             host.runPayload(nombre_bin);
         } else {
-            // Si el nombre es distinto, lo forzamos por URL (pero esto suele dar pantalla blanca)
+            // Si el módulo no expone la función, intentamos el método nativo
             location.href = nombre_bin;
         }
     };
 </script>
 
-<!-- Cargamos el motor del exploit -->
 <script type='module' src='alert.mjs'></script>
 
 </body>
