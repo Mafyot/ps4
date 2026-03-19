@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PS4 9.00 GoldHEN Host | Estable + Kpatch</title>
+<style>
+    body {
+        background-image: url('../img.jpg'); 
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-color: #000b1a; 
+        color: white;
+        font-family: sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+    }
+    #console { display: none; }
+    hr { border: 1px solid #f31414; width: 50%; margin: 15px auto; }
+    #msgs { font-size: 28px; text-shadow: 2px 2px 10px black; margin: 30px 0; color: #f31414; }
+    .btn-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+    .btn {
+        background: #003263; color: white; padding: 15px 30px; border: 2px solid transparent;
+        border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;
+        min-width: 210px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    .btn:hover { background: #0069d9; border: 2px solid white; transform: scale(1.05); }
+</style>
+</head>
+<body>
+<pre id="console"></pre>
+
+<script>
+    if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+
+    // Función para lanzar payloads
+    function lanzar(nombre) {
+        window.nombrePayload = nombre;
+        window.payloadfile = nombre;
+        document.getElementById("msgs").innerHTML = "Enviando " + nombre + "... <br>Espere un momento";
+        
+        if (window.loadPayload) {
+            window.loadPayload(nombre);
+        } else {
+            alert("El exploit aún se está estabilizando. Reintente en 5 segundos.");
+        }
+    }
+</script>
+
+<h1>PS4 9.00 GoldHEN Host</h1>
+<hr>
+<div id="msgs">Estabilizando Kernel y Memoria...</div>
+
+<div class="btn-container">
+    <button class="btn" onclick="lanzar('goldhen.bin')">GoldHEN v2.4</button>
+    <button class="btn" onclick="lanzar('cheats.bin')">Menú Trampas</button>
+    <button class="btn" onclick="lanzar('webRTE.bin')">WebRTE</button>
+</div>
+
+<!-- CARGA DEL MOTOR ORIGINAL -->
+<script type="module" src="alert.mjs"></script>
+
+</body>
+</html>
