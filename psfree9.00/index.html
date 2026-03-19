@@ -2,7 +2,6 @@
 <html>
 <head>
 <title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
-
 <style>
     body {
         background-image: url('../img.jpg'); 
@@ -18,53 +17,19 @@
         height: 100vh;
         overflow: hidden;
     }
-
-    /* Consola invisible pero presente para evitar el error 'null is not an object' */
-    #console {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 1px;
-        height: 1px;
-        opacity: 0;
-        pointer-events: none;
-    }
-
+    #console { display: none; }
     hr { border: 1px solid #f31414; width: 60%; margin: 20px auto; }
-
-    #msgs {
-        font-size: 30px;
-        margin-top: 40px;
-        margin-bottom: 40px;
-        text-shadow: 2px 2px 8px black;
-    }
-
-    .btn-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-
+    #msgs { font-size: 30px; margin: 40px 0; text-shadow: 2px 2px 8px black; }
+    .btn-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
     .btn {
-        background: #f31414;
-        color: white;
-        padding: 15px 40px;
-        border: none;
-        border-radius: 8px;
-        font-size: 18px;
-        font-weight: bold;
-        cursor: pointer;
-        min-width: 220px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        background: #003263; color: white; padding: 15px 40px; border: none;
+        border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer;
+        min-width: 220px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     }
-
-    .btn:hover { background: white; color: #f31414; }
+    .btn:hover { background: #0069d9; transform: scale(1.05); }
 </style>
 </head>
-
 <body>
-<!-- IMPORTANTE: El elemento 'console' debe estar al principio -->
 <pre id="console"></pre>
 
 <script>
@@ -73,7 +38,6 @@
 
 <h1>PS4 9.00 GoldHEN Host</h1>
 <hr>
-
 <h1 id="msgs">Esperando para Cargar Payload...</h1>
 
 <div class="btn-container">
@@ -83,24 +47,31 @@
 </div>
 
 <script type="module">
-    // Importamos el archivo de GamerHack
-    import * as host from './alert.mjs';
+    // Importamos directamente el motor desde psfree.mjs
+    import * as psfree from './psfree.mjs';
 
     window.lanzar_payload = function(nombre_bin) {
         document.getElementById("msgs").innerHTML = "Enviando " + nombre_bin + "...";
         
-        // Intentamos usar la función de carga del módulo
-        if (host.loadPayload) {
-            host.loadPayload(nombre_bin);
-        } else if (host.runPayload) {
-            host.runPayload(nombre_bin);
-        } else {
-            // Si el módulo no expone la función, intentamos el método nativo
-            location.href = nombre_bin;
+        // En los hosts de Psfree, la función suele llamarse run o loadPayload
+        // Intentamos ejecutarla desde el módulo importado
+        try {
+            if (psfree.run) {
+                psfree.run(nombre_bin);
+            } else if (psfree.loadPayload) {
+                psfree.loadPayload(nombre_bin);
+            } else {
+                // Si el módulo no deja usar la función, la llamamos vía URL controlada
+                window.location.hash = nombre_bin; 
+                // Nota: Algunos hosts de Psfree cargan el .bin al detectar el hash
+            }
+        } catch(e) {
+            alert("Error al conectar con psfree.mjs: " + e);
         }
     };
 </script>
 
+<!-- Cargamos el manejador de errores original -->
 <script type='module' src='alert.mjs'></script>
 
 </body>
