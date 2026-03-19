@@ -3,17 +3,60 @@
 <head>
 <title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
+<style>
+    /* Centramos el contenido igual que en el index principal */
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    #menu {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .btn-gold { background-color: #d4af37; color: black; font-weight: bold; }
+</style>
 </head>
 <body>
-<script>
-if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
-</script>
-<pre id='console'></pre>
-<h1>PS4 9.00 GoldHEN | Psfree + Lapse</h1>
-<hr>
-<br>
-<h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
 
-<script type='module' src='alert.mjs'></script>
+<h1 id="msgs">PS4 9.00 GoldHEN (Psfree)</h1>
+<hr>
+
+<div id="menu">
+    <!-- BOTÓN PRINCIPAL: Activa el exploit y GoldHEN -->
+    <button class="btn btn-gold" onclick="load_goldhen()"> Cargar GoldHEN v2.4b18 </button>
+    
+    <br>
+    <h2 style="font-size: 18px; color: yellow;">Payloads Adicionales</h2>
+    
+    <!-- Aquí puedes añadir los botones que quieras -->
+    <button class="btn" onclick="load_payload('ftp.bin')"> Servidor FTP </button>
+    <button class="btn" onclick="load_payload('appmounter.bin')"> App Mounter </button>
+    <button class="btn" onclick="load_payload('disableupdates.bin')"> Desactivar Updates </button>
+</div>
+
+<script>
+    // Esta función llama al script que ya tienes para activar GoldHEN
+    function load_goldhen() {
+        msgs.innerHTML = "Cargando Psfree + GoldHEN... Por favor espera";
+        let script = document.createElement('script');
+        script.type = 'module';
+        script.src = 'alert.mjs'; // Usamos tu script original
+        document.body.appendChild(script);
+    }
+
+    // Función genérica para cargar otros archivos .bin
+    function load_payload(file) {
+        msgs.innerHTML = "Enviando " + file + "...";
+        // Aquí necesitarías tener un cargador de payloads (PLoader) 
+        // común en estas carpetas. Si no lo tienes, el botón no hará nada.
+    }
+</script>
+
 </body>
 </html>
