@@ -28,35 +28,29 @@
     .btn:hover { background: #0069d9; transform: scale(1.05); }
 </style>
 </head>
+<!-- ... tus estilos CSS se mantienen igual ... -->
 <body>
-
 <script>
-    // Si no hay caché instalada, forzamos la instalación
-    if (window.applicationCache.status=='0'){
-        window.location.replace("cache.html");
-    }
+    if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 
-    function lanzar_payload(nombre_bin) {
-        // Mostramos mensaje de carga antes de saltar
-        document.getElementById("msgs").innerHTML = "Preparando " + nombre_bin + "...";
+    function lanzar_payload(archivo) {
+        // Mostramos que estamos preparando el salto
+        document.getElementById("msgs").innerHTML = "Enviando: " + archivo;
         
-        // IMPORTANTE: Asegúrate de que cargar.html esté en la misma carpeta que este index
+        // Redirigimos a cargar.html pasando el nombre exacto
         setTimeout(function(){
-            window.location.href = "cargar.html?p=" + nombre_bin;
-        }, 200);
+            window.location.href = "cargar.html?p=" + archivo;
+        }, 300);
     }
 </script>
 
 <h1>PS4 9.00 GoldHEN Host</h1>
 <hr>
-<h1 id="msgs">Seleccione un Payload para comenzar</h1>
+<h1 id="msgs">Seleccione un Payload</h1>
 
 <div class="btn-container">
-    <!-- REVISA: Los nombres deben ser EXACTOS (Mayúsculas/Minúsculas) a tus archivos .bin -->
+    <!-- Usamos el nombre exacto en minúsculas -->
     <button class="btn" onclick="lanzar_payload('goldhen.bin')">Cargar GoldHEN</button>
-    <button class="btn" onclick="lanzar_payload('cheats.bin')">Menú Trampas</button>
-    <button class="btn" onclick="lanzar_payload('webRTE.bin')">WebRTE</button>
 </div>
-
 </body>
 </html>
