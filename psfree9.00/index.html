@@ -2,9 +2,7 @@
 <html>
 <head>
 <title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
-
 <style>
-    /* Diseño con tu imagen original */
     body {
         background-image: url('../img.jpg'); 
         background-size: cover;
@@ -19,57 +17,32 @@
         height: 100vh;
         overflow: hidden;
     }
-
     hr { border: 1px solid #f31414; width: 60%; margin: 20px auto; }
-
-    #msgs {
-        font-size: 30px;
-        margin-top: 40px;
-        margin-bottom: 40px;
-        text-shadow: 2px 2px 8px black;
-    }
-
-    .btn-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-
+    #msgs { font-size: 30px; margin-top: 40px; margin-bottom: 40px; text-shadow: 2px 2px 8px black; }
+    .btn-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
     .btn {
-        background: #003263; /* Tu azul original */
-        color: white;
-        padding: 15px 40px;
-        border: none;
-        border-radius: 8px;
-        font-size: 18px;
-        font-weight: bold;
-        cursor: pointer;
-        min-width: 220px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        transition: 0.3s ease;
+        background: #003263; color: white; padding: 15px 40px; border: none;
+        border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer;
+        min-width: 220px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transition: 0.3s ease;
     }
-
-    .btn:hover {
-        background: #0069d9;
-        transform: scale(1.05);
-    }
+    .btn:hover { background: #0069d9; transform: scale(1.05); }
 </style>
 </head>
-
 <body>
+
 <script>
-    // Si no hay caché, redirige a la instalación
     if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 
-    // FUNCIÓN CORREGIDA: Guarda el nombre en la memoria del navegador
     function lanzar_payload(nombre_bin) {
-        // Guardamos el nombre internamente para que cargar.html lo lea
+        // 1. LIMPIAMOS EL INTERRUPTOR ANTI-BUCLE ANTES DE EMPEZAR
+        sessionStorage.removeItem('exploit_lanzado');
+        
+        // 2. GUARDAMOS EL NOMBRE DEL PAYLOAD
         localStorage.setItem('payload_a_cargar', nombre_bin);
         
         document.getElementById("msgs").innerHTML = "Preparando " + nombre_bin + "...";
         
-        // Saltamos a la página de carga limpia
+        // 3. SALTAMOS A CARGAR.HTML
         setTimeout(function(){
             window.location.href = "cargar.html";
         }, 300);
@@ -82,7 +55,6 @@
 <h1 id="msgs">Seleccione un Payload para comenzar</h1>
 
 <div class="btn-container">
-    <!-- Asegúrate de que el nombre coincide con tu archivo en GitHub -->
     <button class="btn" onclick="lanzar_payload('goldhen.bin')">Cargar GoldHEN</button>
     <button class="btn" onclick="lanzar_payload('cheats.bin')">Menú Trampas</button>
     <button class="btn" onclick="lanzar_payload('webRTE.bin')">WebRTE</button>
