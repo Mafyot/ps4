@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cargando Payload...</title>
+    <title>Cargando...</title>
     <style>
         body { background: #000b1a; color: white; font-family: sans-serif; text-align: center; padding-top: 100px; }
         #msgs { font-size: 25px; text-shadow: 0 0 10px red; }
@@ -10,24 +10,36 @@
 </head>
 <body>
     <pre id="console"></pre>
-    <h1 id="msgs">Cargando Exploit...<br>Inyectando Payload...</h1>
+    <h1 id="msgs">Iniciando Exploit...</h1>
 
     <script>
+        // 1. Obtenemos el nombre del payload de la URL
         const urlParams = new URLSearchParams(window.location.search);
-        const payloadRecibido = urlParams.get('p');
+        const pName = urlParams.get('p');
 
-        // IMPORTANTE: GamerHack usa estas variables globales específicas
-        window.nombrePayload = payloadRecibido; 
-        window.payloadfile = payloadRecibido; // Por si lapse.mjs busca esta
+        // 2. IMPORTANTE: Lapse y Psfree buscan estas variables globales
+        window.nombrePayload = pName; 
+        window.payloadfile = pName;
         
-        window.onload = function() {
-            setTimeout(function(){
+        // 3. Forzamos que la PS4 cargue el motor de errores y el exploit
+        async function iniciar() {
+            try {
+                // Verificamos si el archivo existe antes de lanzar el exploit
+                const response = await fetch(pName);
+                if (!response.ok) throw new Error("No existe el archivo .bin");
+
+                document.getElementById("msgs").innerHTML = "Inyectando " + pName + "...<br>No toques el mando";
+                
                 var script = document.createElement('script');
                 script.type = 'module';
                 script.src = 'alert.mjs'; 
                 document.body.appendChild(script);
-            }, 500);
-        };
+            } catch (err) {
+                document.getElementById("msgs").innerHTML = "<span style='color:yellow'>ERROR: No se encontró el archivo: " + pName + "</span><br>Revisa que el nombre sea igual en el USB/Host.";
+            }
+        }
+
+        window.onload = () => { setTimeout(iniciar, 500); };
     </script>
 </body>
 </html>
