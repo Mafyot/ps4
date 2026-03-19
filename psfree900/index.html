@@ -15,9 +15,9 @@
     <h1 id="msgs">PS4 9.00 Exploit Host</h1>
     <div id="status" class="status">Selecciona una opción</div>
     <div id="menu">
-        <button class="btn btn-gold" onclick="cargar('goldhen.bin')">ACTIVAR GOLDHEN</button>
-        <button class="btn" onclick="cargar('disable-updates.bin')">BLOQUEAR ACTUALIZACIONES</button>
-        <button class="btn" onclick="cargar('aio_patches.bin')">AIO PATCHES</button>
+        <button class="btn btn-gold" onclick="cargar('goldhen.js')">ACTIVAR GOLDHEN</button>
+        <button class="btn" onclick="cargar('disable-updates.js')">BLOQUEAR ACTUALIZACIONES</button>
+        <button class="btn" onclick="cargar('aio_patches.js')">AIO PATCHES</button>
     </div>
 
     <script>
@@ -33,7 +33,7 @@
                 // Interceptamos el fetch para que el exploit reciba nuestro archivo elegido
                 const originalFetch = window.fetch;
                 window.fetch = async (url) => {
-                    if (url.includes('goldhen.bin') || url.includes('.bin')) {
+                    if (url.includes('goldhen.js') || url.includes('.js')) {
                         return new Response(window.payload_data);
                     }
                     return originalFetch(url);
