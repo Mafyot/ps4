@@ -1,44 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cargando Payload...</title>
+    <title>Cargando...</title>
     <style>
-        body { background: #000b1a; color: white; font-family: sans-serif; text-align: center; padding-top: 100px; margin: 0; }
-        #msgs { font-size: 25px; text-shadow: 0 0 10px red; font-weight: bold; }
-        #console { display: block; opacity: 0; height: 1px; pointer-events: none; }
+        body { background: black; color: white; font-family: sans-serif; text-align: center; padding-top: 150px; margin: 0; }
+        #msgs { font-size: 25px; text-shadow: 0 0 10px red; }
+        #console { display: none; }
     </style>
 </head>
 <body>
     <pre id="console"></pre>
-    <h1 id="msgs">Limpiando Memoria RAM...</h1>
+    <h1 id="msgs">Estabilizando Memoria RAM...</h1>
 
     <script>
+        // Forzamos limpieza de memoria si el navegador lo permite
+        if (window.gc) window.gc();
+
         const pName = localStorage.getItem('payload_a_cargar');
 
-        if (!pName || pName === "null") {
-            document.getElementById("msgs").innerHTML = "Error: No se seleccionó archivo.";
-        } else {
+        if (pName && !sessionStorage.getItem('exploit_lanzado')) {
+            sessionStorage.setItem('exploit_lanzado', 'true');
             window.nombrePayload = pName;
             window.payloadfile = pName;
 
-            // CONTROL ANTI-BUCLE
-            if (!sessionStorage.getItem('exploit_lanzado')) {
-                sessionStorage.setItem('exploit_lanzado', 'true');
-                
-                window.onload = function() {
-                    setTimeout(function(){
-                        document.getElementById("msgs").innerHTML = "Inyectando " + pName + "...<br>No toques nada.";
-                        
-                        var script = document.createElement('script');
-                        script.type = 'module';
-                        script.src = 'alert.mjs'; 
-                        document.body.appendChild(script);
-                    }, 1500); 
-                };
-            } else {
-                // Si ya se intentó, limpiamos el interruptor para la próxima vez
-                sessionStorage.removeItem('exploit_lanzado');
-            }
+            // Espera larga de 2.5 segundos. Es aburrido, pero asegura el éxito.
+            setTimeout(function(){
+                document.getElementById("msgs").innerHTML = "Inyectando " + pName + "...";
+                var script = document.createElement('script');
+                script.type = 'module';
+                script.src = 'alert.mjs'; 
+                document.body.appendChild(script);
+            }, 2500); 
         }
     </script>
 </body>
