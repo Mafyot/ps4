@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cargando Payload...</title>
+    <style>
+        body { background: #000b1a; color: white; font-family: sans-serif; text-align: center; padding-top: 100px; }
+        #msgs { font-size: 30px; text-shadow: 0 0 10px red; }
+    </style>
+</head>
+<body>
+    <h1 id="msgs">Iniciando Exploit... Espere</h1>
+    <script>
+        // Leemos qué payload queremos cargar desde la URL
+        var urlParams = new URLSearchParams(window.location.search);
+        window.nombrePayload = urlParams.get('p'); 
+
+        // Cargamos el exploit en una página TOTALMENTE LIMPIA
+        setTimeout(function(){
+            var script = document.createElement('script');
+            script.type = 'module';
+            script.src = 'alert.mjs'; 
+            document.body.appendChild(script);
+        }, 500);
+    </script>
+</body>
+</html>
