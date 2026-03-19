@@ -1710,8 +1710,8 @@ export async function kexploit() {
     }
     
      if (localStorage.ExploitLoaded === "yes" && sessionStorage.ExploitLoaded!="yes") {
-		   setTimeout(PayloadLoader("aio_patches.bin"),500);
-		   setTimeout(PayloadLoader("goldhen.bin"),500);
+		   setTimeout(PayloadLoader("aio_patches.js"),500);
+		   setTimeout(PayloadLoader("goldhen.js"),500);
 		   msgs.innerHTML = "GoldHEN Loaded ...";
 		   return new Promise(() => {});
       }
@@ -1865,10 +1865,10 @@ function PayloadLoader(Pfile)
 kexploit().then(() => {
 
 //Load ABC fix as a regular Payload
-setTimeout(PayloadLoader("aio_patches.bin"),500);
+setTimeout(PayloadLoader("aio_patches.js"),500);
 log("AIO Fixes Applied.!");
 //Load GoldHEN :)
-setTimeout(PayloadLoader("goldhen.bin"),500);
+setTimeout(PayloadLoader("goldhen.js"),500);
 msgs.innerHTML = "GoldHEN Loaded ...";
 
 })
