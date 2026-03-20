@@ -47,17 +47,12 @@ addEventListener('error', event => {
     return true;
 });
 
-// we have to dynamically import the program if we want to catch its syntax
-// errors
-import('./psfree.mjs');
-
-// ... todo tu código anterior de alert.mjs ...
-
+// Lanzamos el exploit y al terminar activamos el menú del index.html
 import('./psfree.mjs').then(() => {
-    // En cuanto psfree.mjs termina de ejecutarse, lanzamos el menú
+    // Si el index tiene la función jbdone, la ejecutamos para mostrar los botones
     if (window.jbdone) {
         window.jbdone();
     }
 }).catch(err => {
-    console.error("Error cargando el exploit:", err);
+    console.error("Error al cargar el exploit automático:", err);
 });
