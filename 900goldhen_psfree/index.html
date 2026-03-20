@@ -3,42 +3,45 @@
 <head>
 <title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
+<style>
+    /* El menú ya está en pantalla, pero debajo de la capa de carga */
+    #progress {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: #000; z-index: 1000;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    #console { color: white; font-size: 10px; height: 50px; overflow: hidden; }
+</style>
 </head>
 <body>
 <script>
 if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </script>
 
-<pre id="console" style="color:white; font-size:12px; height:100px; overflow:hidden;"></pre>
+<pre id="console"></pre>
 
-<h1 id="msgs">PS4 9.00 GoldHEN | Psfree + Lapse</h1>
-<hr>
-
+<!-- CAPA DE CARGA -->
 <div id="progress">
-    <h1 id="msgs2" style="font-size: 30px; margin-top: 77px;">Exploiting... Please Wait</h1>
+    <h1 id="msgs" style="font-size: 30px;">Loading GoldHEN...</h1>
+    <h2 id="status">Please Wait</h2>
 </div>
 
-<div id="menu" style="display: none">
-    <h1 style="font-size: 18px; color: yellow;">System Tools</h1>
+<!-- MENÚ SIEMPRE PRESENTE -->
+<div id="menu">
+    <h1 id="main-title">PS4 9.00 GoldHEN Tools</h1>
+    <hr>
+    <h2 style="color: yellow;">System Tools</h2>
     <button class="btn" onclick="load_payload('enable-updates.bin', 'Updates Enabled!')"> Enable Updates </button>
     <button class="btn" onclick="load_payload('disable-updates.bin', 'Updates Disabled!')"> Disable Updates </button>
     
-    <h1 style="font-size: 18px;">Hardware</h1>
+    <h2 style="color: yellow;">Hardware</h2>
     <button class="btn" onclick="load_fan()"> Fan Threshold </button>
     <select id="tempC" style="font-size:20px; height:35px; width:60px;"></select>°C
 </div>
 
 <script>
-    // 1. Declarar la función jbdone de primero para que sea global
-    window.jbdone = function() {
-        var menu = document.getElementById("menu");
-        var progress = document.getElementById("progress");
-        if (menu) menu.style.display = "block";
-        if (progress) progress.style.display = "none";
-        document.getElementById("msgs").innerHTML = "GoldHEN v2.4b18.9 Loaded!";
-    };
-
-    var msgs = document.getElementById("msgs");
+    // Configuración del selector
     var select = document.getElementById("tempC");
     for(var i=40; i<=75; i=i+5){
         var option = document.createElement("option");
@@ -47,19 +50,27 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     }
     select.value="60";
 
+    // FUNCIÓN CRÍTICA: Quita la capa negra
+    window.jbdone = function() {
+        document.getElementById("progress").style.display = "none";
+    };
+
+    // Si el exploit tarda más de 8 segundos, forzamos la vista del menú por si acaso
+    setTimeout(window.jbdone, 8000);
+
     async function load_payload(file, successMsg) {
-        msgs.innerHTML = "Enviando " + file + "...";
+        document.getElementById("main-title").innerHTML = "Enviando " + file + "...";
         try {
             const response = await fetch(file);
             const buffer = await response.arrayBuffer();
             if (window.chain && window.chain.run_payload) {
                 await window.chain.run_payload(buffer);
-                msgs.innerHTML = successMsg;
+                document.getElementById("main-title").innerHTML = successMsg;
             } else {
-                msgs.innerHTML = "Error: Inyector no detectado.";
+                alert("Error: Inyector no detectado. ¿Cargó GoldHEN?");
             }
         } catch (e) {
-            msgs.innerHTML = "Error al cargar el archivo .bin";
+            alert("Error al cargar el .bin");
         }
     }
 
