@@ -47,6 +47,6 @@ addEventListener('error', event => {
     return true;
 });
 
-// Lanzamos el exploit de forma limpia. 
-// No añadimos .then() aquí para evitar choques de memoria.
+// we have to dynamically import the program if we want to catch its syntax
+// errors
 import('./psfree.mjs');

@@ -1,88 +1,19 @@
 <!DOCTYPE html>
-<html manifest="cache.manifest">
+<html>
 <head>
-<title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
+<title>PS4 9.00 FW GoldHEN Host by GamerHack | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
-<style>
-    #progress { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    #console { color: white; font-size: 10px; height: 50px; overflow: hidden; position: absolute; top: 0; left: 0; width: 100%; z-index: 1; pointer-events: none; }
-</style>
 </head>
 <body>
-<pre id="console"></pre>
-
-<div id="progress">
-    <h1 id="msgs" style="font-size: 30px;">Checking Cache...</h1>
-    <h2 id="status">Please Wait</h2>
-</div>
-
-<div id="menu" style="display:none;">
-    <h1 id="main-title" style="font-size: 24px;">PS4 9.00 GoldHEN Tools</h1>
-    <hr>
-    <button class="btn" onclick="load_payload('enable-updates.bin', 'Updates Enabled!')"> Enable Updates </button>
-    <button class="btn" onclick="load_payload('disable-updates.bin', 'Updates Disabled!')"> Disable Updates </button>
-    <br><br>
-    <button class="btn" onclick="load_fan()"> Fan Threshold </button>
-    <select id="tempC" style="font-size:20px; height:35px; width:60px;"></select>°C
-</div>
-
 <script>
-    var msgs = document.getElementById("msgs");
-
-    // LÓGICA DE CACHÉ ESTRICTA PARA EVITAR KERNEL PANIC
-    if (window.applicationCache.status == 0) {
-        // Si no hay caché, forzamos la instalación y NO lanzamos el exploit
-        window.applicationCache.onprogress = function(e) { 
-            msgs.innerHTML = "Installing Cache: " + Math.round((e.loaded/e.total)*100) + "%"; 
-        };
-        window.applicationCache.oncached = function() { 
-            msgs.innerHTML = "Cache Installed! Close and Reopen Browser."; 
-            alert("Cache Installed! Please Close the Browser and Open it again to run GoldHEN.");
-        };
-    } else {
-        // Si ya hay caché, lanzamos el exploit directamente
-        startExploit();
-    }
-
-    function startExploit() {
-        msgs.innerHTML = "Loading GoldHEN... Please Wait";
-        var script = document.createElement('script');
-        script.type = 'module';
-        script.src = 'alert.mjs';
-        document.body.appendChild(script);
-    }
-
-    // Selector Fan
-    var select = document.getElementById("tempC");
-    for(var i=40; i<=75; i=i+5){
-        var option = document.createElement("option");
-        option.text = i; option.value = i;
-        select.add(option);
-    }
-    select.value="60";
-
-    // Activación del menú (Llamada desde psfree.mjs)
-    window.jbdone = function() {
-        document.getElementById("progress").style.display = "none";
-        document.getElementById("menu").style.display = "block";
-    };
-
-    async function load_payload(file, successMsg) {
-        document.getElementById("main-title").innerHTML = "Sending " + file + "...";
-        var loader = window.chain;
-        if (loader && loader.run_payload) {
-            try {
-                const response = await fetch(file);
-                const buffer = await response.arrayBuffer();
-                await loader.run_payload(buffer);
-                document.getElementById("main-title").innerHTML = successMsg;
-            } catch (e) { alert("Error reading .bin file."); }
-        } else { alert("Exploit injector not detected."); }
-    }
-
-    function load_fan() {
-        load_payload("fan-threshold" + select.value + ".bin", "Fan Set to " + select.value + "°C");
-    }
+if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </script>
+<pre id='console'></pre>
+<h1>PS4 9.00 FW GoldHEN Host by GamerHack</h1>
+<hr>
+<br>
+<h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
+<h1 style="margin-top: 43px;">Special Thanks to:<a href="https://twitter.com/sleirsgoevy" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@sleirsgoevy</a>ChendoChap<a href="https://twitter.com/Znullptr" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Znullptr</a>SiSTR0<a href="https://x.com/Kameleonre_" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Kameleonre_</a>Abc</h1>
+<script type='module' src='alert.mjs'></script>
 </body>
 </html>

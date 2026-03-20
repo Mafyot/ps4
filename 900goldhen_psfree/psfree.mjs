@@ -864,6 +864,3 @@ async function main() {
     import('./lapse.mjs');
 }
 main();
-// Añade esto al final de psfree.mjs para que el index vea el inyector
-window.chain = chain; 
-if (window.jbdone) window.jbdone();
