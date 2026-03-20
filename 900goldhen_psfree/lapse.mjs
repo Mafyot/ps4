@@ -1880,6 +1880,20 @@ kexploit().then(() => {
             // --- VARIABLES GLOBALES PARA NOTIFICACIÓN ---
             var LoadedMSG = "";
 
+            // FUNCIÓN DE NOTIFICACIÓN REFORMADA PARA EVITAR SYNTAXERROR
+            function enviarNotificacionPS4(texto) {
+                var xhr = new XMLHttpRequest();
+                // Usamos la IP local sin el http:// inicial si da error, o con el formato exacto de GoldHEN
+                var ruta = "http://127.0.0.1" + texto.replace(/ /g, "%20");
+                try {
+                    xhr.open("GET", ruta, true);
+                    xhr.send();
+                } catch (e) {
+                    // Si falla por seguridad de protocolo, intentamos ruta directa
+                    console.log("Fallo de red, pero el payload ya se envió.");
+                }
+            }
+
             // --- LÓGICA DE ACTUALIZACIONES ---
             document.getElementById('btnEnableUpdates').onclick = () => {
                 msgs.innerHTML = "Status: Enabling Updates...";
@@ -1887,11 +1901,7 @@ kexploit().then(() => {
                 PayloadLoader("enable-updates.bin");
                 
                 setTimeout(() => {
-                    var xhr = new XMLHttpRequest();
-                    // IMPORTANTE: Se añade el puerto 9090 y la ruta de mensaje de GoldHEN
-                    var url = "http://127.0.0.1" + LoadedMSG.replace(/ /g, "%20");
-                    xhr.open("GET", url, true);
-                    xhr.send();
+                    enviarNotificacionPS4(LoadedMSG);
                     msgs.innerHTML = LoadedMSG;
                 }, 2000);
             };
@@ -1902,10 +1912,7 @@ kexploit().then(() => {
                 PayloadLoader("disable-updates.bin");
                 
                 setTimeout(() => {
-                    var xhr = new XMLHttpRequest();
-                    var url = "http://127.0.0.1" + LoadedMSG.replace(/ /g, "%20");
-                    xhr.open("GET", url, true);
-                    xhr.send();
+                    enviarNotificacionPS4(LoadedMSG);
                     msgs.innerHTML = LoadedMSG;
                 }, 2000);
             };
@@ -1920,10 +1927,7 @@ kexploit().then(() => {
                     PayloadLoader(fileName);
                     
                     setTimeout(() => { 
-                        var xhr = new XMLHttpRequest();
-                        var url = "http://127.0.0.1" + LoadedMSG.replace(/ /g, "%20");
-                        xhr.open("GET", url, true);
-                        xhr.send();
+                        enviarNotificacionPS4(LoadedMSG);
                         msgs.innerHTML = "GamerHack: " + LoadedMSG; 
                     }, 2000);
                 };
