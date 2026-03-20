@@ -1891,23 +1891,33 @@ kexploit().then(() => {
 }
 
 
-         // --- LÓGICA DE ACTUALIZACIONES ---
+       // --- FUNCIÓN PARA FORZAR EL AVISO EN LA ESQUINA DE LA PS4 ---
+function dispararAvisoPS4(texto) {
+    var xhr = new XMLHttpRequest();
+    // GoldHEN escucha avisos en el 9090, aunque el payload entre por el 9020
+    xhr.open("GET", "http://127.0.0.1" + encodeURIComponent("GamerHack: " + texto), true);
+    xhr.send();
+}
+
+// --- TUS BOTONES DE UPDATES ---
 document.getElementById('btnEnableUpdates').onclick = () => {
     msgs.innerHTML = "Enabling Updates... Please Wait";
-    PayloadLoader("enable-updates.bin");
+    PayloadLoader("enable-updates.bin"); // Esto va al puerto de ejecución (9020)
+    
     setTimeout(() => { 
-        sendGoldHenNotify("Updates_Enabled"); // Texto simple sin espacios raros
-        msgs.innerHTML = "Updates Enabled!"; 
-    }, 2000);
+        dispararAvisoPS4("Updates ENABLED ✅"); // Esto despierta la notificación (9090)
+        msgs.innerHTML = "GamerHack: Updates Enabled!"; 
+    }, 2500);
 };
 
 document.getElementById('btnDisableUpdates').onclick = () => {
     msgs.innerHTML = "Disabling Updates... Please Wait";
     PayloadLoader("disable-updates.bin");
+    
     setTimeout(() => { 
-        sendGoldHenNotify("Updates_Disabled"); 
-        msgs.innerHTML = "Updates Disabled!"; 
-    }, 2000);
+        dispararAvisoPS4("Updates DISABLED ❌"); 
+        msgs.innerHTML = "GamerHack: Updates Disabled!"; 
+    }, 2500);
 };
 
 
