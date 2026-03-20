@@ -3,11 +3,16 @@
 <head>
 <title>PS4 9.00 FW Host v3.0 by GamerHack | Automatic Exploitation</title>
 <link rel="stylesheet" href="../style.css">
-<!-- He vuelto a poner los 4 originales EXACTOS -->
+<!-- ORDEN CRÍTICO DE SCRIPTS (Sincronizado con tu Manifest para que lance el USB) -->
 <script src="int64.js"></script>
 <script src="rop.js"></script>
 <script src="kexploit.js"></script>
 <script src="webkit.js"></script>
+<script src="exploit.js"></script>
+<script src="malloc.js"></script>
+<script src="rop2.js"></script>
+<script src="syscalls.js"></script>
+<script src="syscalls2.js"></script>
 </head>
 <body onload="setTimeout(poc, 50);">
 <script>
@@ -16,7 +21,6 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 
 <h1 id="msgs">PS4 9.00 FW Host v3.0 by GamerHack</h1>
 <hr>
-<br>
 
 <div id="progress">
 <h1 id="msgs2" style="font-size: 30px;margin-top: 77px;margin-bottom: 412px;">Loading Jailbreak... Please Wait</h1>
@@ -27,13 +31,13 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     <button class="btn" onmouseover="msgs.innerHTML='GoldHEN v2.4b18.9 for 9.00 FW'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_goldhenbeta()"> GoldHEN v2.4b18.9 </button>
     <button class="btn" onmouseover="msgs.innerHTML='GoldHEN v2.3 for 9.00 FW'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_goldhen23()"> GoldHEN v2.3 </button>
     
-    <h1 style="font-size: 18px;">Tools</h1>
+    <h1 style="font-size: 18px;">System Tools</h1>
     <button class="btn" onmouseover="msgs.innerHTML='Transfer Installed Games to USB Drive in exFAT'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_app2usb()"> App2USB </button>
     <button class="btn" onmouseover="msgs.innerHTML='Enable System Updates'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_enablebUpdates()"> Enable Updates </button>
     <button class="btn" onmouseover="msgs.innerHTML='Disable System Updates'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_disableUpdates()"> Disable Updates </button>
     
     <h1 style="font-size: 18px;">Hardware</h1>
-    <button class="btn" onmouseover="msgs.innerHTML='Modify PS4 FAN Speed'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_fanthreshold()" style="margin-bottom: 70px"> Fan Threshold </button>
+    <button class="btn" onmouseover="msgs.innerHTML='Modify PS4 FAN Speed'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_fanthreshold()"> Fan Threshold </button>
     <select id="tempC" style="font-size:20px;height:35px;width:60px;"></select>°C
 
     <script>
@@ -46,6 +50,6 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     }
     select.value="60"; 
     </script>
-</div> <!-- CIERRE DEL MENU RECUPERADO -->
+</div>
 </body>
 </html>
