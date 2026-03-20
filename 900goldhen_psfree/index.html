@@ -3,11 +3,6 @@
 <head>
 <title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
-<!-- Cargamos los scripts base para que las funciones de los botones existan -->
-<script src="int64.js"></script>
-<script src="rop.js"></script>
-<script src="kexploit.js"></script>
-<script src="webkit.js"></script>
 </head>
 <body>
 <script>
@@ -18,11 +13,12 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 <hr>
 <br>
 
+<!-- PANTALLA DE CARGA -->
 <div id="progress">
     <h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
 </div>
 
-<!-- TU NUEVO MENÚ (SE MOSTRARÁ AL TERMINAR EL EXPLOIT) -->
+<!-- MENÚ DE HERRAMIENTAS (SE ACTIVA AL TERMINAR EL EXPLOIT) -->
 <div id="menu" style="display: none">
     <h1 style="font-size: 18px;color: yellow;">System Tools</h1>
     <button class="btn" onclick="load_enableUpdates()"> Enable Updates </button>
@@ -45,49 +41,35 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     }
     select.value="60";
 
-    // ESTA FUNCIÓN SE LLAMA DESDE ALERT.MJS CUANDO TODO TERMINA
+    // ESTA FUNCIÓN LA LANZA ALERT.MJS AUTOMÁTICAMENTE
     window.jbdone = function() {
         document.getElementById("menu").style.display = "block";
         document.getElementById("progress").style.display = "none";
         msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded!";
     };
 
-    // Función para cargar los .bin adicionales (Updates, Fan, etc.)
-    function load_poc(){
-        var req = new XMLHttpRequest();
-        req.responseType = "arraybuffer";
-        req.open('GET', PLfile, true);
-        req.send();
-        req.onreadystatechange = function () {
-            if (req.readyState == 4) {
-                var PLD = req.response;
-                // Intentamos usar el inyector de PSFree (chain) si ya está cargado
-                if(window.chain){
-                    window.chain.run_payload(PLD);
-                } else {
-                    // Si no, usamos el método estándar del primer index
-                    var payload_buffer = chain.syscall(477, 0, PLD.byteLength*4 , 7, 0x1002, -1, 0);
-                    var pl = p.array_from_address(payload_buffer, PLD.byteLength*4);
-                    var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-                    var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-                    tmp.set(new Uint8Array(req.response), 0);
-                    tmp.set(padding, req.response.byteLength);
-                    var shellcode = new Uint32Array(tmp.buffer);
-                    pl.set(shellcode,0);
-                    var pthread = p.malloc(0x10);
-                    chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
-                }
-                msgs.innerHTML = LoadedMSG;
-            }
-        };
+    // LÓGICA MODERNA PARA CARGAR PAYLOADS (.BIN) EN PSFREE
+    async function load_payload(file, msg) {
+        msgs.innerHTML = "Loading " + file + "...";
+        try {
+            // Importamos el cargador que ya tienes en tu host
+            const { sendPayload } = await import('./send.mjs');
+            const response = await fetch(file);
+            const buffer = await response.arrayBuffer();
+            await sendPayload(buffer);
+            msgs.innerHTML = msg;
+        } catch (e) {
+            msgs.innerHTML = "Error: Payload could not be loaded";
+            console.error(e);
+        }
     }
 
-    function load_enableUpdates(){ LoadedMSG="Enable Updates Loaded ..."; PLfile="enable-updates.bin"; load_poc(); }
-    function load_disableUpdates(){ LoadedMSG="Disable Updates Loaded ..."; PLfile="disable-updates.bin"; load_poc(); }
-    function load_fanthreshold(){ LoadedMSG="Fan Threshold Loaded ..."; PLfile="fan-threshold"+tempC.value+".bin"; load_poc(); }
+    function load_enableUpdates(){ load_payload("enable-updates.bin", "Enable Updates Loaded!"); }
+    function load_disableUpdates(){ load_payload("disable-updates.bin", "Disable Updates Loaded!"); }
+    function load_fanthreshold(){ load_payload("fan-threshold"+select.value+".bin", "Fan Threshold Set to "+select.value+"°C"); }
 </script>
 
-<!-- CARGAMOS EL MOTOR AUTOMÁTICO -->
+<!-- LANZADOR DEL EXPLOIT AUTOMÁTICO -->
 <script type='module' src='alert.mjs'></script>
 </body>
 </html>
