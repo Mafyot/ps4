@@ -1,70 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
-    <link rel="stylesheet" href="../style.css">
+<title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
+<link rel="stylesheet" href="../style.css">
+<!-- Cargamos los scripts base para que las funciones de los botones existan -->
+<script src="int64.js"></script>
+<script src="rop.js"></script>
+<script src="kexploit.js"></script>
+<script src="webkit.js"></script>
 </head>
 <body>
-    <script>
-        if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
-    </script>
-    <h1 id="msgs">PS4 9.00 GoldHEN | Psfree + Lapse</h1>
-    <hr>
+<script>
+if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+</script>
+<pre id='console'></pre>
+<h1>PS4 9.00 GoldHEN | Psfree + Lapse</h1>
+<hr>
+<br>
 
-    <div id="progress">
-        <h1 id="msgs2" style="font-size: 30px; margin-top: 77px;">Exploiting... Please Wait</h1>
-    </div>
+<div id="progress">
+    <h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
+</div>
 
-    <!-- El Menú que aparecerá solo -->
-    <div id="menu" style="display: none">
-        <h2 style="color: yellow;">System Tools</h2>
-        <button class="btn" onclick="load_payload('enable-updates.bin', 'Updates Enabled')"> Enable Updates </button>
-        <button class="btn" onclick="load_payload('disable-updates.bin', 'Updates Disabled')"> Disable Updates </button>
-        <h2 style="color: yellow;">Hardware</h2>
-        <button class="btn" onclick="load_fan()"> Fan Threshold </button>
-        <select id="tempC" style="font-size:20px;height:35px;width:60px;"></select>°C
-    </div>
+<!-- TU NUEVO MENÚ (SE MOSTRARÁ AL TERMINAR EL EXPLOIT) -->
+<div id="menu" style="display: none">
+    <h1 style="font-size: 18px;color: yellow;">System Tools</h1>
+    <button class="btn" onclick="load_enableUpdates()"> Enable Updates </button>
+    <button class="btn" onclick="load_disableUpdates()"> Disable Updates </button>
+    
+    <h1 style="font-size: 18px;">Hardware</h1>
+    <button class="btn" onclick="load_fanthreshold()"> Fan Threshold </button>
+    <select id="tempC" style="font-size:20px;height:35px;width:60px;"></select>°C
+</div>
 
-    <script>
-        var msgs = document.getElementById("msgs");
-        
-        // Configurar selector de grados
-        var select = document.getElementById("tempC");
-        for(var i=40; i<=75; i=i+5){
-            var option = document.createElement("option");
-            option.text = i; option.value = i;
-            select.add(option);
-        }
-        select.value="60";
+<script>
+    var msgs = document.getElementById("msgs");
+    
+    // Configuración del selector de temperatura
+    var select = document.getElementById("tempC");
+    for(var i=40; i<=75; i=i+5){
+        var option = document.createElement("option");
+        option.text = i; option.value = i;
+        select.add(option);
+    }
+    select.value="60";
 
-        // ESTA FUNCIÓN LA LLAMAREMOS DESDE EL MJS
-        function jbdone() {
-            document.getElementById("menu").style.display = "block";
-            document.getElementById("progress").style.display = "none";
-            msgs.innerHTML = "GoldHEN Loaded Successfully!";
-        }
+    // ESTA FUNCIÓN SE LLAMA DESDE ALERT.MJS CUANDO TODO TERMINA
+    window.jbdone = function() {
+        document.getElementById("menu").style.display = "block";
+        document.getElementById("progress").style.display = "none";
+        msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded!";
+    };
 
-        // Función universal para cargar tus 3 archivos .bin
-        function load_payload(file, msg) {
-            var xhr = new XMLHttpRequest();
-            xhr.responseType = "arraybuffer";
-            xhr.open('GET', file, true);
-            xhr.send();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    var payload = xhr.response;
-                    // Aquí usamos el objeto 'chain' que tus scripts ya crearon
-                    window.chain.run_payload(payload); 
-                    msgs.innerHTML = msg;
+    // Función para cargar los .bin adicionales (Updates, Fan, etc.)
+    function load_poc(){
+        var req = new XMLHttpRequest();
+        req.responseType = "arraybuffer";
+        req.open('GET', PLfile, true);
+        req.send();
+        req.onreadystatechange = function () {
+            if (req.readyState == 4) {
+                var PLD = req.response;
+                // Intentamos usar el inyector de PSFree (chain) si ya está cargado
+                if(window.chain){
+                    window.chain.run_payload(PLD);
+                } else {
+                    // Si no, usamos el método estándar del primer index
+                    var payload_buffer = chain.syscall(477, 0, PLD.byteLength*4 , 7, 0x1002, -1, 0);
+                    var pl = p.array_from_address(payload_buffer, PLD.byteLength*4);
+                    var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+                    var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+                    tmp.set(new Uint8Array(req.response), 0);
+                    tmp.set(padding, req.response.byteLength);
+                    var shellcode = new Uint32Array(tmp.buffer);
+                    pl.set(shellcode,0);
+                    var pthread = p.malloc(0x10);
+                    chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
                 }
-            };
-        }
+                msgs.innerHTML = LoadedMSG;
+            }
+        };
+    }
 
-        function load_fan() {
-            load_payload("fan-threshold" + select.value + ".bin", "Fan Set to " + select.value + "°C");
-        }
-    </script>
+    function load_enableUpdates(){ LoadedMSG="Enable Updates Loaded ..."; PLfile="enable-updates.bin"; load_poc(); }
+    function load_disableUpdates(){ LoadedMSG="Disable Updates Loaded ..."; PLfile="disable-updates.bin"; load_poc(); }
+    function load_fanthreshold(){ LoadedMSG="Fan Threshold Loaded ..."; PLfile="fan-threshold"+tempC.value+".bin"; load_poc(); }
+</script>
 
-    <script type='module' src='alert.mjs'></script>
+<!-- CARGAMOS EL MOTOR AUTOMÁTICO -->
+<script type='module' src='alert.mjs'></script>
 </body>
 </html>
