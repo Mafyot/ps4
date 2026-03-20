@@ -47,12 +47,6 @@ addEventListener('error', event => {
     return true;
 });
 
-// Lanzamos el exploit y al terminar activamos el menú del index.html
-import('./psfree.mjs').then(() => {
-    // Si el index tiene la función jbdone, la ejecutamos para mostrar los botones
-    if (window.jbdone) {
-        window.jbdone();
-    }
-}).catch(err => {
-    console.error("Error al cargar el exploit automático:", err);
-});
+// Lanzamos el exploit de forma limpia. 
+// No añadimos .then() aquí para evitar choques de memoria.
+import('./psfree.mjs');
