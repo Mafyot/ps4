@@ -3,17 +3,24 @@
 <head>
 <title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
+<style>
+    /* Estilo para que la consola del exploit no estorbe al menú */
+    #console { color: white; font-size: 12px; text-align: left; max-height: 150px; overflow: hidden; }
+</style>
 </head>
 <body>
 <script>
 if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </script>
+
+<!-- ELEMENTO CRÍTICO: El exploit lo necesita para no dar el error 'console.append' -->
+<pre id="console"></pre>
+
 <h1 id="msgs">PS4 9.00 GoldHEN | Psfree + Lapse</h1>
 <hr>
-<br>
 
 <div id="progress">
-    <h1 id="msgs2" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
+    <h1 id="msgs2" style="font-size: 30px;margin-top: 77px;">Exploiting... Please Wait</h1>
 </div>
 
 <div id="menu" style="display: none">
@@ -22,7 +29,7 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     <button class="btn" onclick="load_payload('disable-updates.bin', 'Updates Disabled!')"> Disable Updates </button>
     
     <h1 style="font-size: 18px;">Hardware</h1>
-    <button class="btn" onclick="load_payload('fan-threshold' + document.getElementById('tempC').value + '.bin', 'Fan Set!')"> Fan Threshold </button>
+    <button class="btn" onclick="load_fan()"> Fan Threshold </button>
     <select id="tempC" style="font-size:20px;height:35px;width:60px;"></select>°C
 </div>
 
@@ -37,6 +44,7 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     }
     select.value="60";
 
+    // Función que activa el menú (llamada por alert.mjs)
     window.jbdone = function() {
         document.getElementById("menu").style.display = "block";
         document.getElementById("progress").style.display = "none";
@@ -49,16 +57,20 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
             const response = await fetch(file);
             const buffer = await response.arrayBuffer();
             
-            // Usamos el objeto chain que expusimos en psfree.mjs
+            // Usamos el objeto chain que ya está en memoria gracias al exploit
             if (window.chain && window.chain.run_payload) {
                 await window.chain.run_payload(buffer);
                 msgs.innerHTML = successMsg;
             } else {
-                msgs.innerHTML = "Error: Inyector no listo.";
+                msgs.innerHTML = "Error: Inyector no detectado.";
             }
         } catch (e) {
-            msgs.innerHTML = "Error de red o archivo .bin no encontrado";
+            msgs.innerHTML = "Error al cargar el archivo .bin";
         }
+    }
+
+    function load_fan() {
+        load_payload("fan-threshold" + select.value + ".bin", "Fan Set a " + select.value + "°C");
     }
 </script>
 
