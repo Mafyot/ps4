@@ -7,24 +7,6 @@
 <script src="rop.js"></script>
 <script src="kexploit.js"></script>
 <script src="webkit.js"></script>
-<style>
-    /* Solo añado este bloque para que los botones se centren y se vean */
-    body {
-        text-align: center; /* Centra todo el contenido */
-        background-color: #1a1a1a; /* Fondo oscuro por si el style.css no carga */
-        color: white;
-        font-family: sans-serif;
-    }
-    .btn {
-        width: 250px;
-        padding: 10px;
-        margin: 5px;
-        display: inline-block;
-    }
-    #menu {
-        margin-top: 20px;
-    }
-</style>
 </head>
 <body onload="setTimeout(poc, 50);">
 <script>
@@ -34,8 +16,7 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 <hr>
 <br>
 <div id="progress">
-<!-- He quitado el margin-bottom: 412px para que no desaparezca -->
-<h1 id="msgs2" style="font-size: 30px; margin-top: 50px;">Loading Jailbreak... Please Wait</h1>
+<h1 id="msgs2" style="font-size: 30px;margin-top: 77px;margin-bottom: 412px;">Loading Jailbreak... Please Wait</h1>
 </div>
 <div id="menu" style="display: none">
 <h1 style="font-size: 18px;color: yellow;">Main Payloads</h1>
@@ -46,12 +27,8 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 <button class="btn" onmouseover="msgs.innerHTML='Transfer Installed Games to USB Drive in exFAT'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_app2usb()"> App2USB </button>
 <button class="btn" onmouseover="msgs.innerHTML='Enable System Updates'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_enablebUpdates()"> Enable Updates </button>
 <button class="btn" onmouseover="msgs.innerHTML='Disable System Updates'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_disableUpdates()"> Disable Updates </button>
-<br>
-<!-- He quitado el margin-bottom: 70px -->
-<button class="btn" onmouseover="msgs.innerHTML='Modify PS4 FAN Speed'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_fanthreshold()"> Fan Threshold </button><select id="tempC"></select>°C
-<br>
-<!-- He quitado el margin-bottom: 241px para que el botón Return sea visible -->
-<button class="btn" onmouseover="msgs.innerHTML='Return to Main Menu'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_menu()" style="margin-top: 20px;"> Return </button>
+<button class="btn" onmouseover="msgs.innerHTML='Modify PS4 FAN Speed'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_fanthreshold()" style="margin-bottom: 70px"> Fan Threshold </button><select id="tempC"></select>°C
+<button class="btn" onmouseover="msgs.innerHTML='Return to Main Menu'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_menu()" style="margin-bottom: 241px"> Return </button>
 
 </div>
 <script>
@@ -229,4 +206,3 @@ load_poc();
 </script>
 </body>
 </html>
-
