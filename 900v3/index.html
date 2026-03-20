@@ -8,24 +8,17 @@
 <script src="rop.js"></script>
 <script src="kexploit.js"></script>
 <script src="webkit.js"></script>
-<script src="exploit.js"></script>
-<script src="malloc.js"></script>
-<script src="rop2.js"></script>
-<script src="syscalls.js"></script>
-<script src="syscalls2.js"></script>
 </head>
 <body onload="setTimeout(poc, 50);">
 <script>
 if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </script>
-
 <h1 id="msgs">PS4 9.00 FW Host v3.0 by GamerHack</h1>
 <hr>
-
+<br>
 <div id="progress">
 <h1 id="msgs2" style="font-size: 30px;margin-top: 77px;margin-bottom: 412px;">Loading Jailbreak... Please Wait</h1>
 </div>
-
 <div id="menu" style="display: none">
     <h1 style="font-size: 18px;color: yellow;">Main Payloads</h1>
     <button class="btn" onmouseover="msgs.innerHTML='GoldHEN v2.4b18.9 for 9.00 FW'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_goldhenbeta()"> GoldHEN v2.4b18.9 </button>
@@ -50,6 +43,88 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     }
     select.value="60"; 
     </script>
+function jbdone(){
+document.getElementById("menu").style.display = "block";
+document.getElementById("progress").style.display = "none";
+}
+
+function load_menu(){
+document.getElementById("menu").style.display = "block";
+document.getElementById("progress").style.display = "none";
+}
+
+function allset(){
+msgs.innerHTML = LoadedMSG
+}
+
+function load_poc(){
+ var req = new XMLHttpRequest();
+ req.responseType = "arraybuffer";
+ req.open('GET', PLfile);
+ req.send();
+ req.onreadystatechange = function () {
+  if (req.readyState == 4) {
+   PLD = req.response;
+   var payload_buffer = chain.syscall(477, 0, PLD.byteLength*4 , 7, 0x1002, -1, 0);
+   var pl = p.array_from_address(payload_buffer, PLD.byteLength*4);
+   var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+   var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+   tmp.set(new Uint8Array(req.response), 0);
+   tmp.set(padding, req.response.byteLength);
+   var shellcode = new Uint32Array(tmp.buffer);
+   pl.set(shellcode,0);
+   var pthread = p.malloc(0x10);
+   chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
+   allset();
+  }
+ };
+}
+
+
+function loadScript(path)
+{
+    var xhr = new XMLHttpRequest(path);
+    xhr.open("GET", path, false);
+    xhr.send('');
+    return xhr.responseText;
+}
+
+function load_goldhenbeta(){
+LoadedMSG = "GoldHEN v2.4b18.9 Loaded ...";
+PLfile = "goldhen_2.4b18.9.bin";
+load_poc();
+}
+
+function load_goldhen23(){
+LoadedMSG = "GoldHEN v2.3 Loaded ...";
+PLfile = "goldhen_2.3.bin";
+load_poc();
+}
+
+function load_app2usb(){
+LoadedMSG = "App2USB Loaded ..."
+PLfile = "app2usb.bin";
+load_poc();
+}
+
+function load_enablebUpdates(){
+LoadedMSG = "Enable Updates Loaded ..."
+PLfile = "enable-updates.bin";
+load_poc();
+}
+
+function load_disableUpdates(){
+LoadedMSG = "Disable Updates Loaded ..."
+PLfile = "disable-updates.bin";
+load_poc();
+}
+
+function load_fanthreshold(){
+LoadedMSG="Fan Threshold Loaded ..."
+PLfile = "fan-threshold"+tempC.value+".bin";
+load_poc();
+}
+</script>
 </div>
 </body>
 </html>
