@@ -54,8 +54,10 @@ import('./psfree.mjs');
 // ... todo tu código anterior de alert.mjs ...
 
 import('./psfree.mjs').then(() => {
-    // Si psfree termina su carga de módulos, esperamos un poco y mostramos el menú
-    setTimeout(() => {
-        if (window.jbdone) window.jbdone();
-    }, 15000); // 15 segundos es lo que suele tardar en total el proceso
+    // En cuanto psfree.mjs termina de ejecutarse, lanzamos el menú
+    if (window.jbdone) {
+        window.jbdone();
+    }
+}).catch(err => {
+    console.error("Error cargando el exploit:", err);
 });
