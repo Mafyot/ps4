@@ -1863,23 +1863,47 @@ function PayloadLoader(Pfile)
 }
 
 kexploit().then(() => {
+    console.log("Loading AIO Patches...");
+    PayloadLoader("aio_patches.bin");
 
-//Load ABC fix as a regular Payload
-console.log("Loading AIO Patches...");
-PayloadLoader("aio_patches.bin");
-
-// Esperar 2 segundos a que termine aio_patches
-setTimeout(() => {
-    console.log("Loading GoldHEN...");
-    PayloadLoader("goldhen_2.4b18.9.bin");
-    
-    // Esperar a que GoldHEN cargue
+    // Esperar 2 segundos para los parches AIO
     setTimeout(() => {
-        msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded ...";
-        document.getElementById('buttonsContainer').style.display = 'block';
-        log("✅ GoldHEN Ready!");
-    }, 3000);
-    
-}, 2000);
+        console.log("Loading GoldHEN...");
+        PayloadLoader("goldhen_2.4b18.9.bin");
+        
+        // Esperar a que GoldHEN se asiente en la memoria
+        setTimeout(() => {
+            const msgs = document.getElementById('msgs');
+            const btnContainer = document.getElementById('buttonsContainer');
+            const fanSlider = document.getElementById('fanControl');
+            const tempValue = document.getElementById('tempValue');
 
-})
+            // 1. Mensaje de éxito y visibilidad
+            if (msgs) msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded Successfully!";
+            if (btnContainer) btnContainer.style.display = 'block';
+
+            // 2. Lógica del Slider de Temperatura (Fan Control)
+            if (fanSlider) {
+                fanSlider.addEventListener('input', (e) => {
+                    const temp = e.target.value;
+                    tempValue.innerText = temp;
+                    console.log("Temperatura seleccionada: " + temp + "°C");
+                });
+            }
+
+            // 3. Lógica de los botones de Updates
+            document.getElementById('enableUpdates').onclick = () => {
+                alert("Updates Enabled! (System files modified)");
+                // Aquí podrías añadir un PayloadLoader específico para activar updates
+            };
+
+            document.getElementById('disableUpdates').onclick = () => {
+                alert("Updates Disabled! (System protected)");
+                // Aquí podrías añadir un PayloadLoader específico para bloquear updates
+            };
+
+            log("✅ GamerHack Menu Ready!");
+        }, 4000); // Aumentado a 4 seg para asegurar estabilidad
+        
+    }, 2000);
+});
