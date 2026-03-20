@@ -1865,11 +1865,21 @@ function PayloadLoader(Pfile)
 kexploit().then(() => {
 
 //Load ABC fix as a regular Payload
-setTimeout(PayloadLoader("aio_patches.bin"),500);
-log("AIO Fixes Applied.!");
-//Load GoldHEN :)
-setTimeout(PayloadLoader("goldhen_2.4b18.9.bin"),500);
-msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded ...";
-document.getElementById('buttonsContainer').style.display = 'block';
+console.log("Loading AIO Patches...");
+PayloadLoader("aio_patches.bin");
+
+// Esperar 2 segundos a que termine aio_patches
+setTimeout(() => {
+    console.log("Loading GoldHEN...");
+    PayloadLoader("goldhen_2.4b18.9.bin");
+    
+    // Esperar a que GoldHEN cargue
+    setTimeout(() => {
+        msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded ...";
+        document.getElementById('buttonsContainer').style.display = 'block';
+        log("✅ GoldHEN Ready!");
+    }, 3000);
+    
+}, 2000);
 
 })
