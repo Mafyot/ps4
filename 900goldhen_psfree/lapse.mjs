@@ -1870,5 +1870,6 @@ log("AIO Fixes Applied.!");
 //Load GoldHEN :)
 setTimeout(PayloadLoader("goldhen_2.4b18.9.bin"),500);
 msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded ...";
+document.getElementById('buttonsContainer').style.display = 'block';
 
 })
