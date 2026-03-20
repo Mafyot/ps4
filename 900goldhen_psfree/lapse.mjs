@@ -1877,59 +1877,37 @@ kexploit().then(() => {
             if (btnContainer) btnContainer.style.display = 'block';
             if (msgs) msgs.innerHTML = "GamerHack Menu Ready!";
 
-            // --- VARIABLES GLOBALES PARA NOTIFICACIÓN ---
-            var LoadedMSG = "";
-
-            // FUNCIÓN DE NOTIFICACIÓN REFORMADA PARA EVITAR SYNTAXERROR
-            function enviarNotificacionPS4(texto) {
+            // FUNCIÓN DE NOTIFICACIÓN QUE EVITA EL SYNTAX ERROR
+            function dispararNotificacion(texto) {
                 var xhr = new XMLHttpRequest();
-                // Usamos la IP local sin el http:// inicial si da error, o con el formato exacto de GoldHEN
-                var ruta = "http://127.0.0.1" + texto.replace(/ /g, "%20");
-                try {
-                    xhr.open("GET", ruta, true);
-                    xhr.send();
-                } catch (e) {
-                    // Si falla por seguridad de protocolo, intentamos ruta directa
-                    console.log("Fallo de red, pero el payload ya se envió.");
-                }
+                // En PS4, a veces basta con /status si el puerto ya está mapeado, 
+                // pero probamos con la IP limpia para evitar el Pattern Error.
+                var url = "http://127.0.0.1" + texto.replace(/ /g, "%20");
+                xhr.open("GET", url, true);
+                xhr.send();
             }
 
-            // --- LÓGICA DE ACTUALIZACIONES ---
+            // --- BOTONES DE UPDATES ---
             document.getElementById('btnEnableUpdates').onclick = () => {
-                msgs.innerHTML = "Status: Enabling Updates...";
-                LoadedMSG = "Enable Updates Loaded ...";
+                msgs.innerHTML = "Enable Updates Loaded ...";
                 PayloadLoader("enable-updates.bin");
-                
-                setTimeout(() => {
-                    enviarNotificacionPS4(LoadedMSG);
-                    msgs.innerHTML = LoadedMSG;
-                }, 2000);
+                setTimeout(() => { dispararNotificacion("Enable Updates Loaded ..."); }, 1500);
             };
 
             document.getElementById('btnDisableUpdates').onclick = () => {
-                msgs.innerHTML = "Status: Disabling Updates...";
-                LoadedMSG = "Disable Updates Loaded ...";
+                msgs.innerHTML = "Disable Updates Loaded ...";
                 PayloadLoader("disable-updates.bin");
-                
-                setTimeout(() => {
-                    enviarNotificacionPS4(LoadedMSG);
-                    msgs.innerHTML = LoadedMSG;
-                }, 2000);
+                setTimeout(() => { dispararNotificacion("Disable Updates Loaded ..."); }, 1500);
             };
 
-            // --- LÓGICA DEL VENTILADOR ---
+            // --- BOTÓN DE VENTILADOR ---
             if (btnApplyFan) {
                 btnApplyFan.onclick = () => {
-                    const val = tempSelect.value; 
-                    msgs.innerHTML = "Setting Fan to " + val + "°C...";
-                    LoadedMSG = "Fan Set to " + val + "C";
-                    const fileName = "fan-threshold" + val + ".bin";
-                    PayloadLoader(fileName);
-                    
-                    setTimeout(() => { 
-                        enviarNotificacionPS4(LoadedMSG);
-                        msgs.innerHTML = "GamerHack: " + LoadedMSG; 
-                    }, 2000);
+                    const val = tempSelect.value;
+                    const msgFan = "Fan Set to " + val + "C";
+                    msgs.innerHTML = msgFan;
+                    PayloadLoader("fan-threshold" + val + ".bin");
+                    setTimeout(() => { dispararNotificacion(msgFan); }, 1500);
                 };
             }
 
