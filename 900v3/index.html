@@ -3,6 +3,7 @@
 <head>
 <title>PS4 9.00 FW Host v3.0 by GamerHack | Automatic Exploitation</title>
 <link rel="stylesheet" href="../style.css">
+<!-- He vuelto a poner los 4 originales EXACTOS -->
 <script src="int64.js"></script>
 <script src="rop.js"></script>
 <script src="kexploit.js"></script>
@@ -22,21 +23,15 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </div>
 
 <div id="menu" style="display: none">
-    <!-- BLOQUE 1: GOLDHEN Y CARGA -->
     <h1 style="font-size: 18px;color: yellow;">Main Payloads</h1>
     <button class="btn" onmouseover="msgs.innerHTML='GoldHEN v2.4b18.9 for 9.00 FW'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_goldhenbeta()"> GoldHEN v2.4b18.9 </button>
     <button class="btn" onmouseover="msgs.innerHTML='GoldHEN v2.3 for 9.00 FW'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_goldhen23()"> GoldHEN v2.3 </button>
     
-    <!-- BLOQUE 3: UTILIDADES Y RED -->
-    <h1 style="font-size: 18px;">Tools & Network</h1>
+    <h1 style="font-size: 18px;">Tools</h1>
     <button class="btn" onmouseover="msgs.innerHTML='Transfer Installed Games to USB Drive in exFAT'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_app2usb()"> App2USB </button>
-
-    <!-- BLOQUE 4: MANTENIMIENTO Y SISTEMA -->
-    <h1 style="font-size: 18px;">System & Backup</h1>
     <button class="btn" onmouseover="msgs.innerHTML='Enable System Updates'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_enablebUpdates()"> Enable Updates </button>
     <button class="btn" onmouseover="msgs.innerHTML='Disable System Updates'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_disableUpdates()"> Disable Updates </button>
     
-    <!-- SECCIÓN VENTILADOR -->
     <h1 style="font-size: 18px;">Hardware</h1>
     <button class="btn" onmouseover="msgs.innerHTML='Modify PS4 FAN Speed'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_fanthreshold()" style="margin-bottom: 70px"> Fan Threshold </button>
     <select id="tempC" style="font-size:20px;height:35px;width:60px;"></select>°C
@@ -51,7 +46,6 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     }
     select.value="60"; 
     </script>
-</div> <!-- Aquí cerramos el div del menú -->
-
+</div> <!-- CIERRE DEL MENU RECUPERADO -->
 </body>
 </html>
