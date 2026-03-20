@@ -50,3 +50,12 @@ addEventListener('error', event => {
 // we have to dynamically import the program if we want to catch its syntax
 // errors
 import('./psfree.mjs');
+
+// ... todo tu código anterior de alert.mjs ...
+
+import('./psfree.mjs').then(() => {
+    // Si psfree termina su carga de módulos, esperamos un poco y mostramos el menú
+    setTimeout(() => {
+        if (window.jbdone) window.jbdone();
+    }, 15000); // 15 segundos es lo que suele tardar en total el proceso
+});
