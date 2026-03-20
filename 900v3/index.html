@@ -34,6 +34,7 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     <select id="tempC" style="font-size:20px;height:35px;width:60px;"></select>°C
 
     <script>
+    var msgs = document.getElementById("msgs");
     var select = document.getElementById("tempC");
     for(var i=40; i<=75; i=i+5){
         var option = document.createElement("option");
