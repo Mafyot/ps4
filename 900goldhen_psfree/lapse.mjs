@@ -1878,35 +1878,38 @@ kexploit().then(() => {
             if (msgs) msgs.innerHTML = "GamerHack Menu Ready!";
 			
             // Función para forzar la notificación en la esquina de la PS4
-            function sendGoldHenNotify(text) {
-                // GoldHEN escucha notificaciones vía Web o Socket en el puerto 9090
-                var xhr = new XMLHttpRequest();
-                // Intentamos enviar el comando de notificación estándar
-                xhr.open("GET", "http://127.0.0.1" + encodeURIComponent("GamerHack: " + text), true);
-                xhr.send();
-                console.log("Intentando notificar: " + text);
-            }
+           function sendGoldHenNotify(text) {
+    try {
+        var xhr = new XMLHttpRequest();
+        // Usamos una ruta más simple que GoldHEN acepta
+        var url = "http://127.0.0.1" + text.replace(/ /g, "%20");
+        xhr.open("GET", url, true);
+        xhr.send();
+    } catch (e) {
+        console.log("Error en notificación: " + e);
+    }
+}
 
-            // --- LÓGICA DE ACTUALIZACIONES ---
-            document.getElementById('btnEnableUpdates').onclick = () => {
-                msgs.innerHTML = "Enabling Updates... Sending Payload";
-                PayloadLoader("enable-updates.bin");
-                // Llamamos a la notificación
-                setTimeout(() => { 
-                    sendGoldHenNotify("Updates ENABLED ✅");
-                    msgs.innerHTML = "Updates Enabled!"; 
-                }, 2000);
-            };
 
-            document.getElementById('btnDisableUpdates').onclick = () => {
-                msgs.innerHTML = "Disabling Updates... Sending Payload";
-                PayloadLoader("disable-updates.bin");
-                // Llamamos a la notificación
-                setTimeout(() => { 
-                    sendGoldHenNotify("Updates DISABLED ❌");
-                    msgs.innerHTML = "Updates Disabled!"; 
-                }, 2000);
-            };
+         // --- LÓGICA DE ACTUALIZACIONES ---
+document.getElementById('btnEnableUpdates').onclick = () => {
+    msgs.innerHTML = "Enabling Updates... Please Wait";
+    PayloadLoader("enable-updates.bin");
+    setTimeout(() => { 
+        sendGoldHenNotify("Updates_Enabled"); // Texto simple sin espacios raros
+        msgs.innerHTML = "Updates Enabled!"; 
+    }, 2000);
+};
+
+document.getElementById('btnDisableUpdates').onclick = () => {
+    msgs.innerHTML = "Disabling Updates... Please Wait";
+    PayloadLoader("disable-updates.bin");
+    setTimeout(() => { 
+        sendGoldHenNotify("Updates_Disabled"); 
+        msgs.innerHTML = "Updates Disabled!"; 
+    }, 2000);
+};
+
 
             // --- LÓGICA DEL VENTILADOR ---
             if (btnApplyFan) {
