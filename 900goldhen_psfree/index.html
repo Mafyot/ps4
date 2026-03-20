@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html manifest="cache.manifest">
 <head>
 <title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
@@ -9,18 +9,16 @@
         background: #000; z-index: 1000;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
-    #console { color: white; font-size: 10px; height: 50px; overflow: hidden; position: absolute; top: 0; }
 </style>
 </head>
 <body>
-<pre id="console"></pre>
 
 <div id="progress">
-    <h1 id="msgs" style="font-size: 30px;">Loading GoldHEN...</h1>
+    <h1 id="msgs" style="font-size: 30px;">Checking Cache...</h1>
     <h2 id="status">Please Wait</h2>
 </div>
 
-<div id="menu">
+<div id="menu" style="display:none;">
     <h1 id="main-title">PS4 9.00 GoldHEN Tools</h1>
     <hr>
     <button class="btn" onclick="load_payload('enable-updates.bin', 'Updates Enabled!')"> Enable Updates </button>
@@ -31,6 +29,26 @@
 </div>
 
 <script>
+    var msgs = document.getElementById("msgs");
+
+    // GESTIÓN DE CACHÉ (Obligatorio para que instale offline)
+    window.applicationCache.ondownloading = function() { msgs.innerHTML = "Installing Offline Cache..."; };
+    window.applicationCache.onprogress = function(e) { msgs.innerHTML = "Installing: " + Math.round((e.loaded/e.total)*100) + "%"; };
+    window.applicationCache.oncached = function() { msgs.innerHTML = "Cache Installed! Reloading..."; setTimeout(function(){ location.reload(); }, 1500); };
+    window.applicationCache.onupdateready = function() { location.reload(); };
+    window.applicationCache.onnoupdate = function() { startExploit(); };
+    window.applicationCache.onerror = function() { startExploit(); };
+
+    function startExploit() {
+        msgs.innerHTML = "Loading GoldHEN... Please Wait";
+        // Cargamos el exploit solo cuando la caché esté lista
+        var script = document.createElement('script');
+        script.type = 'module';
+        script.src = 'alert.mjs';
+        document.body.appendChild(script);
+    }
+
+    // Selector de Fan
     var select = document.getElementById("tempC");
     for(var i=40; i<=75; i=i+5){
         var option = document.createElement("option");
@@ -39,31 +57,22 @@
     }
     select.value="60";
 
-    // Quita la pantalla de carga
+    // Función para activar el menú
     window.jbdone = function() {
         document.getElementById("progress").style.display = "none";
+        document.getElementById("menu").style.display = "block";
     };
-
-    // Respaldo por si el exploit no avisa al terminar
-    setTimeout(function(){ if(window.jbdone) window.jbdone(); }, 10000);
 
     async function load_payload(file, successMsg) {
         document.getElementById("main-title").innerHTML = "Enviando " + file + "...";
-        
-        // BUSCAMOS EL INYECTOR EN VARIOS SITIOS POSIBLES
-        var loader = window.chain || (window.main_chain) || (window.p && window.p.chain);
-
+        var loader = window.chain || window.main_chain;
         if (loader && loader.run_payload) {
-            try {
-                const response = await fetch(file);
-                const buffer = await response.arrayBuffer();
-                await loader.run_payload(buffer);
-                document.getElementById("main-title").innerHTML = successMsg;
-            } catch (e) {
-                alert("Error al leer el archivo .bin: " + file);
-            }
+            const response = await fetch(file);
+            const buffer = await response.arrayBuffer();
+            await loader.run_payload(buffer);
+            document.getElementById("main-title").innerHTML = successMsg;
         } else {
-            alert("Error: Inyector no detectado todavía. Espera 5 segundos y vuelve a intentar.");
+            alert("Inyector no detectado todavía.");
         }
     }
 
@@ -71,7 +80,5 @@
         load_payload("fan-threshold" + select.value + ".bin", "Fan Set a " + select.value + "°C");
     }
 </script>
-
-<script type='module' src='alert.mjs'></script>
 </body>
 </html>
