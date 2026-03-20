@@ -3,39 +3,42 @@
 <head>
 <title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
-<style>
-    /* Estilo para que la consola del exploit no estorbe al menú */
-    #console { color: white; font-size: 12px; text-align: left; max-height: 150px; overflow: hidden; }
-</style>
 </head>
 <body>
 <script>
 if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </script>
 
-<!-- ELEMENTO CRÍTICO: El exploit lo necesita para no dar el error 'console.append' -->
-<pre id="console"></pre>
+<pre id="console" style="color:white; font-size:12px; height:100px; overflow:hidden;"></pre>
 
 <h1 id="msgs">PS4 9.00 GoldHEN | Psfree + Lapse</h1>
 <hr>
 
 <div id="progress">
-    <h1 id="msgs2" style="font-size: 30px;margin-top: 77px;">Exploiting... Please Wait</h1>
+    <h1 id="msgs2" style="font-size: 30px; margin-top: 77px;">Exploiting... Please Wait</h1>
 </div>
 
 <div id="menu" style="display: none">
-    <h1 style="font-size: 18px;color: yellow;">System Tools</h1>
+    <h1 style="font-size: 18px; color: yellow;">System Tools</h1>
     <button class="btn" onclick="load_payload('enable-updates.bin', 'Updates Enabled!')"> Enable Updates </button>
     <button class="btn" onclick="load_payload('disable-updates.bin', 'Updates Disabled!')"> Disable Updates </button>
     
     <h1 style="font-size: 18px;">Hardware</h1>
     <button class="btn" onclick="load_fan()"> Fan Threshold </button>
-    <select id="tempC" style="font-size:20px;height:35px;width:60px;"></select>°C
+    <select id="tempC" style="font-size:20px; height:35px; width:60px;"></select>°C
 </div>
 
 <script>
+    // 1. Declarar la función jbdone de primero para que sea global
+    window.jbdone = function() {
+        var menu = document.getElementById("menu");
+        var progress = document.getElementById("progress");
+        if (menu) menu.style.display = "block";
+        if (progress) progress.style.display = "none";
+        document.getElementById("msgs").innerHTML = "GoldHEN v2.4b18.9 Loaded!";
+    };
+
     var msgs = document.getElementById("msgs");
-    
     var select = document.getElementById("tempC");
     for(var i=40; i<=75; i=i+5){
         var option = document.createElement("option");
@@ -44,20 +47,11 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     }
     select.value="60";
 
-    // Función que activa el menú (llamada por alert.mjs)
-    window.jbdone = function() {
-        document.getElementById("menu").style.display = "block";
-        document.getElementById("progress").style.display = "none";
-        msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded!";
-    };
-
     async function load_payload(file, successMsg) {
         msgs.innerHTML = "Enviando " + file + "...";
         try {
             const response = await fetch(file);
             const buffer = await response.arrayBuffer();
-            
-            // Usamos el objeto chain que ya está en memoria gracias al exploit
             if (window.chain && window.chain.run_payload) {
                 await window.chain.run_payload(buffer);
                 msgs.innerHTML = successMsg;
