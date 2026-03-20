@@ -1863,37 +1863,52 @@ function PayloadLoader(Pfile)
 }
 
 kexploit().then(() => {
+    console.log("Loading AIO Patches...");
     PayloadLoader("aio_patches.bin");
 
     setTimeout(() => {
+        console.log("Loading GoldHEN...");
         PayloadLoader("goldhen_2.4b18.9.bin");
         
         setTimeout(() => {
             const msgs = document.getElementById('msgs');
             const btnContainer = document.getElementById('buttonsContainer');
-            
-            if (btnContainer) btnContainer.style.display = 'block';
-            if (msgs) msgs.innerHTML = "GamerHack Menu Ready!";
+            const fanSlider = document.getElementById('fanControl');
+            const tempValue = document.getElementById('tempValue');
 
-            // Lógica de Updates
+            if (msgs) msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded Successfully!";
+            if (btnContainer) btnContainer.style.display = 'block';
+
+            // --- LÓGICA DE ACTUALIZACIONES ---
             document.getElementById('btnEnableUpdates').onclick = () => {
-                msgs.innerHTML = "Payload: Enabling Updates...";
+                msgs.innerHTML = "Enabling Updates...";
                 PayloadLoader("enable-updates.bin");
+                setTimeout(() => { msgs.innerHTML = "Updates Enabled!"; }, 2000);
             };
 
             document.getElementById('btnDisableUpdates').onclick = () => {
-                msgs.innerHTML = "Payload: Disabling Updates...";
+                msgs.innerHTML = "Disabling Updates...";
                 PayloadLoader("disable-updates.bin");
+                setTimeout(() => { msgs.innerHTML = "Updates Disabled!"; }, 2000);
             };
 
-            // Lógica de Ventilador con Botón de Aplicar
-            document.getElementById('btnApplyFan').onclick = () => {
-                const temp = document.getElementById('tempSelect').value;
-                const fileName = "fan-threshold" + temp + ".bin";
-                msgs.innerHTML = "Payload: Setting Fan to " + temp + "°C...";
-                PayloadLoader(fileName);
-            };
+            // --- LÓGICA DEL VENTILADOR (FAN CONTROL) ---
+            if (fanSlider) {
+                fanSlider.addEventListener('change', (e) => {
+                    const val = e.target.value; // Ejemplo: 50
+                    tempValue.innerText = val;
+                    msgs.innerHTML = "Setting Fan Threshold to " + val + "°C...";
+                    
+                    // Construye el nombre del archivo: fan-threshold50.bin
+                    const fileName = "fan-threshold" + val + ".bin";
+                    PayloadLoader(fileName);
+                    
+                    setTimeout(() => { msgs.innerHTML = "Fan Set to " + val + "°C"; }, 2000);
+                });
+            }
 
+            log("✅ GamerHack Menu Ready with Bin Payloads!");
         }, 4000);
+        
     }, 2000);
 });
