@@ -866,3 +866,4 @@ async function main() {
 main();
 // Añade esto al final de psfree.mjs para que el index vea el inyector
 window.chain = chain; 
+if (window.jbdone) window.jbdone();
