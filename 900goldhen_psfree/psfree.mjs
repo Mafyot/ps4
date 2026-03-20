@@ -860,7 +860,22 @@ async function main() {
     await make_arw(rdr, view2, pop);
 
     clear_log();
-    // path to your script that will use the exploit
-    import('./lapse.mjs');
+    
+    // Importamos lapse y esperamos a que termine su ejecución
+    import('./lapse.mjs').then(() => {
+        // Añadimos un pequeño retraso para asegurar que GoldHEN se inyectó
+        setTimeout(() => {
+            const btnContainer = document.getElementById('buttonsContainer');
+            const msgStatus = document.getElementById('msgs');
+            
+            if (btnContainer) {
+                btnContainer.style.display = 'block'; // Muestra los botones
+                if (msgStatus) msgStatus.innerHTML = "GoldHEN v2.4b18.2 Loaded Successfully!";
+                console.log("Botones activados correctamente.");
+            }
+        }, 5000); // 5 segundos de espera tras cargar Lapse
+    }).catch(err => {
+        log("Error cargando Lapse: " + err);
+    });
 }
 main();
