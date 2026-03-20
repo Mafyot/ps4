@@ -1,19 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
-<link rel="stylesheet" href="../style.css">
+    <title>PS4 9.00 GoldHEN | Psfree + Lapse</title>
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-<script>
-if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
-</script>
-<pre id='console'></pre>
-<h1>PS4 9.00 GoldHEN | Psfree + Lapse</h1>
-<hr>
-<br>
-<h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
+    <script>
+        if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+    </script>
+    <h1 id="msgs">PS4 9.00 GoldHEN | Psfree + Lapse</h1>
+    <hr>
 
-<script type='module' src='alert.mjs'></script>
+    <div id="progress">
+        <h1 id="msgs2" style="font-size: 30px; margin-top: 77px;">Exploiting... Please Wait</h1>
+    </div>
+
+    <!-- El Menú que aparecerá solo -->
+    <div id="menu" style="display: none">
+        <h2 style="color: yellow;">System Tools</h2>
+        <button class="btn" onclick="load_payload('enable-updates.bin', 'Updates Enabled')"> Enable Updates </button>
+        <button class="btn" onclick="load_payload('disable-updates.bin', 'Updates Disabled')"> Disable Updates </button>
+        <h2 style="color: yellow;">Hardware</h2>
+        <button class="btn" onclick="load_fan()"> Fan Threshold </button>
+        <select id="tempC" style="font-size:20px;height:35px;width:60px;"></select>°C
+    </div>
+
+    <script>
+        var msgs = document.getElementById("msgs");
+        
+        // Configurar selector de grados
+        var select = document.getElementById("tempC");
+        for(var i=40; i<=75; i=i+5){
+            var option = document.createElement("option");
+            option.text = i; option.value = i;
+            select.add(option);
+        }
+        select.value="60";
+
+        // ESTA FUNCIÓN LA LLAMAREMOS DESDE EL MJS
+        function jbdone() {
+            document.getElementById("menu").style.display = "block";
+            document.getElementById("progress").style.display = "none";
+            msgs.innerHTML = "GoldHEN Loaded Successfully!";
+        }
+
+        // Función universal para cargar tus 3 archivos .bin
+        function load_payload(file, msg) {
+            var xhr = new XMLHttpRequest();
+            xhr.responseType = "arraybuffer";
+            xhr.open('GET', file, true);
+            xhr.send();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    var payload = xhr.response;
+                    // Aquí usamos el objeto 'chain' que tus scripts ya crearon
+                    window.chain.run_payload(payload); 
+                    msgs.innerHTML = msg;
+                }
+            };
+        }
+
+        function load_fan() {
+            load_payload("fan-threshold" + select.value + ".bin", "Fan Set to " + select.value + "°C");
+        }
+    </script>
+
+    <script type='module' src='alert.mjs'></script>
 </body>
 </html>
