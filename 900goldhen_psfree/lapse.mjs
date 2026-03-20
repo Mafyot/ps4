@@ -1866,49 +1866,49 @@ kexploit().then(() => {
     console.log("Loading AIO Patches...");
     PayloadLoader("aio_patches.bin");
 
+    // Esperamos 3 segundos para asegurar que el parche AIO se asiente
     setTimeout(() => {
         console.log("Loading GoldHEN...");
         PayloadLoader("goldhen_2.4b18.9.bin");
         
+        // Esperamos 5 segundos a que GoldHEN termine de cargar antes de activar el menú
         setTimeout(() => {
             const msgs = document.getElementById('msgs');
             const btnContainer = document.getElementById('buttonsContainer');
-            const fanSlider = document.getElementById('fanControl');
-            const tempValue = document.getElementById('tempValue');
+            const tempSelect = document.getElementById('tempSelect'); // ID nuevo del listado
+            const btnApplyFan = document.getElementById('btnApplyFan'); // ID nuevo del botón aplicar
 
             if (msgs) msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded Successfully!";
             if (btnContainer) btnContainer.style.display = 'block';
 
             // --- LÓGICA DE ACTUALIZACIONES ---
             document.getElementById('btnEnableUpdates').onclick = () => {
-                msgs.innerHTML = "Enabling Updates...";
+                msgs.innerHTML = "Payload: Enabling Updates...";
                 PayloadLoader("enable-updates.bin");
-                setTimeout(() => { msgs.innerHTML = "Updates Enabled!"; }, 2000);
+                // La notificación de la PS4 debería salir sola si el bin lo permite
             };
 
             document.getElementById('btnDisableUpdates').onclick = () => {
-                msgs.innerHTML = "Disabling Updates...";
+                msgs.innerHTML = "Payload: Disabling Updates...";
                 PayloadLoader("disable-updates.bin");
-                setTimeout(() => { msgs.innerHTML = "Updates Disabled!"; }, 2000);
             };
 
-            // --- LÓGICA DEL VENTILADOR (FAN CONTROL) ---
-            if (fanSlider) {
-                fanSlider.addEventListener('change', (e) => {
-                    const val = e.target.value; // Ejemplo: 50
-                    tempValue.innerText = val;
+            // --- LÓGICA DEL VENTILADOR (LISTADO + BOTÓN) ---
+            if (btnApplyFan) {
+                btnApplyFan.onclick = () => {
+                    const val = tempSelect.value; 
                     msgs.innerHTML = "Setting Fan Threshold to " + val + "°C...";
                     
-                    // Construye el nombre del archivo: fan-threshold50.bin
+                    // Nombre exacto: fan-threshold40.bin, fan-threshold45.bin, etc.
                     const fileName = "fan-threshold" + val + ".bin";
                     PayloadLoader(fileName);
                     
-                    setTimeout(() => { msgs.innerHTML = "Fan Set to " + val + "°C"; }, 2000);
-                });
+                    setTimeout(() => { msgs.innerHTML = "GamerHack: Fan Payload Sent!"; }, 3000);
+                };
             }
 
-            log("✅ GamerHack Menu Ready with Bin Payloads!");
-        }, 4000);
+            log("✅ GamerHack Menu Ready!");
+        }, 5000); 
         
-    }, 2000);
+    }, 3000);
 });
