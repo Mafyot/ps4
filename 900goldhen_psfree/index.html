@@ -40,16 +40,17 @@
     
     <!-- Botones que aparecen después de cargar GoldHEN -->
     <div id="buttonsContainer">
-        <h2>GoldHEN Controls</h2>
-        <button id="enableUpdates">Enable Updates</button>
-        <button id="disableUpdates">Disable Updates</button>
-        
-        <div class="slider-container">
-            <label for="fanControl">Fan Control Temperature: <span id="tempValue">40</span>°C</label>
-            <br>
-            <input type="range" id="fanControl" min="40" max="75" value="40">
-        </div>
+    <h2>GoldHEN Controls</h2>
+    <button id="btnEnableUpdates">Enable Updates</button>
+    <button id="btnDisableUpdates">Disable Updates</button>
+    
+    <div class="slider-container">
+        <label for="fanControl">Fan Threshold: <span id="tempValue">40</span>°C</label>
+        <br>
+        <!-- El slider ahora saltará de 5 en 5 según tus archivos .bin -->
+        <input type="range" id="fanControl" min="40" max="75" step="5" value="40">
     </div>
+</div>
     
     <h1 style="margin-top: 43px;">Special Thanks to:<a href="https://twitter.com/sleirsgoevy" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@sleirsgoevy</a>ChendoChap<a href="https://twitter.com/Znullptr" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Znullptr</a>SiSTR0<a href="https://x.com/Kameleonre_" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Kameleonre_</a>Abc</h1>
     <script type='module' src='alert.mjs'></script>
