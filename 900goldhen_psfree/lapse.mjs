@@ -1876,29 +1876,50 @@ kexploit().then(() => {
 
             if (btnContainer) btnContainer.style.display = 'block';
             if (msgs) msgs.innerHTML = "GamerHack Menu Ready!";
+			
+            // Función para forzar la notificación en la esquina de la PS4
+            function sendGoldHenNotify(text) {
+                // GoldHEN escucha notificaciones vía Web o Socket en el puerto 9090
+                var xhr = new XMLHttpRequest();
+                // Intentamos enviar el comando de notificación estándar
+                xhr.open("GET", "http://127.0.0.1" + encodeURIComponent("GamerHack: " + text), true);
+                xhr.send();
+                console.log("Intentando notificar: " + text);
+            }
 
-            // --- LÓGICA DE ACTUALIZACIONES (CORREGIDA) ---
+            // --- LÓGICA DE ACTUALIZACIONES ---
             document.getElementById('btnEnableUpdates').onclick = () => {
-                msgs.innerHTML = "Status: Enabling Updates...";
+                msgs.innerHTML = "Enabling Updates... Sending Payload";
                 PayloadLoader("enable-updates.bin");
-                // Damos feedback visual manual ya que el .bin puede ser silencioso
-                setTimeout(() => { msgs.innerHTML = "GamerHack: Enable Updates Sent!"; }, 3000);
+                // Llamamos a la notificación
+                setTimeout(() => { 
+                    sendGoldHenNotify("Updates ENABLED ✅");
+                    msgs.innerHTML = "Updates Enabled!"; 
+                }, 2000);
             };
 
             document.getElementById('btnDisableUpdates').onclick = () => {
-                msgs.innerHTML = "Status: Disabling Updates...";
+                msgs.innerHTML = "Disabling Updates... Sending Payload";
                 PayloadLoader("disable-updates.bin");
-                setTimeout(() => { msgs.innerHTML = "GamerHack: Disable Updates Sent!"; }, 3000);
+                // Llamamos a la notificación
+                setTimeout(() => { 
+                    sendGoldHenNotify("Updates DISABLED ❌");
+                    msgs.innerHTML = "Updates Disabled!"; 
+                }, 2000);
             };
 
-            // --- LÓGICA DEL VENTILADOR (CONFIRMADA QUE FUNCIONA) ---
+            // --- LÓGICA DEL VENTILADOR ---
             if (btnApplyFan) {
                 btnApplyFan.onclick = () => {
                     const val = tempSelect.value; 
-                    msgs.innerHTML = "Setting Fan Threshold to " + val + "°C...";
+                    msgs.innerHTML = "Setting Fan to " + val + "°C...";
                     const fileName = "fan-threshold" + val + ".bin";
                     PayloadLoader(fileName);
-                    setTimeout(() => { msgs.innerHTML = "GamerHack: Fan Payload Sent!"; }, 3000);
+                    
+                    setTimeout(() => { 
+                        sendGoldHenNotify("Fan Set to " + val + "°C ❄️");
+                        msgs.innerHTML = "Fan Payload Sent!"; 
+                    }, 2000);
                 };
             }
 
