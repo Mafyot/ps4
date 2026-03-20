@@ -1876,62 +1876,55 @@ kexploit().then(() => {
 
             if (btnContainer) btnContainer.style.display = 'block';
             if (msgs) msgs.innerHTML = "GamerHack Menu Ready!";
-			
-            // Función para forzar la notificación en la esquina de la PS4
-           function sendGoldHenNotify(text) {
-    try {
-        var xhr = new XMLHttpRequest();
-        // Usamos una ruta más simple que GoldHEN acepta
-        var url = "http://127.0.0.1" + text.replace(/ /g, "%20");
-        xhr.open("GET", url, true);
-        xhr.send();
-    } catch (e) {
-        console.log("Error en notificación: " + e);
-    }
-}
 
+            // --- VARIABLES GLOBALES PARA NOTIFICACIÓN ---
+            var LoadedMSG = "";
 
-       // --- FUNCIÓN PARA FORZAR EL AVISO EN LA ESQUINA DE LA PS4 ---
-function dispararAvisoPS4(texto) {
-    var xhr = new XMLHttpRequest();
-    // GoldHEN escucha avisos en el 9090, aunque el payload entre por el 9020
-    xhr.open("GET", "http://127.0.0.1" + encodeURIComponent("GamerHack: " + texto), true);
-    xhr.send();
-}
+            // --- LÓGICA DE ACTUALIZACIONES ---
+            document.getElementById('btnEnableUpdates').onclick = () => {
+                msgs.innerHTML = "Status: Enabling Updates...";
+                LoadedMSG = "Enable Updates Loaded ...";
+                PayloadLoader("enable-updates.bin");
+                
+                setTimeout(() => {
+                    var xhr = new XMLHttpRequest();
+                    // IMPORTANTE: Se añade el puerto 9090 y la ruta de mensaje de GoldHEN
+                    var url = "http://127.0.0.1" + LoadedMSG.replace(/ /g, "%20");
+                    xhr.open("GET", url, true);
+                    xhr.send();
+                    msgs.innerHTML = LoadedMSG;
+                }, 2000);
+            };
 
-// --- TUS BOTONES DE UPDATES ---
-document.getElementById('btnEnableUpdates').onclick = () => {
-    msgs.innerHTML = "Enabling Updates... Please Wait";
-    PayloadLoader("enable-updates.bin"); // Esto va al puerto de ejecución (9020)
-    
-    setTimeout(() => { 
-        dispararAvisoPS4("Updates ENABLED ✅"); // Esto despierta la notificación (9090)
-        msgs.innerHTML = "GamerHack: Updates Enabled!"; 
-    }, 2500);
-};
-
-document.getElementById('btnDisableUpdates').onclick = () => {
-    msgs.innerHTML = "Disabling Updates... Please Wait";
-    PayloadLoader("disable-updates.bin");
-    
-    setTimeout(() => { 
-        dispararAvisoPS4("Updates DISABLED ❌"); 
-        msgs.innerHTML = "GamerHack: Updates Disabled!"; 
-    }, 2500);
-};
-
+            document.getElementById('btnDisableUpdates').onclick = () => {
+                msgs.innerHTML = "Status: Disabling Updates...";
+                LoadedMSG = "Disable Updates Loaded ...";
+                PayloadLoader("disable-updates.bin");
+                
+                setTimeout(() => {
+                    var xhr = new XMLHttpRequest();
+                    var url = "http://127.0.0.1" + LoadedMSG.replace(/ /g, "%20");
+                    xhr.open("GET", url, true);
+                    xhr.send();
+                    msgs.innerHTML = LoadedMSG;
+                }, 2000);
+            };
 
             // --- LÓGICA DEL VENTILADOR ---
             if (btnApplyFan) {
                 btnApplyFan.onclick = () => {
                     const val = tempSelect.value; 
                     msgs.innerHTML = "Setting Fan to " + val + "°C...";
+                    LoadedMSG = "Fan Set to " + val + "C";
                     const fileName = "fan-threshold" + val + ".bin";
                     PayloadLoader(fileName);
                     
                     setTimeout(() => { 
-                        sendGoldHenNotify("Fan Set to " + val + "°C ❄️");
-                        msgs.innerHTML = "Fan Payload Sent!"; 
+                        var xhr = new XMLHttpRequest();
+                        var url = "http://127.0.0.1" + LoadedMSG.replace(/ /g, "%20");
+                        xhr.open("GET", url, true);
+                        xhr.send();
+                        msgs.innerHTML = "GamerHack: " + LoadedMSG; 
                     }, 2000);
                 };
             }
