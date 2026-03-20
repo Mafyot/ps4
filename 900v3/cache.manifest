@@ -29,7 +29,6 @@ payload.js
 relocator.js
 rop.js
 rop2.js
-southbridge.bin
 syscalls.js
 syscalls2.js
 webkit.js
