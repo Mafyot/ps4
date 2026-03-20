@@ -56,5 +56,3 @@ import('./psfree.mjs').then(() => {
 }).catch(err => {
     console.error("Error al cargar el exploit automático:", err);
 });
-// Añade esto al final de psfree.mjs para que el index vea el inyector
-window.chain = chain; 
