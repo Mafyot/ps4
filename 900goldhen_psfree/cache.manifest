@@ -6,6 +6,16 @@ CACHE:
 aio_patches.bin
 alert.mjs
 config.mjs
+disable-updates.bin
+enable-updates.bin
+fan-threshold40.bin
+fan-threshold45.bin
+fan-threshold50.bin
+fan-threshold55.bin
+fan-threshold60.bin
+fan-threshold65.bin
+fan-threshold70.bin
+fan-threshold75.bin
 goldhen_2.4b18.9.bin
 index.html
 lapse.mjs
