@@ -8,13 +8,12 @@
 <script>
 if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 </script>
-<pre id='console'></pre>
-<h1>PS4 9.00 GoldHEN | Psfree + Lapse</h1>
+<h1 id="msgs">PS4 9.00 GoldHEN | Psfree + Lapse</h1>
 <hr>
 <br>
 
 <div id="progress">
-    <h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
+    <h1 id="msgs2" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
 </div>
 
 <div id="menu" style="display: none">
@@ -23,14 +22,13 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     <button class="btn" onclick="load_payload('disable-updates.bin', 'Updates Disabled!')"> Disable Updates </button>
     
     <h1 style="font-size: 18px;">Hardware</h1>
-    <button class="btn" onclick="load_fan()"> Fan Threshold </button>
+    <button class="btn" onclick="load_payload('fan-threshold' + document.getElementById('tempC').value + '.bin', 'Fan Set!')"> Fan Threshold </button>
     <select id="tempC" style="font-size:20px;height:35px;width:60px;"></select>°C
 </div>
 
 <script>
     var msgs = document.getElementById("msgs");
     
-    // Configuración del selector de temperatura
     var select = document.getElementById("tempC");
     for(var i=40; i<=75; i=i+5){
         var option = document.createElement("option");
@@ -39,41 +37,28 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     }
     select.value="60";
 
-    // Función que activa el menú (La llama alert.mjs)
     window.jbdone = function() {
         document.getElementById("menu").style.display = "block";
         document.getElementById("progress").style.display = "none";
         msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded!";
     };
 
-    // NUEVO MÉTODO DE CARGA COMPATIBLE CON PSFREE + LAPSE
     async function load_payload(file, successMsg) {
-        msgs.innerHTML = "Cargando " + file + "...";
+        msgs.innerHTML = "Enviando " + file + "...";
         try {
-            // Importamos el inyector de tu propio archivo send.mjs
-            const { sendPayload } = await import('./send.mjs');
             const response = await fetch(file);
             const buffer = await response.arrayBuffer();
             
-            // Enviamos el payload usando el motor de PSFree
-            await sendPayload(buffer);
-            msgs.innerHTML = successMsg;
-        } catch (e) {
-            // Si el import falla, intentamos usar el objeto global chain
+            // Usamos el objeto chain que expusimos en psfree.mjs
             if (window.chain && window.chain.run_payload) {
-                const resp = await fetch(file);
-                const buf = await resp.arrayBuffer();
-                window.chain.run_payload(buf);
+                await window.chain.run_payload(buffer);
                 msgs.innerHTML = successMsg;
             } else {
-                msgs.innerHTML = "Error: No se pudo inyectar el payload.";
-                console.error(e);
+                msgs.innerHTML = "Error: Inyector no listo.";
             }
+        } catch (e) {
+            msgs.innerHTML = "Error de red o archivo .bin no encontrado";
         }
-    }
-
-    function load_fan() {
-        load_payload("fan-threshold" + select.value + ".bin", "Fan Set: " + select.value + "°C");
     }
 </script>
 
