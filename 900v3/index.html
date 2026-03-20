@@ -40,5 +40,21 @@ if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     <h1 style="font-size: 18px;">Advanced</h1>
     <button class="btn" onmouseover="msgs.innerHTML='Modify PS4 FAN Speed'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_fanthreshold()"> Fan Threshold </button> <select id="tempC"></select>°C
 
+    <!-- SECCIÓN VENTILADOR -->
+    <h1 style="font-size: 18px;">Hardware</h1>
+    <button class="btn" onmouseover="msgs.innerHTML='Modify PS4 FAN Speed'" onmouseout="msgs.innerHTML='PS4 9.00 FW Host v3.0 by GamerHack'" onclick="load_fanthreshold()" style="margin-bottom: 70px"> Fan Threshold </button>
+    <select id="tempC" style="font-size:20px;height:35px;width:60px;"></select>°C
+
+    <!-- Este script es el que rellena el recuadro con los números -->
+    <script>
+    for(var i=40; i<=75; i=i+5){
+        var select = document.getElementById("tempC");
+        var option = document.createElement("option");
+        option.text = i;
+        option.value = i;
+        select.add(option);
+    }
+    document.getElementById("tempC").value="60"; // Temperatura por defecto
+    </script>
 </body>
 </html>
