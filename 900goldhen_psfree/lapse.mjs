@@ -1878,14 +1878,22 @@ kexploit().then(() => {
             if (msgs) msgs.innerHTML = "GamerHack Menu Ready!";
 
             // FUNCIÓN DE NOTIFICACIÓN QUE EVITA EL SYNTAX ERROR
-            function dispararNotificacion(texto) {
-                var xhr = new XMLHttpRequest();
-                // En PS4, a veces basta con /status si el puerto ya está mapeado, 
-                // pero probamos con la IP limpia para evitar el Pattern Error.
-                var url = "http://127.0.0.1" + texto.replace(/ /g, "%20");
-                xhr.open("GET", url, true);
-                xhr.send();
-            }
+           function dispararNotificacion(texto) {
+    try {
+        var xhr = new XMLHttpRequest();
+        // Reemplazamos los espacios por %20 manualmente
+        var mensajeLimpio = texto.replace(/ /g, "%20");
+        // Construimos la URL de forma que el navegador de PS4 no la rechace
+        var endpoint = "http://127.0.0.1" + mensajeLimpio;
+        
+        xhr.open("GET", endpoint, true);
+        xhr.send();
+    } catch (e) {
+        // Esto evita que el error "salte" en la pantalla de la PS4
+        console.log("Error silencioso de notificación");
+    }
+}
+
 
             // --- BOTONES DE UPDATES ---
             document.getElementById('btnEnableUpdates').onclick = () => {
