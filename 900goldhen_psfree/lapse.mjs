@@ -1821,22 +1821,30 @@ function array_from_address(addr, size) {
 var LoadedMSG = "";
 
 function allset() {
-    // 1. Cambia el texto en la web
+    // 1. Actualiza el texto en la web
     document.getElementById("msgs").innerHTML = LoadedMSG;
     
-    // 2. Dispara la notificación en la esquina de la PS4 (Método seguro)
+    // 2. DISPARAR NOTIFICACIÓN POP-UP (Método de Imagen Invisible)
+    // Este método se salta el bloqueo del navegador de PS4
     try {
-        var xhr = new XMLHttpRequest();
-        var url = "http://127.0.0.1" + LoadedMSG.replace(/ /g, "%20");
-        xhr.open("GET", url, true);
-        xhr.send();
+        var n = new Image();
+        // Construimos la URL exacta que GoldHEN escucha para notificaciones
+        var urlNotif = "http://127.0.0.1" + LoadedMSG.replace(/ /g, "%20");
+        n.src = urlNotif;
+        
+        // No necesitamos que la imagen cargue realmente, GoldHEN ya leyó la URL
+        n.onerror = function() {
+            console.log("Notificación enviada a GoldHEN vía puerto 9090");
+        };
     } catch (e) {
-        console.log("Notificación enviada.");
+        console.log("Error en notificación: " + e);
     }
 }
 
 function PayloadLoader(Pfile) {
-    var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x41000, -1, 0);
+    // Usamos mmap estándar (0x0) para que el sistema elija el hueco libre y no choque
+    var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x1000, -1, 0);
+    
     var tmpStubArray = array_from_address(loader_addr, 1);
     tmpStubArray[0] = 0x00C3E7FF;
 
@@ -1847,7 +1855,8 @@ function PayloadLoader(Pfile) {
     req.onreadystatechange = function () {
         if (req.readyState == 4) {
             var PLD = req.response;
-            var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
+            // Reducimos el tamaño del buffer al necesario para el .bin
+            var payload_buffer = chain.sysp('mmap', 0, PLD.byteLength * 4, 7, 0x1000, -1, 0);
             var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
             var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
             var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
@@ -1856,13 +1865,15 @@ function PayloadLoader(Pfile) {
             var shellcode = new Uint32Array(tmp.buffer);
             pl.set(shellcode, 0);
             var pthread = malloc(0x10);
+            
             call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
             
-            // Aquí se dispara el aviso
-            allset();
+            // Disparar la notificación después de inyectar
+            setTimeout(allset, 500);
         }
     };
 }
+
 
 // --- 2. EJECUCIÓN TRAS EL EXPLOIT ---
 kexploit().then(() => {
