@@ -1821,35 +1821,37 @@ function array_from_address(addr, size) {
 var LoadedMSG = "";
 
 function allset() {
-    // 1. Actualizar el texto en la web (por si acaso)
+    // 1. Actualizar el texto en la web (Interfaz)
     document.getElementById("msgs").innerHTML = LoadedMSG;
 
-    // 2. INTENTO A: Notificación Nativa mediante Syscall (El método más pro)
-    // Intentamos llamar directamente a la función de notificación de la PS4
+    // 2. INTENTO NATIVO: Syscall 592 (Funciona internamente en la RAM)
     try {
-        // En muchos entornos de PS4, la syscall 592 o similares gestionan notificaciones
-        // Si tu 'chain' está bien inicializado, esto intentará disparar el aviso del sistema
         var msgPtr = malloc(0x100);
         write_str(msgPtr, LoadedMSG);
-        chain.syscall(592, 0, msgPtr, 0); // Syscall experimental para notificaciones
+        chain.syscall(592, 0, msgPtr, 0); 
     } catch(e) {
         console.log("Syscall de notificación no disponible");
     }
 
-    // 3. INTENTO B: El método del puerto 9090 (Modificado)
-    // Algunos hosts necesitan que la petición sea "POST" o que lleve un "/" al final
+    // 3. INTENTO DE RED: Puerto 9090 (GoldHEN Server)
+    // Usamos fetch y el truco de la imagen simultáneamente para máxima compatibilidad
     try {
         var msgLimpio = LoadedMSG.replace(/ /g, "%20");
+        
+        // Método Fetch (Silencioso)
         fetch("http://127.0.0.1:9090/status?message=" + msgLimpio, {
             mode: 'no-cors',
             method: 'GET'
-        }).catch(err => console.log("Fetch bloqueado, es normal en HTTPS"));
+        }).catch(err => {});
         
-        // Mantenemos el truco de la imagen como refuerzo
+        // Método Image (Truco clásico para saltar bloqueos HTTPS)
         var logger = new Image();
         logger.src = "http://127.0.0.1:9090/status?message=" + msgLimpio;
-    } catch (e) {}
+    } catch (e) {
+        console.log("Error en peticiones de red 9090");
+    }
 }
+
 function PayloadLoader(Pfile) {
     document.getElementById("msgs").innerHTML = "Cargando: " + Pfile + "...";
     
@@ -1862,7 +1864,6 @@ function PayloadLoader(Pfile) {
     req.open('GET', Pfile, true);
     
     req.onerror = function() {
-        // Solo usamos alert en caso de error real de archivo
         alert("ERROR: No se encontró " + Pfile + " en el servidor.");
     };
 
@@ -1882,10 +1883,9 @@ function PayloadLoader(Pfile) {
                 
                 call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
                 
-                // Ejecutamos la notificación silenciosa
+                // Disparamos las notificaciones (Nativa + Red)
                 allset();
             } else {
-                // Si el archivo no carga por red
                 document.getElementById("msgs").innerHTML = "Error " + req.status + " al cargar " + Pfile;
             }
         }
