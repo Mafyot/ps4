@@ -1823,16 +1823,10 @@ var LoadedMSG = "";
 function allset() {
     document.getElementById("msgs").innerHTML = LoadedMSG;
     
-    // CORRECCIÓN FINAL: Dirección exacta para GoldHEN (Puerto 9090)
-    // El try/catch evita que te salga el mensaje de "SyntaxError" en la pantalla
-    try {
-        var xhr = new XMLHttpRequest();
-        var urlNotif = "http://127.0.0.1:9090/status?message=" + LoadedMSG.replace(/ /g, "%20");
-        xhr.open("GET", urlNotif, true);
-        xhr.send();
-    } catch (e) {
-        console.log("Notificación enviada al sistema.");
-    }
+    // El navegador BLOQUEA el XHR, pero PERMITE la Imagen
+    var n = new Image();
+    // CORRECCIÓN: Se añade :9090/status?message= (Indispensable para el aviso negro)
+    n.src = "http://127.0.0.1:9090/status?message=" + LoadedMSG.replace(/ /g, "%20");
 }
 
 function PayloadLoader(Pfile) {
@@ -1858,7 +1852,7 @@ function PayloadLoader(Pfile) {
             var pthread = malloc(0x10);
             call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
             
-            // Aquí es donde se dispara la notificación al terminar de cargar el binario
+            // Dispara la notificación
             allset();
         }
     };
