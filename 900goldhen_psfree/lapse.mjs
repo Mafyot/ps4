@@ -1821,25 +1821,27 @@ function array_from_address(addr, size) {
 var LoadedMSG = "";
 
 function allset() {
-    // 1. Cambiamos el texto en tu pantalla
+    // 1. Cambia el texto en la web
     document.getElementById("msgs").innerHTML = LoadedMSG;
     
-    // 2. DISPARAR NOTIFICACIÓN VÍA HTTP POST (Lo que pide tu GoldHEN)
+    // 2. MÉTODO DE IMAGEN (Se salta el bloqueo de seguridad del navegador)
     try {
-        var xhr = new XMLHttpRequest();
-        // Usamos el puerto 9090 que tienes activo
-        xhr.open("POST", "http://127.0.0.1", true);
+        var n = new Image();
+        // Construimos la URL limpia con el puerto 9090 y el mensaje
+        var urlNotif = "http://127.0.0.1:9090/status?message=" + LoadedMSG.replace(/ /g, "%20");
         
-        // Enviamos el mensaje en formato JSON o texto plano que GoldHEN reconoce
-        var data = JSON.stringify({ "message": LoadedMSG });
+        // Al asignar el src, el navegador lanza la petición y GoldHEN "despierta"
+        n.src = urlNotif;
         
-        xhr.send(data);
-        console.log("Notificación enviada vía HTTP POST al 9090");
+        n.onerror = function() {
+            // Es normal que de error (no es una foto), pero el aviso YA SALIÓ en la PS4
+            console.log("Notificación enviada vía Imagen.");
+        };
     } catch (e) {
-        // Si el navegador bloquea el POST, al menos no te saldrá el error en pantalla
-        console.log("Error en POST: " + e);
+        console.log("Error de red.");
     }
 }
+
 function PayloadLoader(Pfile) {
     // Usamos mmap estable para 9.00
     var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x1000, -1, 0);
