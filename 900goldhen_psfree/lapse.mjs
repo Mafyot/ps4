@@ -1903,33 +1903,42 @@ kexploit().then(() => {
         // PASO B: Cargar GoldHEN (Automático)
         LoadedMSG = "GoldHEN v2.4b18.9 Cargado";
         PayloadLoader("goldhen_2.4b18.9.bin");
-        
+
         setTimeout(() => {
-            // PASO C: Mostrar el menú de usuario
-            document.getElementById('buttonsContainer').style.display = 'block';
-            document.getElementById('msgs').innerHTML = "Menú GamerHack Listo";
-            document.getElementById('msgs').style.color = "#00FF00";
+            // PASO C: Desactivar Actualizaciones (Automático)
+            LoadedMSG = "Disable-Updates Ejecutado";
+            PayloadLoader("disable-updates.bin");
+        
+            setTimeout(() => {
+                // PASO D: Mostrar el menú de usuario
+                document.getElementById('buttonsContainer').style.display = 'block';
+                document.getElementById('msgs').innerHTML = "Menú Listo";
+                document.getElementById('msgs').style.color = "#00FF00";
 
-            // --- CONFIGURACIÓN DE LOS BOTONES ---
+                // --- CONFIGURACIÓN DE LOS BOTONES DEL MENÚ ---
 
-            document.getElementById('btnEnableUpdates').onclick = () => {
-                LoadedMSG = "Updates Habilitadas";
-                PayloadLoader("enable-updates.bin");
-            };
+                document.getElementById('btnEnableUpdates').onclick = () => {
+                    LoadedMSG = "Updates Habilitados";
+                    PayloadLoader("enable-updates.bin");
+                };
 
-            document.getElementById('btnDisableUpdates').onclick = () => {
-                LoadedMSG = "Updates Deshabilitadas";
-                PayloadLoader("disable-updates.bin");
-            };
+                document.getElementById('btnDisableUpdates').onclick = () => {
+                    LoadedMSG = "Updates Deshabilitados";
+                    PayloadLoader("disable-updates.bin");
+                };
 
-            document.getElementById('btnApplyFan').onclick = () => {
-                var val = document.getElementById('tempSelect').value;
-                LoadedMSG = "Ventilador ajustado a " + val + "C";
-                PayloadLoader("fan-threshold" + val + ".bin");
-            };
+                document.getElementById('btnApplyFan').onclick = () => {
+                    var val = document.getElementById('tempSelect').value;
+                    LoadedMSG = "Ventilador ajustado a " + val + "C";
+                    PayloadLoader("fan-threshold" + val + ".bin");
+                };
 
-        }, 5000); // Tiempo para que GoldHEN termine de inicializar
-    }, 3000); // Tiempo entre AIO y GoldHEN
+            }, 5000); // Espera tras Disable Updates para mostrar menú
+
+        }, 4000); // Espera tras GoldHEN para lanzar Disable Updates
+
+    }, 3000); // Espera tras AIO para lanzar GoldHEN
+
 }).catch((err) => {
     alert("Fallo crítico en el exploit de Kernel: " + err);
 });
