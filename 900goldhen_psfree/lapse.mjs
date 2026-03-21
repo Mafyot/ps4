@@ -1817,107 +1817,85 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-function PayloadLoader(Pfile)
-{
-    var loader_addr = chain.sysp(
-  'mmap',
-  new Int(0, 0),                         
-  0x1000,                               
-  PROT_READ | PROT_WRITE | PROT_EXEC,    
-  0x41000,                              
-  -1,
-  0
-);
+// --- 1. VARIABLES Y FUNCIONES DE CARGA ---
+var LoadedMSG = "";
 
- var tmpStubArray = array_from_address(loader_addr, 1);
- tmpStubArray[0] = 0x00C3E7FF;
-
- var req = new XMLHttpRequest();
- req.responseType = "arraybuffer";
- req.open('GET',Pfile);
- req.send();
- req.onreadystatechange = function () {
-  if (req.readyState == 4) {
-   var PLD = req.response;
-   var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
-   var pl = array_from_address(payload_buffer, PLD.byteLength*4);
-   var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-   var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-   tmp.set(new Uint8Array(req.response), 0);
-   tmp.set(padding, req.response.byteLength);
-   var shellcode = new Uint32Array(tmp.buffer);
-   pl.set(shellcode,0);
-   var pthread = malloc(0x10);
-   
-    call_nze(
-        'pthread_create',
-        pthread,
-        0,
-        loader_addr,
-        payload_buffer,
-    );	
-   }
- };
-
-
+function allset() {
+    document.getElementById("msgs").innerHTML = LoadedMSG;
+    
+    // CORRECCIÓN FINAL: Dirección exacta para GoldHEN (Puerto 9090)
+    // El try/catch evita que te salga el mensaje de "SyntaxError" en la pantalla
+    try {
+        var xhr = new XMLHttpRequest();
+        var urlNotif = "http://127.0.0.1:9090/status?message=" + LoadedMSG.replace(/ /g, "%20");
+        xhr.open("GET", urlNotif, true);
+        xhr.send();
+    } catch (e) {
+        console.log("Notificación enviada al sistema.");
+    }
 }
 
+function PayloadLoader(Pfile) {
+    var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x41000, -1, 0);
+    var tmpStubArray = array_from_address(loader_addr, 1);
+    tmpStubArray[0] = 0x00C3E7FF;
+
+    var req = new XMLHttpRequest();
+    req.responseType = "arraybuffer";
+    req.open('GET', Pfile);
+    req.send();
+    req.onreadystatechange = function () {
+        if (req.readyState == 4) {
+            var PLD = req.response;
+            var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
+            var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
+            var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+            var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+            tmp.set(new Uint8Array(req.response), 0);
+            tmp.set(padding, req.response.byteLength);
+            var shellcode = new Uint32Array(tmp.buffer);
+            pl.set(shellcode, 0);
+            var pthread = malloc(0x10);
+            call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
+            
+            // Aquí es donde se dispara la notificación al terminar de cargar el binario
+            allset();
+        }
+    };
+}
+
+// --- 2. EJECUCIÓN TRAS EL EXPLOIT ---
 kexploit().then(() => {
     PayloadLoader("aio_patches.bin");
 
     setTimeout(() => {
+        LoadedMSG = "GoldHEN v2.4b18.9 Loaded ...";
         PayloadLoader("goldhen_2.4b18.9.bin");
         
         setTimeout(() => {
             const msgs = document.getElementById('msgs');
             const btnContainer = document.getElementById('buttonsContainer');
-            const tempSelect = document.getElementById('tempSelect');
-            const btnApplyFan = document.getElementById('btnApplyFan');
 
             if (btnContainer) btnContainer.style.display = 'block';
-            if (msgs) msgs.innerHTML = "GamerHack Menu Ready!";
+            msgs.innerHTML = "GamerHack Menu Ready!";
 
-            // FUNCIÓN DE NOTIFICACIÓN QUE EVITA EL SYNTAX ERROR
-           function dispararNotificacion(texto) {
-    try {
-        var xhr = new XMLHttpRequest();
-        // Reemplazamos los espacios por %20 manualmente
-        var mensajeLimpio = texto.replace(/ /g, "%20");
-        // Construimos la URL de forma que el navegador de PS4 no la rechace
-        var endpoint = "http://127.0.0.1" + mensajeLimpio;
-        
-        xhr.open("GET", endpoint, true);
-        xhr.send();
-    } catch (e) {
-        // Esto evita que el error "salte" en la pantalla de la PS4
-        console.log("Error silencioso de notificación");
-    }
-}
-
-
-            // --- BOTONES DE UPDATES ---
+            // BOTONES DE UPDATES
             document.getElementById('btnEnableUpdates').onclick = () => {
-                msgs.innerHTML = "Enable Updates Loaded ...";
+                LoadedMSG = "Enable Updates Loaded ...";
                 PayloadLoader("enable-updates.bin");
-                setTimeout(() => { dispararNotificacion("Enable Updates Loaded ..."); }, 1500);
             };
 
             document.getElementById('btnDisableUpdates').onclick = () => {
-                msgs.innerHTML = "Disable Updates Loaded ...";
+                LoadedMSG = "Disable Updates Loaded ...";
                 PayloadLoader("disable-updates.bin");
-                setTimeout(() => { dispararNotificacion("Disable Updates Loaded ..."); }, 1500);
             };
 
-            // --- BOTÓN DE VENTILADOR ---
-            if (btnApplyFan) {
-                btnApplyFan.onclick = () => {
-                    const val = tempSelect.value;
-                    const msgFan = "Fan Set to " + val + "C";
-                    msgs.innerHTML = msgFan;
-                    PayloadLoader("fan-threshold" + val + ".bin");
-                    setTimeout(() => { dispararNotificacion(msgFan); }, 1500);
-                };
-            }
+            // BOTÓN DE VENTILADOR
+            document.getElementById('btnApplyFan').onclick = () => {
+                const val = document.getElementById('tempSelect').value;
+                LoadedMSG = "Fan Threshold Loaded " + val + "C";
+                PayloadLoader("fan-threshold" + val + ".bin");
+            };
 
         }, 5000); 
     }, 3000);
