@@ -33,17 +33,17 @@ export function log(msg='') {
     if (consoleElem) {
         consoleElem.append(msg + '\n');
     }
-    // También lo mandamos a la consola real por si acaso
+    // Mantenemos la consola del navegador para debug
     window.console.log(msg);
 }
 
-export function clear_log() {
+// Renombrada a clear_log_host para evitar el error de duplicado
+export function clear_log_host() {
     const consoleElem = document.getElementById('console');
     if (consoleElem) {
         consoleElem.innerHTML = '';
     }
 }
-
 
 // alignment must be 32 bits and is a power of 2
 export function align(a, alignment) {
