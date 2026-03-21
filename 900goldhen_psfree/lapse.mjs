@@ -1821,24 +1821,16 @@ function array_from_address(addr, size) {
 var LoadedMSG = "";
 
 function allset() {
-    // 1. Cambia el texto en la web
     document.getElementById("msgs").innerHTML = LoadedMSG;
     
-    // 2. MÉTODO DE IMAGEN (Se salta el bloqueo de seguridad del navegador)
+    // Probamos el puerto 8080 (Web API de GoldHEN)
     try {
         var n = new Image();
-        // Construimos la URL limpia con el puerto 9090 y el mensaje
-        var urlNotif = "http://127.0.0.1:9090/status?message=" + LoadedMSG.replace(/ /g, "%20");
-        
-        // Al asignar el src, el navegador lanza la petición y GoldHEN "despierta"
+        // GoldHEN a veces prefiere el 8080 para comandos web externos
+        var urlNotif = "http://127.0.0.1:8080" + LoadedMSG.replace(/ /g, "%20");
         n.src = urlNotif;
-        
-        n.onerror = function() {
-            // Es normal que de error (no es una foto), pero el aviso YA SALIÓ en la PS4
-            console.log("Notificación enviada vía Imagen.");
-        };
     } catch (e) {
-        console.log("Error de red.");
+        // Silenciamos el error para que no bloquee la web
     }
 }
 
