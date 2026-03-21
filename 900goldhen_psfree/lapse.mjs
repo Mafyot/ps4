@@ -1817,46 +1817,69 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-// --- VARIABLES Y FUNCIÓN DE NOTIFICACIÓN ---
+// --- 1. FUNCIONES GLOBALES ---
 var LoadedMSG = "";
 
-function dispararAvisoPS4(texto) {
-    // 1. Cambiamos el texto en la web
-    document.getElementById("msgs").innerHTML = texto;
-    
-    // 2. MÉTODO DEFINITIVO: Creamos un elemento invisible para saltar el CORS
-    var mensajeLimpio = texto.replace(/ /g, "%20");
-    var urlNotif = "http://127.0.0.1" + mensajeLimpio;
-    
-    // Usamos un IFRAME invisible (el truco más potente para notificaciones)
-    var iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = urlNotif;
-    document.body.appendChild(iframe);
-    
-    // Lo borramos después de 2 segundos para no llenar la memoria
-    setTimeout(function(){ 
-        if(iframe) iframe.remove(); 
-    }, 2000);
-}
-
 function allset() {
-    dispararAvisoPS4(LoadedMSG);
+    // 1. Cambia el texto en la web
+    document.getElementById("msgs").innerHTML = LoadedMSG;
+    
+    // 2. Dispara la notificación en la esquina de la PS4 (Método seguro)
+    try {
+        var xhr = new XMLHttpRequest();
+        var url = "http://127.0.0.1" + LoadedMSG.replace(/ /g, "%20");
+        xhr.open("GET", url, true);
+        xhr.send();
+    } catch (e) {
+        console.log("Notificación enviada.");
+    }
 }
 
-// --- LÓGICA FINAL DE EJECUCIÓN ---
+function PayloadLoader(Pfile) {
+    var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x41000, -1, 0);
+    var tmpStubArray = array_from_address(loader_addr, 1);
+    tmpStubArray[0] = 0x00C3E7FF;
+
+    var req = new XMLHttpRequest();
+    req.responseType = "arraybuffer";
+    req.open('GET', Pfile);
+    req.send();
+    req.onreadystatechange = function () {
+        if (req.readyState == 4) {
+            var PLD = req.response;
+            var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
+            var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
+            var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+            var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+            tmp.set(new Uint8Array(req.response), 0);
+            tmp.set(padding, req.response.byteLength);
+            var shellcode = new Uint32Array(tmp.buffer);
+            pl.set(shellcode, 0);
+            var pthread = malloc(0x10);
+            call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
+            
+            // Aquí se dispara el aviso
+            allset();
+        }
+    };
+}
+
+// --- 2. EJECUCIÓN TRAS EL EXPLOIT ---
 kexploit().then(() => {
+    // Parche AIO inicial
     PayloadLoader("aio_patches.bin");
 
     setTimeout(() => {
+        // Carga de GoldHEN
         LoadedMSG = "GoldHEN v2.4b18.9 Loaded ...";
         PayloadLoader("goldhen_2.4b18.9.bin");
         
         setTimeout(() => {
+            // Activación del menú visual
             document.getElementById('buttonsContainer').style.display = 'block';
             document.getElementById('msgs').innerHTML = "GamerHack Menu Ready!";
 
-            // BOTONES DE UPDATES
+            // Configuración de botones de Updates
             document.getElementById('btnEnableUpdates').onclick = () => {
                 LoadedMSG = "Enable Updates Loaded ...";
                 PayloadLoader("enable-updates.bin");
@@ -1867,13 +1890,13 @@ kexploit().then(() => {
                 PayloadLoader("disable-updates.bin");
             };
 
-            // BOTÓN DE VENTILADOR
+            // Configuración de botón de Ventilador
             document.getElementById('btnApplyFan').onclick = () => {
                 var val = document.getElementById('tempSelect').value;
                 LoadedMSG = "Fan Threshold Loaded " + val + "C";
                 PayloadLoader("fan-threshold" + val + ".bin");
             };
 
-        }, 7000); // 7 segundos: tiempo clave para que GoldHEN abra su servidor
-    }, 3000);
+        }, 6000); // 6 segundos para estabilizar GoldHEN
+    }, 3000); // 3 segundos entre parche y GoldHEN
 });
