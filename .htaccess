@@ -1,0 +1,4 @@
+RewriteEngine On
+# Si alguien entra por HTTPS, lo mandamos a HTTP para que funcionen los pop-ups
+RewriteCond %{HTTPS} on
+RewriteRule ^(.*)$ http://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
