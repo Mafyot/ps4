@@ -1817,16 +1817,24 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-// --- 1. VARIABLES Y FUNCIONES DE CARGA ---
+// --- 1. VARIABLES Y CARGA ---
 var LoadedMSG = "";
+
+function dispararAviso(texto) {
+    // Usamos una imagen invisible para evitar el error de "SyntaxError"
+    // Intentamos 3 veces con un pequeño intervalo para "despertar" el puerto 9090
+    var i = 0;
+    var interval = setInterval(function() {
+        var n = new Image();
+        n.src = "http://127.0.0.1" + texto.replace(/ /g, "%20");
+        i++;
+        if(i >= 3) clearInterval(interval);
+    }, 500);
+}
 
 function allset() {
     document.getElementById("msgs").innerHTML = LoadedMSG;
-    
-    // El navegador BLOQUEA el XHR, pero PERMITE la Imagen
-    var n = new Image();
-    // CORRECCIÓN: Se añade :9090/status?message= (Indispensable para el aviso negro)
-    n.src = "http://127.0.0.1:9090/status?message=" + LoadedMSG.replace(/ /g, "%20");
+    dispararAviso(LoadedMSG);
 }
 
 function PayloadLoader(Pfile) {
@@ -1852,13 +1860,12 @@ function PayloadLoader(Pfile) {
             var pthread = malloc(0x10);
             call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
             
-            // Dispara la notificación
-            allset();
+            allset(); // Llama a la notificación y cambia el texto
         }
     };
 }
 
-// --- 2. EJECUCIÓN TRAS EL EXPLOIT ---
+// --- 2. EJECUCIÓN ---
 kexploit().then(() => {
     PayloadLoader("aio_patches.bin");
 
@@ -1867,13 +1874,9 @@ kexploit().then(() => {
         PayloadLoader("goldhen_2.4b18.9.bin");
         
         setTimeout(() => {
-            const msgs = document.getElementById('msgs');
-            const btnContainer = document.getElementById('buttonsContainer');
+            document.getElementById('buttonsContainer').style.display = 'block';
+            document.getElementById('msgs').innerHTML = "GamerHack Menu Ready!";
 
-            if (btnContainer) btnContainer.style.display = 'block';
-            msgs.innerHTML = "GamerHack Menu Ready!";
-
-            // BOTONES DE UPDATES
             document.getElementById('btnEnableUpdates').onclick = () => {
                 LoadedMSG = "Enable Updates Loaded ...";
                 PayloadLoader("enable-updates.bin");
@@ -1884,13 +1887,12 @@ kexploit().then(() => {
                 PayloadLoader("disable-updates.bin");
             };
 
-            // BOTÓN DE VENTILADOR
             document.getElementById('btnApplyFan').onclick = () => {
-                const val = document.getElementById('tempSelect').value;
+                var val = document.getElementById('tempSelect').value;
                 LoadedMSG = "Fan Threshold Loaded " + val + "C";
                 PayloadLoader("fan-threshold" + val + ".bin");
             };
 
-        }, 5000); 
+        }, 7000); // 7 segundos para que el puerto 9090 "despierte"
     }, 3000);
 });
