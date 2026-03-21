@@ -37,8 +37,7 @@ export function log(msg='') {
     window.console.log(msg);
 }
 
-// Renombrada a clear_log_host para evitar el error de duplicado
-export function clear_log_host() {
+export function clear_log() {
     const consoleElem = document.getElementById('console');
     if (consoleElem) {
         consoleElem.innerHTML = '';
