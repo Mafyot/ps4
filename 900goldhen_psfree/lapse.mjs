@@ -1821,21 +1821,17 @@ function array_from_address(addr, size) {
 var LoadedMSG = "";
 
 function allset() {
-    // 1. Actualizamos el texto en pantalla (la web)
-    document.getElementById("msgs").innerHTML = "¡" + LoadedMSG + "!";
+    // 1. Actualizamos el texto en la interfaz web
+    document.getElementById("msgs").innerHTML = LoadedMSG;
     
-    // 2. Notificación Pop-up del Navegador (Garantiza que veas algo)
-    alert("Proceso completado: " + LoadedMSG);
-
-    // 3. Intento de notificación a GoldHEN (Puerto 9090)
-    // Nota: GitHub Pages (HTTPS) suele bloquear esto, por eso usamos el alert arriba.
+    // 2. Notificación estilo GoldHEN (Puerto 9090)
+    // Usamos el objeto Image para saltar el bloqueo de HTTPS sin soltar un alert() feo
     try {
-        var xhr = new XMLHttpRequest();
         var msgLimpio = LoadedMSG.replace(/ /g, "%20");
-        xhr.open("GET", "http://127.0.0.1:9090/status?message=" + msgLimpio, true);
-        xhr.send();
+        var logger = new Image();
+        logger.src = "http://127.0.0.1:9090/status?message=" + msgLimpio;
     } catch (e) {
-        console.log("Error enviando a GoldHEN (posible bloqueo HTTPS)");
+        console.log("No se pudo enviar la notificación al puerto 9090");
     }
 }
 
@@ -1850,9 +1846,9 @@ function PayloadLoader(Pfile) {
     req.responseType = "arraybuffer";
     req.open('GET', Pfile, true);
     
-    // Control de error: si el archivo .bin no existe en el servidor
     req.onerror = function() {
-        alert("ERROR: No se pudo encontrar el archivo " + Pfile + " en el servidor.");
+        // Solo usamos alert en caso de error real de archivo
+        alert("ERROR: No se encontró " + Pfile + " en el servidor.");
     };
 
     req.onreadystatechange = function () {
@@ -1870,32 +1866,37 @@ function PayloadLoader(Pfile) {
                 var pthread = malloc(0x10);
                 
                 call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
+                
+                // Ejecutamos la notificación silenciosa
                 allset();
             } else {
-                alert("Fallo al cargar " + Pfile + " (Código: " + req.status + ")");
+                // Si el archivo no carga por red
+                document.getElementById("msgs").innerHTML = "Error " + req.status + " al cargar " + Pfile;
             }
         }
     };
     req.send();
 }
 
-// --- 2. FLUJO DE EJECUCIÓN (KEXPLOIT) ---
+// --- 2. FLUJO DE EJECUCIÓN (KEXPLOIT + CARGA AUTOMÁTICA) ---
 kexploit().then(() => {
-    // Paso 1: Parchear AIO
+    // PASO A: Parchear AIO (Automático)
+    LoadedMSG = "AIO Patches Aplicados";
     PayloadLoader("aio_patches.bin");
 
     setTimeout(() => {
-        // Paso 2: Cargar GoldHEN
+        // PASO B: Cargar GoldHEN (Automático)
         LoadedMSG = "GoldHEN v2.4b18.9 Cargado";
         PayloadLoader("goldhen_2.4b18.9.bin");
         
         setTimeout(() => {
-            // Paso 3: Activar Menú GamerHack
+            // PASO C: Mostrar el menú de usuario
             document.getElementById('buttonsContainer').style.display = 'block';
             document.getElementById('msgs').innerHTML = "Menú GamerHack Listo";
-            document.getElementById('msgs').style.color = "#00FF00"; // Verde para indicar éxito
+            document.getElementById('msgs').style.color = "#00FF00";
 
-            // Configuración de Botones
+            // --- CONFIGURACIÓN DE LOS BOTONES ---
+
             document.getElementById('btnEnableUpdates').onclick = () => {
                 LoadedMSG = "Updates Habilitadas";
                 PayloadLoader("enable-updates.bin");
@@ -1908,12 +1909,12 @@ kexploit().then(() => {
 
             document.getElementById('btnApplyFan').onclick = () => {
                 var val = document.getElementById('tempSelect').value;
-                LoadedMSG = "Ventilador a " + val + "C";
+                LoadedMSG = "Ventilador ajustado a " + val + "C";
                 PayloadLoader("fan-threshold" + val + ".bin");
             };
 
-        }, 5000); 
-    }, 3000);
+        }, 5000); // Tiempo para que GoldHEN termine de inicializar
+    }, 3000); // Tiempo entre AIO y GoldHEN
 }).catch((err) => {
     alert("Fallo crítico en el exploit de Kernel: " + err);
 });
