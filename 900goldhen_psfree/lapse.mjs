@@ -1821,31 +1821,35 @@ function array_from_address(addr, size) {
 var LoadedMSG = "";
 
 function allset() {
-    // 1. Actualizar texto en la web
+    // 1. Actualizar el texto en la web (por si acaso)
     document.getElementById("msgs").innerHTML = LoadedMSG;
 
-    // 2. MÉTODO NATIVO (El que usa el host del USB)
-    // Intentamos usar la syscall 592 que es la que PS4 usa para avisos del sistema
+    // 2. INTENTO A: Notificación Nativa mediante Syscall (El método más pro)
+    // Intentamos llamar directamente a la función de notificación de la PS4
     try {
-        // Reservamos un poco de memoria para el texto del mensaje
-        var msgPtr = malloc(LoadedMSG.length + 1);
+        // En muchos entornos de PS4, la syscall 592 o similares gestionan notificaciones
+        // Si tu 'chain' está bien inicializado, esto intentará disparar el aviso del sistema
+        var msgPtr = malloc(0x100);
         write_str(msgPtr, LoadedMSG);
-        
-        // Llamada al sistema: sceSysutilSendSystemNotificationWithText
-        // En firmware 9.00 mediante ROP chain
-        chain.syscall(592, 0, msgPtr, 0); 
+        chain.syscall(592, 0, msgPtr, 0); // Syscall experimental para notificaciones
     } catch(e) {
-        console.log("Error en notificación nativa");
+        console.log("Syscall de notificación no disponible");
     }
 
-    // 3. MÉTODO DE RED (Por si el anterior falla)
-    // Algunos hosts de GoldHEN prefieren el puerto 9090
-    var msgLimpio = LoadedMSG.replace(/ /g, "%20");
-    var logger = new Image();
-    logger.src = "http://127.0.0.1:9090/status?message=" + msgLimpio;
+    // 3. INTENTO B: El método del puerto 9090 (Modificado)
+    // Algunos hosts necesitan que la petición sea "POST" o que lleve un "/" al final
+    try {
+        var msgLimpio = LoadedMSG.replace(/ /g, "%20");
+        fetch("http://127.0.0.1:9090/status?message=" + msgLimpio, {
+            mode: 'no-cors',
+            method: 'GET'
+        }).catch(err => console.log("Fetch bloqueado, es normal en HTTPS"));
+        
+        // Mantenemos el truco de la imagen como refuerzo
+        var logger = new Image();
+        logger.src = "http://127.0.0.1:9090/status?message=" + msgLimpio;
+    } catch (e) {}
 }
-}
-
 function PayloadLoader(Pfile) {
     document.getElementById("msgs").innerHTML = "Cargando: " + Pfile + "...";
     
