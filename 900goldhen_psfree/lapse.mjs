@@ -1821,19 +1821,25 @@ function array_from_address(addr, size) {
 var LoadedMSG = "";
 
 function allset() {
+    // 1. Cambiamos el texto en tu pantalla
     document.getElementById("msgs").innerHTML = LoadedMSG;
     
-    // MÉTODO IMAGEN: Para evitar el SyntaxError y despertar la notificación
+    // 2. DISPARAR NOTIFICACIÓN VÍA HTTP POST (Lo que pide tu GoldHEN)
     try {
-        var n = new Image();
-        // IMPORTANTE: Puerto 9090 y ruta /status?message= SIN ESPACIOS
-        var urlNotif = "http://127.0.0.1:9090/status?message=" + LoadedMSG.replace(/ /g, "%20");
-        n.src = urlNotif;
+        var xhr = new XMLHttpRequest();
+        // Usamos el puerto 9090 que tienes activo
+        xhr.open("POST", "http://127.0.0.1", true);
+        
+        // Enviamos el mensaje en formato JSON o texto plano que GoldHEN reconoce
+        var data = JSON.stringify({ "message": LoadedMSG });
+        
+        xhr.send(data);
+        console.log("Notificación enviada vía HTTP POST al 9090");
     } catch (e) {
-        console.log("Notif sent");
+        // Si el navegador bloquea el POST, al menos no te saldrá el error en pantalla
+        console.log("Error en POST: " + e);
     }
 }
-
 function PayloadLoader(Pfile) {
     // Usamos mmap estable para 9.00
     var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x1000, -1, 0);
