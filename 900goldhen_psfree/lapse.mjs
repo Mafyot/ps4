@@ -1824,22 +1824,20 @@ function allset() {
     // 1. Actualiza el texto en la web
     document.getElementById("msgs").innerHTML = LoadedMSG;
     
-    // 2. DISPARAR NOTIFICACIÓN POP-UP (Método de Imagen Invisible)
-    // Este método se salta el bloqueo del navegador de PS4
+     // 2. DISPARAR NOTIFICACIÓN POP-UP (Método de Imagen Invisible)
     try {
         var n = new Image();
-        // Construimos la URL exacta que GoldHEN escucha para notificaciones
-        var urlNotif = "http://127.0.0.1" + LoadedMSG.replace(/ /g, "%20");
+        // CORRECCIÓN: Se añade el puerto 9090 y la ruta que GoldHEN necesita leer
+        var urlNotif = "http://127.0.0.1:9090/status?message=" + LoadedMSG.replace(/ /g, "%20");
         n.src = urlNotif;
         
-        // No necesitamos que la imagen cargue realmente, GoldHEN ya leyó la URL
         n.onerror = function() {
-            console.log("Notificación enviada a GoldHEN vía puerto 9090");
+            // Es normal que de error, pero GoldHEN ya habrá leído el mensaje al intentar cargarla
+            console.log("Notificación enviada a GoldHEN");
         };
     } catch (e) {
         console.log("Error en notificación: " + e);
     }
-}
 
 function PayloadLoader(Pfile) {
     // Usamos mmap estándar (0x0) para que el sistema elija el hueco libre y no choque
