@@ -2,6 +2,8 @@
 <html manifest="cache.manifest">
 <head>
     <title>PS4 9.00 GamerHack Host | Psfree + Lapse</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    
     <link rel="stylesheet" href="../style.css">
     <style>
         /* Centrado total de la interfaz */
@@ -95,7 +97,6 @@
         if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     </script>
 
-    <!-- Línea añadida para solucionar el error de console.append -->
     <pre id="console"></pre>
 
     <h1>PS4 9.00 FW GoldHEN Host by GamerHack</h1>
@@ -134,7 +135,6 @@
         <a href="#">@Kameleonre_</a>
     </div>
 
-    <!-- El script siempre al final para que cargue después del HTML -->
     <script type='module' src='alert.mjs'></script>
 </body>
 </html>
