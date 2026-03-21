@@ -28,10 +28,22 @@ export function die(msg='') {
     throw new DieError(msg);
 }
 
-const console = document.getElementById('console');
 export function log(msg='') {
-    console.append(msg + '\n');
+    const consoleElem = document.getElementById('console');
+    if (consoleElem) {
+        consoleElem.append(msg + '\n');
+    }
+    // También lo mandamos a la consola real por si acaso
+    window.console.log(msg);
 }
+
+export function clear_log() {
+    const consoleElem = document.getElementById('console');
+    if (consoleElem) {
+        consoleElem.innerHTML = '';
+    }
+}
+
 
 export function clear_log() {
     console.innerHTML = null;
