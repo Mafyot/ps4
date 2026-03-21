@@ -45,9 +45,6 @@ export function clear_log() {
 }
 
 
-export function clear_log() {
-    console.innerHTML = null;
-}
 // alignment must be 32 bits and is a power of 2
 export function align(a, alignment) {
     if (!(a instanceof Int)) {
