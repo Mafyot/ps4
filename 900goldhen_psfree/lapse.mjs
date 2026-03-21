@@ -1817,88 +1817,103 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-// --- 1. VARIABLES Y CARGA ESTABLE ---
+// --- 1. VARIABLES Y SISTEMA DE NOTIFICACIÓN ---
 var LoadedMSG = "";
 
 function allset() {
-    document.getElementById("msgs").innerHTML = LoadedMSG;
+    // 1. Actualizamos el texto en pantalla (la web)
+    document.getElementById("msgs").innerHTML = "¡" + LoadedMSG + "!";
     
-    // MÉTODO DEFINITIVO: Link fantasma para evitar cuelgues
-    var link = document.createElement('a');
-    var msgLimpio = LoadedMSG.replace(/ /g, "%20");
-    link.href = "http://127.0.0.1:9090/status?message=" + msgLimpio;
-    
-    // Disparamos la petición
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", link.href, true);
-    xhr.send();
+    // 2. Notificación Pop-up del Navegador (Garantiza que veas algo)
+    alert("Proceso completado: " + LoadedMSG);
+
+    // 3. Intento de notificación a GoldHEN (Puerto 9090)
+    // Nota: GitHub Pages (HTTPS) suele bloquear esto, por eso usamos el alert arriba.
+    try {
+        var xhr = new XMLHttpRequest();
+        var msgLimpio = LoadedMSG.replace(/ /g, "%20");
+        xhr.open("GET", "http://127.0.0.1:9090/status?message=" + msgLimpio, true);
+        xhr.send();
+    } catch (e) {
+        console.log("Error enviando a GoldHEN (posible bloqueo HTTPS)");
+    }
 }
 
-
 function PayloadLoader(Pfile) {
-    // Usamos la configuración de memoria exacta del host que te funciona
+    document.getElementById("msgs").innerHTML = "Cargando: " + Pfile + "...";
+    
     var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x41000, -1, 0);
     var tmpStubArray = array_from_address(loader_addr, 1);
     tmpStubArray[0] = 0x00C3E7FF;
 
     var req = new XMLHttpRequest();
     req.responseType = "arraybuffer";
-    req.open('GET', Pfile);
-    req.send();
+    req.open('GET', Pfile, true);
+    
+    // Control de error: si el archivo .bin no existe en el servidor
+    req.onerror = function() {
+        alert("ERROR: No se pudo encontrar el archivo " + Pfile + " en el servidor.");
+    };
+
     req.onreadystatechange = function () {
         if (req.readyState == 4) {
-            var PLD = req.response;
-            // Buffer de memoria 0x41000 (el que permite notificaciones internas de los .bin)
-            var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
-            var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
-            var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-            var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-            tmp.set(new Uint8Array(req.response), 0);
-            tmp.set(padding, req.response.byteLength);
-            var shellcode = new Uint32Array(tmp.buffer);
-            pl.set(shellcode, 0);
-            var pthread = malloc(0x10);
-            
-            // Inyectamos el payload
-            call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
-            
-            // Cambiamos el mensaje en la pantalla de la tele (web)
-            allset();
+            if (req.status == 200) {
+                var PLD = req.response;
+                var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
+                var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
+                var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+                var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+                tmp.set(new Uint8Array(req.response), 0);
+                tmp.set(padding, req.response.byteLength);
+                var shellcode = new Uint32Array(tmp.buffer);
+                pl.set(shellcode, 0);
+                var pthread = malloc(0x10);
+                
+                call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
+                allset();
+            } else {
+                alert("Fallo al cargar " + Pfile + " (Código: " + req.status + ")");
+            }
         }
     };
+    req.send();
 }
 
-// --- 2. EJECUCIÓN ---
+// --- 2. FLUJO DE EJECUCIÓN (KEXPLOIT) ---
 kexploit().then(() => {
+    // Paso 1: Parchear AIO
     PayloadLoader("aio_patches.bin");
 
     setTimeout(() => {
-        LoadedMSG = "GoldHEN v2.4b18.9 Loaded ...";
+        // Paso 2: Cargar GoldHEN
+        LoadedMSG = "GoldHEN v2.4b18.9 Cargado";
         PayloadLoader("goldhen_2.4b18.9.bin");
         
         setTimeout(() => {
-            // Mostramos los botones centrados
+            // Paso 3: Activar Menú GamerHack
             document.getElementById('buttonsContainer').style.display = 'block';
-            document.getElementById('msgs').innerHTML = "GamerHack Menu Ready!";
+            document.getElementById('msgs').innerHTML = "Menú GamerHack Listo";
+            document.getElementById('msgs').style.color = "#00FF00"; // Verde para indicar éxito
 
-            // Botones de Updates
+            // Configuración de Botones
             document.getElementById('btnEnableUpdates').onclick = () => {
-                LoadedMSG = "Enable Updates Loaded ...";
+                LoadedMSG = "Updates Habilitadas";
                 PayloadLoader("enable-updates.bin");
             };
 
             document.getElementById('btnDisableUpdates').onclick = () => {
-                LoadedMSG = "Disable Updates Loaded ...";
+                LoadedMSG = "Updates Deshabilitadas";
                 PayloadLoader("disable-updates.bin");
             };
 
-            // Botón de Ventilador
             document.getElementById('btnApplyFan').onclick = () => {
                 var val = document.getElementById('tempSelect').value;
-                LoadedMSG = "Fan Threshold Loaded " + val + "C";
+                LoadedMSG = "Ventilador a " + val + "C";
                 PayloadLoader("fan-threshold" + val + ".bin");
             };
 
         }, 5000); 
     }, 3000);
+}).catch((err) => {
+    alert("Fallo crítico en el exploit de Kernel: " + err);
 });
