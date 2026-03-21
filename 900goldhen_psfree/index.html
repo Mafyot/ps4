@@ -28,6 +28,9 @@
             text-shadow: 2px 2px 4px #000;
         }
 
+        /* Consola invisible para evitar el error de psfree.mjs */
+        #console { display: none; }
+
         /* Contenedor del Menú GamerHack */
         #buttonsContainer {
             display: none; /* Se activa desde lapse.mjs */
@@ -89,26 +92,24 @@
 </head>
 <body>
     <script>
-        // Redirección a cache si no hay offline storage
         if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
     </script>
+
+    <!-- Línea añadida para solucionar el error de console.append -->
+    <pre id="console"></pre>
 
     <h1>PS4 9.00 FW GoldHEN Host by GamerHack</h1>
     <hr>
     
     <div id="msgs">Loading GoldHEN v2.4b18.9... Please Wait</div>
 
-    <!-- Menú que aparecerá después del Exploit -->
     <div id="buttonsContainer">
-        
-        <!-- Sección de Actualizaciones -->
         <div class="control-group">
             <div class="section-title">Update Blocker</div>
             <button id="btnEnableUpdates">Enable Updates</button>
             <button id="btnDisableUpdates">Disable Updates</button>
         </div>
 
-        <!-- Sección de Ventilador -->
         <div class="control-group">
             <div class="section-title">Fan Control Temperature</div>
             <select id="tempSelect">
@@ -123,7 +124,6 @@
             </select>
             <button id="btnApplyFan">Apply Fan Threshold</button>
         </div>
-
     </div>
 
     <div class="thanks">
@@ -134,7 +134,7 @@
         <a href="#">@Kameleonre_</a>
     </div>
 
-    <!-- Carga del motor del exploit -->
+    <!-- El script siempre al final para que cargue después del HTML -->
     <script type='module' src='alert.mjs'></script>
 </body>
 </html>

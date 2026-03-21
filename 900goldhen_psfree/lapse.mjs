@@ -1817,83 +1817,80 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-function PayloadLoader(Pfile)
-{
-    var loader_addr = chain.sysp(
-  'mmap',
-  new Int(0, 0),                         
-  0x1000,                               
-  PROT_READ | PROT_WRITE | PROT_EXEC,    
-  0x41000,                              
-  -1,
-  0
-);
+// --- 1. VARIABLES Y FUNCIONES DE CARGA ---
+var LoadedMSG = "";
 
- var tmpStubArray = array_from_address(loader_addr, 1);
- tmpStubArray[0] = 0x00C3E7FF;
-
- var req = new XMLHttpRequest();
- req.responseType = "arraybuffer";
- req.open('GET',Pfile);
- req.send();
- req.onreadystatechange = function () {
-  if (req.readyState == 4) {
-   var PLD = req.response;
-   var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
-   var pl = array_from_address(payload_buffer, PLD.byteLength*4);
-   var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-   var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-   tmp.set(new Uint8Array(req.response), 0);
-   tmp.set(padding, req.response.byteLength);
-   var shellcode = new Uint32Array(tmp.buffer);
-   pl.set(shellcode,0);
-   var pthread = malloc(0x10);
-   
-    call_nze(
-        'pthread_create',
-        pthread,
-        0,
-        loader_addr,
-        payload_buffer,
-    );	
-   }
- };
-
-
+function allset() {
+    document.getElementById("msgs").innerHTML = LoadedMSG;
+    
+    // El navegador BLOQUEA el XHR, pero PERMITE la Imagen
+    var n = new Image();
+    // CORRECCIÓN: Se añade :9090/status?message= (Indispensable para el aviso negro)
+    n.src = "http://127.0.0.1:9090/status?message=" + LoadedMSG.replace(/ /g, "%20");
 }
 
+function PayloadLoader(Pfile) {
+    var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x41000, -1, 0);
+    var tmpStubArray = array_from_address(loader_addr, 1);
+    tmpStubArray[0] = 0x00C3E7FF;
+
+    var req = new XMLHttpRequest();
+    req.responseType = "arraybuffer";
+    req.open('GET', Pfile);
+    req.send();
+    req.onreadystatechange = function () {
+        if (req.readyState == 4) {
+            var PLD = req.response;
+            var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
+            var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
+            var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+            var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+            tmp.set(new Uint8Array(req.response), 0);
+            tmp.set(padding, req.response.byteLength);
+            var shellcode = new Uint32Array(tmp.buffer);
+            pl.set(shellcode, 0);
+            var pthread = malloc(0x10);
+            call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
+            
+            // Dispara la notificación
+            allset();
+        }
+    };
+}
+
+// --- 2. EJECUCIÓN TRAS EL EXPLOIT ---
 kexploit().then(() => {
     PayloadLoader("aio_patches.bin");
 
     setTimeout(() => {
+        LoadedMSG = "GoldHEN v2.4b18.9 Loaded ...";
         PayloadLoader("goldhen_2.4b18.9.bin");
         
         setTimeout(() => {
             const msgs = document.getElementById('msgs');
             const btnContainer = document.getElementById('buttonsContainer');
-            
-            if (btnContainer) btnContainer.style.display = 'block';
-            if (msgs) msgs.innerHTML = "GamerHack Menu Ready!";
 
-            // Lógica de Updates
+            if (btnContainer) btnContainer.style.display = 'block';
+            msgs.innerHTML = "GamerHack Menu Ready!";
+
+            // BOTONES DE UPDATES
             document.getElementById('btnEnableUpdates').onclick = () => {
-                msgs.innerHTML = "Payload: Enabling Updates...";
+                LoadedMSG = "Enable Updates Loaded ...";
                 PayloadLoader("enable-updates.bin");
             };
 
             document.getElementById('btnDisableUpdates').onclick = () => {
-                msgs.innerHTML = "Payload: Disabling Updates...";
+                LoadedMSG = "Disable Updates Loaded ...";
                 PayloadLoader("disable-updates.bin");
             };
 
-            // Lógica de Ventilador con Botón de Aplicar
+            // BOTÓN DE VENTILADOR
             document.getElementById('btnApplyFan').onclick = () => {
-                const temp = document.getElementById('tempSelect').value;
-                const fileName = "fan-threshold" + temp + ".bin";
-                msgs.innerHTML = "Payload: Setting Fan to " + temp + "°C...";
-                PayloadLoader(fileName);
+                const val = document.getElementById('tempSelect').value;
+                LoadedMSG = "Fan Threshold Loaded " + val + "C";
+                PayloadLoader("fan-threshold" + val + ".bin");
             };
 
-        }, 4000);
-    }, 2000);
+        }, 5000); 
+    }, 3000);
 });
