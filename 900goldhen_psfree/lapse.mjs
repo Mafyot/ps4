@@ -1821,9 +1821,19 @@ function array_from_address(addr, size) {
 var LoadedMSG = "";
 
 function allset() {
-    // Solo cambiamos el texto en la web para evitar que el navegador se congele
     document.getElementById("msgs").innerHTML = LoadedMSG;
+    
+    // MÉTODO DEFINITIVO: Link fantasma para evitar cuelgues
+    var link = document.createElement('a');
+    var msgLimpio = LoadedMSG.replace(/ /g, "%20");
+    link.href = "http://127.0.0.1:9090/status?message=" + msgLimpio;
+    
+    // Disparamos la petición
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", link.href, true);
+    xhr.send();
 }
+
 
 function PayloadLoader(Pfile) {
     // Usamos la configuración de memoria exacta del host que te funciona
