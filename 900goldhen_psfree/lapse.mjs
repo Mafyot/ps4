@@ -1817,32 +1817,26 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-// --- 1. FUNCIONES GLOBALES ---
+// --- 1. VARIABLES Y FUNCIONES DE CARGA (CORREGIDAS) ---
 var LoadedMSG = "";
 
 function allset() {
-    // 1. Actualiza el texto en la web
     document.getElementById("msgs").innerHTML = LoadedMSG;
     
-     // 2. DISPARAR NOTIFICACIÓN POP-UP (Método de Imagen Invisible)
+    // MÉTODO IMAGEN: Para evitar el SyntaxError y despertar la notificación
     try {
         var n = new Image();
-        // CORRECCIÓN: Se añade el puerto 9090 y la ruta que GoldHEN necesita leer
+        // IMPORTANTE: Puerto 9090 y ruta /status?message= SIN ESPACIOS
         var urlNotif = "http://127.0.0.1:9090/status?message=" + LoadedMSG.replace(/ /g, "%20");
         n.src = urlNotif;
-        
-        n.onerror = function() {
-            // Es normal que de error, pero GoldHEN ya habrá leído el mensaje al intentar cargarla
-            console.log("Notificación enviada a GoldHEN");
-        };
     } catch (e) {
-        console.log("Error en notificación: " + e);
+        console.log("Notif sent");
     }
+}
 
 function PayloadLoader(Pfile) {
-    // Usamos mmap estándar (0x0) para que el sistema elija el hueco libre y no choque
+    // Usamos mmap estable para 9.00
     var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x1000, -1, 0);
-    
     var tmpStubArray = array_from_address(loader_addr, 1);
     tmpStubArray[0] = 0x00C3E7FF;
 
@@ -1853,8 +1847,7 @@ function PayloadLoader(Pfile) {
     req.onreadystatechange = function () {
         if (req.readyState == 4) {
             var PLD = req.response;
-            // Reducimos el tamaño del buffer al necesario para el .bin
-            var payload_buffer = chain.sysp('mmap', 0, PLD.byteLength * 4, 7, 0x1000, -1, 0);
+            var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x1000, -1, 0);
             var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
             var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
             var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
@@ -1863,32 +1856,32 @@ function PayloadLoader(Pfile) {
             var shellcode = new Uint32Array(tmp.buffer);
             pl.set(shellcode, 0);
             var pthread = malloc(0x10);
-            
             call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
             
-            // Disparar la notificación después de inyectar
-            setTimeout(allset, 500);
+            // Dispara el aviso visual
+            allset();
         }
     };
 }
 
-
-// --- 2. EJECUCIÓN TRAS EL EXPLOIT ---
+// --- 2. EJECUCIÓN DEL EXPLOIT ---
 kexploit().then(() => {
-    // Parche AIO inicial
+    // Carga inicial estable
     PayloadLoader("aio_patches.bin");
 
     setTimeout(() => {
-        // Carga de GoldHEN
         LoadedMSG = "GoldHEN v2.4b18.9 Loaded ...";
         PayloadLoader("goldhen_2.4b18.9.bin");
         
+        // Este tiempo es vital para que el menú aparezca después de GoldHEN
         setTimeout(() => {
-            // Activación del menú visual
-            document.getElementById('buttonsContainer').style.display = 'block';
-            document.getElementById('msgs').innerHTML = "GamerHack Menu Ready!";
+            const msgs = document.getElementById('msgs');
+            const btnContainer = document.getElementById('buttonsContainer');
 
-            // Configuración de botones de Updates
+            if (btnContainer) btnContainer.style.display = 'block';
+            if (msgs) msgs.innerHTML = "GamerHack Menu Ready!";
+
+            // BOTONES DE UPDATES
             document.getElementById('btnEnableUpdates').onclick = () => {
                 LoadedMSG = "Enable Updates Loaded ...";
                 PayloadLoader("enable-updates.bin");
@@ -1899,13 +1892,13 @@ kexploit().then(() => {
                 PayloadLoader("disable-updates.bin");
             };
 
-            // Configuración de botón de Ventilador
+            // BOTÓN DE VENTILADOR
             document.getElementById('btnApplyFan').onclick = () => {
                 var val = document.getElementById('tempSelect').value;
                 LoadedMSG = "Fan Threshold Loaded " + val + "C";
                 PayloadLoader("fan-threshold" + val + ".bin");
             };
 
-        }, 6000); // 6 segundos para estabilizar GoldHEN
-    }, 3000); // 3 segundos entre parche y GoldHEN
+        }, 6000); 
+    }, 3000);
 });
