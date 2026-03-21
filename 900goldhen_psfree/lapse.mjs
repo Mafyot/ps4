@@ -1817,55 +1817,34 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-// --- 1. VARIABLES Y CARGA ---
+// --- VARIABLES Y FUNCIÓN DE NOTIFICACIÓN ---
 var LoadedMSG = "";
 
-function dispararAviso(texto) {
-    // Usamos una imagen invisible para evitar el error de "SyntaxError"
-    // Intentamos 3 veces con un pequeño intervalo para "despertar" el puerto 9090
-    var i = 0;
-    var interval = setInterval(function() {
-        var n = new Image();
-        n.src = "http://127.0.0.1" + texto.replace(/ /g, "%20");
-        i++;
-        if(i >= 3) clearInterval(interval);
-    }, 500);
+function dispararAvisoPS4(texto) {
+    // 1. Cambiamos el texto en la web
+    document.getElementById("msgs").innerHTML = texto;
+    
+    // 2. MÉTODO DEFINITIVO: Creamos un elemento invisible para saltar el CORS
+    var mensajeLimpio = texto.replace(/ /g, "%20");
+    var urlNotif = "http://127.0.0.1" + mensajeLimpio;
+    
+    // Usamos un IFRAME invisible (el truco más potente para notificaciones)
+    var iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = urlNotif;
+    document.body.appendChild(iframe);
+    
+    // Lo borramos después de 2 segundos para no llenar la memoria
+    setTimeout(function(){ 
+        if(iframe) iframe.remove(); 
+    }, 2000);
 }
 
 function allset() {
-    document.getElementById("msgs").innerHTML = LoadedMSG;
-    dispararAviso(LoadedMSG);
+    dispararAvisoPS4(LoadedMSG);
 }
 
-function PayloadLoader(Pfile) {
-    var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x41000, -1, 0);
-    var tmpStubArray = array_from_address(loader_addr, 1);
-    tmpStubArray[0] = 0x00C3E7FF;
-
-    var req = new XMLHttpRequest();
-    req.responseType = "arraybuffer";
-    req.open('GET', Pfile);
-    req.send();
-    req.onreadystatechange = function () {
-        if (req.readyState == 4) {
-            var PLD = req.response;
-            var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
-            var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
-            var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-            var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-            tmp.set(new Uint8Array(req.response), 0);
-            tmp.set(padding, req.response.byteLength);
-            var shellcode = new Uint32Array(tmp.buffer);
-            pl.set(shellcode, 0);
-            var pthread = malloc(0x10);
-            call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
-            
-            allset(); // Llama a la notificación y cambia el texto
-        }
-    };
-}
-
-// --- 2. EJECUCIÓN ---
+// --- LÓGICA FINAL DE EJECUCIÓN ---
 kexploit().then(() => {
     PayloadLoader("aio_patches.bin");
 
@@ -1877,6 +1856,7 @@ kexploit().then(() => {
             document.getElementById('buttonsContainer').style.display = 'block';
             document.getElementById('msgs').innerHTML = "GamerHack Menu Ready!";
 
+            // BOTONES DE UPDATES
             document.getElementById('btnEnableUpdates').onclick = () => {
                 LoadedMSG = "Enable Updates Loaded ...";
                 PayloadLoader("enable-updates.bin");
@@ -1887,12 +1867,13 @@ kexploit().then(() => {
                 PayloadLoader("disable-updates.bin");
             };
 
+            // BOTÓN DE VENTILADOR
             document.getElementById('btnApplyFan').onclick = () => {
                 var val = document.getElementById('tempSelect').value;
                 LoadedMSG = "Fan Threshold Loaded " + val + "C";
                 PayloadLoader("fan-threshold" + val + ".bin");
             };
 
-        }, 7000); // 7 segundos para que el puerto 9090 "despierte"
+        }, 7000); // 7 segundos: tiempo clave para que GoldHEN abra su servidor
     }, 3000);
 });
