@@ -1817,41 +1817,6 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-// --- 1. VARIABLES Y SISTEMA DE NOTIFICACIÓN ---
-var LoadedMSG = "";
-
-function allset() {
-    // 1. Actualizar el texto en la web (Interfaz)
-    document.getElementById("msgs").innerHTML = LoadedMSG;
-
-    // 2. INTENTO NATIVO: Syscall 592 (Funciona internamente en la RAM)
-    try {
-        var msgPtr = malloc(0x100);
-        write_str(msgPtr, LoadedMSG);
-        chain.syscall(592, 0, msgPtr, 0); 
-    } catch(e) {
-        console.log("Syscall de notificación no disponible");
-    }
-
-    // 3. INTENTO DE RED: Puerto 9090 (GoldHEN Server)
-    // Usamos fetch y el truco de la imagen simultáneamente para máxima compatibilidad
-    try {
-        var msgLimpio = LoadedMSG.replace(/ /g, "%20");
-        
-        // Método Fetch (Silencioso)
-        fetch("http://127.0.0.1:9090/status?message=" + msgLimpio, {
-            mode: 'no-cors',
-            method: 'GET'
-        }).catch(err => {});
-        
-        // Método Image (Truco clásico para saltar bloqueos HTTPS)
-        var logger = new Image();
-        logger.src = "http://127.0.0.1:9090/status?message=" + msgLimpio;
-    } catch (e) {
-        console.log("Error en peticiones de red 9090");
-    }
-}
-
 function PayloadLoader(Pfile)
 {
     var loader_addr = chain.sysp(
@@ -1904,14 +1869,14 @@ kexploit().then(() => {
     PayloadLoader("aio_patches.bin");
 
     setTimeout(() => {
-        // PASO B: Cargar GoldHEN (Automático)
-        LoadedMSG = "GoldHEN v2.4b18.9 Cargado";
-        PayloadLoader("goldhen_2.4b18.9.bin");
+        // PASO B: Desactivar Actualizaciones (Ahora va antes que GoldHEN)
+        LoadedMSG = "Disable-Updates Ejecutado";
+        PayloadLoader("disable-updates.bin");
 
         setTimeout(() => {
-            // PASO C: Desactivar Actualizaciones (Automático)
-            LoadedMSG = "Disable-Updates Ejecutado";
-            PayloadLoader("disable-updates.bin");
+            // PASO C: Cargar GoldHEN (Ahora va después de proteger el sistema)
+            LoadedMSG = "GoldHEN v2.4b18.9 Cargado";
+            PayloadLoader("goldhen_2.4b18.9.bin");
         
             setTimeout(() => {
                 // PASO D: Mostrar el menú de usuario
@@ -1937,11 +1902,11 @@ kexploit().then(() => {
                     PayloadLoader("fan-threshold" + val + ".bin");
                 };
 
-            }, 5000); // Espera tras Disable Updates para mostrar menú
+            }, 5000); // Espera tras GoldHEN para mostrar menú
 
-        }, 4000); // Espera tras GoldHEN para lanzar Disable Updates
+        }, 4000); // Espera tras Disable Updates para lanzar GoldHEN
 
-    }, 3000); // Espera tras AIO para lanzar GoldHEN
+    }, 3000); // Espera tras AIO para lanzar Disable Updates
 
 }).catch((err) => {
     alert("Fallo crítico en el exploit de Kernel: " + err);
