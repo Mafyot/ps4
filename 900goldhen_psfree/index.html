@@ -126,9 +126,10 @@
         }
     }
      // AÑADIMOS ESTO: Cambiar el mensaje después de 2 segundos
-        setTimeout(function(){
-            window.msgs.innerHTML = archivo + " activado con éxito ✔";
-        }, 2000);
+         setTimeout(function(){
+            window.msgs.style.color = "#00ff00"; // Color verde neón
+            window.msgs.innerHTML = archivo + " Activado con Éxito ✔";
+        }, 2500);
     }
 
     function aplicarTemp() {
