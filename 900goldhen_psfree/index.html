@@ -5,11 +5,10 @@
 <title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
 <style>
-    /* Diseño centrado y moderno */
     body {
         background-color: #161616;
         color: white;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: sans-serif;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -18,14 +17,7 @@
         margin: 0;
         overflow: hidden;
     }
-
-    .main-container {
-        text-align: center;
-        width: 100%;
-        max-width: 600px;
-    }
-
-    /* El recuadro del menú empieza oculto (display: none) */
+    .main-container { text-align: center; width: 100%; max-width: 600px; }
     #menu-wrapper {
         display: none;
         background: rgba(255, 255, 255, 0.05);
@@ -34,9 +26,7 @@
         padding: 30px;
         margin: 20px auto;
         backdrop-filter: blur(10px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-
     .btn {
         background: linear-gradient(180deg, #004cc4 0%, #003791 100%);
         color: white;
@@ -45,129 +35,88 @@
         margin: 10px;
         border-radius: 8px;
         font-weight: bold;
-        font-size: 16px;
         cursor: pointer;
         min-width: 200px;
     }
-
-    .btn:hover {
-        background: #005cf1;
-    }
-
     select {
         background: #222;
         color: white;
         border: 1px solid #003791;
         padding: 10px;
         border-radius: 8px;
-        font-size: 16px;
-        margin-right: 10px;
-        outline: none;
     }
-
-    #msgs {
-        font-size: 28px;
-        font-weight: 300;
-        color: #aaa;
-        margin-top: 20px;
-    }
-
-    hr {
-        width: 80%;
-        border: 0.5px solid #333;
-        margin: 20px auto;
-    }
-
-    .temp-section {
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #444;
-    }
+    #msgs { font-size: 28px; color: #ccc; margin-top: 20px; }
+    hr { width: 80%; border: 0.5px solid #333; margin: 20px auto; }
 </style>
 </head>
 <body>
 
 <script>
-    /* LÓGICA DE CACHÉ E HISTORIAL (ORIGINAL) */
     history.replaceState(null,null,'index.html');
     var histlength=history.length;
     history.go(-histlength);
 
     function DLProgress(e){
         Percent=(Math.round(e.loaded / e.total * 100));
-        setTimeout(function(){window.msgs.innerHTML="Installing Offline Cache: " + Percent + "%";},500);
+        window.msgs.innerHTML="Installing Offline Cache: " + Percent + "%";
     }
 
     function DisplayCacheProgress(){
+        // Mensaje simplificado: ya no pide cerrar el navegador
         setTimeout(function(){window.msgs.innerHTML="Cache Installed Successfully ✔";},1500);
-        setTimeout(function(){window.msgs.innerHTML="Now Close And Re-Open Your Browser ...";},3500);
     }
 
     window.applicationCache.addEventListener("progress",DLProgress,false);
     window.applicationCache.oncached=function(e){DisplayCacheProgress();};
     window.applicationCache.onupdateready=function(e){DisplayCacheProgress();};
 
-    /* FUNCIONES PARA EL MENÚ POST-EXPLOIT */
-    
-    // Esta función la llama el final del archivo lapse.mjs
     window.mostrarMenuFinal = function() {
         document.getElementById('menu-wrapper').style.display = 'block';
+        window.msgs.style.color = "#ccc";
         window.msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded Successfully ✔";
     };
 
-            function enviarPayload(archivo) {
-    // 1. Mensaje inicial en gris
-    window.msgs.style.color = "#ccc";
-    window.msgs.innerHTML = "Enviando Payload... Por favor, espere";
-    
-    try {
-        // 2. Ejecución de la carga (Lógica de lapse.mjs)
-        if (typeof window.PayloadLoader === 'function') {
-            window.PayloadLoader(archivo);
-        } else {
-            // Fallback si la función no responde
-            window.location.href = archivo;
-        }
-
-        // 3. Respuesta visual a los 3 segundos
-        setTimeout(function(){
-            window.msgs.style.color = "#00ff00"; // Cambiamos a color verde
-            
-            // Si el archivo es de temperatura, usamos "Activado", si no, "Enviado"
-            if (archivo.indexOf("fan-threshold") !== -1) {
-                window.msgs.innerHTML = "¡Activado con éxito! ✔";
+    function enviarPayload(archivo) {
+        window.msgs.style.color = "#ccc";
+        window.msgs.innerHTML = "Enviando Payload... Por favor, espere";
+        
+        try {
+            if (typeof window.PayloadLoader === 'function') {
+                window.PayloadLoader(archivo);
             } else {
-                window.msgs.innerHTML = "¡Se ha enviado con éxito! ✔";
+                window.location.href = archivo;
             }
-        }, 3000);
 
-    } catch(e) {
-        // Manejo de errores por si algo falla
-        window.msgs.style.color = "#ff0000";
-        window.msgs.innerHTML = "Error al intentar enviar el Payload";
-        console.error(e);
+            setTimeout(function(){
+                window.msgs.style.color = "#00ff00"; 
+                if (archivo.indexOf("fan-threshold") !== -1) {
+                    window.msgs.innerHTML = "¡Activado con éxito! ✔";
+                } else {
+                    window.msgs.innerHTML = "¡Se ha enviado con éxito! ✔";
+                }
+            }, 3000);
+
+        } catch(e) {
+            window.msgs.style.color = "#ff0000";
+            window.msgs.innerHTML = "Error al intentar enviar el Payload";
+        }
     }
-}
 
     function aplicarTemp() {
         var grados = document.getElementById('tempSelect').value;
-        var nombreBin = "fan-threshold" + grados + ".bin";
-        enviarPayload(nombreBin);
+        enviarPayload("fan-threshold" + grados + ".bin");
     }
 </script>
 
 <div class="main-container">
     <pre id='console'></pre>
     <h1>PS4 9.00 GoldHEN Host</h1>
-    <p style="color: #0081ff; margin:0;">Psfree + Lapse Edition</p>
     <hr>
 
-    <!-- EL MENÚ QUE APARECERÁ DESPUÉS -->
     <div id="menu-wrapper">
         <button class="btn" onclick="enviarPayload('disable-updates.bin')">Disable Updates</button>
-        
-        <div class="temp-section">
-            <p style="margin-bottom: 15px;">Control de Temperatura</p>
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #444;">
+            <p>Control de Temperatura</p>
             <select id="tempSelect">
                 <option value="40">40°C</option>
                 <option value="45">45°C</option>
@@ -182,12 +131,9 @@
         </div>
     </div>
 
-    <!-- Mensaje de estado principal -->
     <h1 id="msgs">Wait a Moment...</h1>
 </div>
 
-<!-- Carga del exploit -->
 <script type='module' src='alert.mjs'></script>
-
 </body>
 </html>
