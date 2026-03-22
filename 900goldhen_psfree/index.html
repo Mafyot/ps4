@@ -125,6 +125,11 @@
             window.location.href = archivo;
         }
     }
+     // AÑADIMOS ESTO: Cambiar el mensaje después de 2 segundos
+        setTimeout(function(){
+            window.msgs.innerHTML = archivo + " activado con éxito ✔";
+        }, 2000);
+    }
 
     function aplicarTemp() {
         var grados = document.getElementById('tempSelect').value;
