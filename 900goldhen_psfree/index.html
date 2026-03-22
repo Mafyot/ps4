@@ -1,131 +1,19 @@
 <!DOCTYPE html>
-<html manifest="cache.manifest">
+<html>
 <head>
-    <title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
-    
-    <link rel="stylesheet" href="../style.css">
-    <style>
-        /* Centrado total de la interfaz */
-        body {
-            background-color: #1a1a1a;
-            color: white;
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        h1 { margin-top: 0; }
-        hr { width: 80%; border: 1px solid #333; }
-
-        #msgs {
-            font-size: 28px;
-            color: #f31414;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px #000;
-        }
-
-        /* Consola invisible para evitar el error de psfree.mjs */
-        #console { display: none; }
-
-        /* Contenedor del Menú GamerHack */
-        #buttonsContainer {
-            display: none; /* Se activa desde lapse.mjs */
-            background: rgba(0, 0, 0, 0.8);
-            padding: 30px;
-            border-radius: 15px;
-            border: 2px solid #f31414;
-            width: 450px;
-            box-shadow: 0px 0px 20px rgba(243, 20, 20, 0.3);
-        }
-
-        .section-title {
-            font-size: 20px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #444;
-            padding-bottom: 5px;
-        }
-
-        .control-group { margin-bottom: 30px; }
-
-        /* Estilo de los Selects y Botones */
-        select {
-            padding: 12px;
-            font-size: 18px;
-            border-radius: 5px;
-            background: #222;
-            color: white;
-            border: 1px solid #f31414;
-            width: 100%;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        button {
-            padding: 15px;
-            margin: 5px 0;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            background-color: #f31414;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            transition: 0.2s;
-            width: 100%;
-            text-transform: uppercase;
-        }
-
-        button:hover {
-            background-color: #ff1a1a;
-            transform: scale(1.02);
-        }
-
-        button:active { transform: scale(0.98); }
-
-        .thanks { font-size: 14px; margin-top: 30px; color: #888; }
-        .thanks a { color: #f31414; text-decoration: none; margin: 0 5px; }
-    </style>
+<title>PS4 9.00 FW GoldHEN Host by GamerHack | Psfree + Lapse</title>
+<link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    <script>
-        if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
-    </script>
-
-    <pre id="console"></pre>
-
-    <h1>PS4 9.00 GoldHEN Host | Psfree + Lapse</h1>
-    <hr>
-    
-    <div id="msgs">Cargando GoldHEN... Por Favor Espera</div>
-
-    <div id="buttonsContainer">
-        <div class="control-group">
-            <div class="section-title">Update Blocker</div>
-            <button id="btnEnableUpdates">Enable Updates</button>
-            <button id="btnDisableUpdates">Disable Updates</button>
-        </div>
-
-        <div class="control-group">
-            <div class="section-title">Fan Control Temperature</div>
-            <select id="tempSelect">
-                <option value="40">40°C (Default)</option>
-                <option value="45">45°C</option>
-                <option value="50">50°C</option>
-                <option value="55">55°C</option>
-                <option value="60">60°C</option>
-                <option value="65">65°C</option>
-                <option value="70">70°C</option>
-                <option value="75">75°C</option>
-            </select>
-            <button id="btnApplyFan">Apply Fan Threshold</button>
-        </div>
-    </div>
-
-    <script type='module' src='alert.mjs'></script>
+<script>
+if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+</script>
+<pre id='console'></pre>
+<h1>PS4 9.00 FW GoldHEN Host by GamerHack</h1>
+<hr>
+<br>
+<h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
+<h1 style="margin-top: 43px;">Special Thanks to:<a href="https://twitter.com/sleirsgoevy" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@sleirsgoevy</a>ChendoChap<a href="https://twitter.com/Znullptr" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Znullptr</a>SiSTR0<a href="https://x.com/Kameleonre_" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Kameleonre_</a>Abc</h1>
+<script type='module' src='alert.mjs'></script>
 </body>
 </html>

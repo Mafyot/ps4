@@ -28,20 +28,13 @@ export function die(msg='') {
     throw new DieError(msg);
 }
 
+const console = document.getElementById('console');
 export function log(msg='') {
-    const consoleElem = document.getElementById('console');
-    if (consoleElem) {
-        consoleElem.append(msg + '\n');
-    }
-    // Mantenemos la consola del navegador para debug
-    window.console.log(msg);
+    console.append(msg + '\n');
 }
 
 export function clear_log() {
-    const consoleElem = document.getElementById('console');
-    if (consoleElem) {
-        consoleElem.innerHTML = '';
-    }
+    console.innerHTML = null;
 }
 
 // alignment must be 32 bits and is a power of 2

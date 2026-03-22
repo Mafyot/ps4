@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# Versión 1.4 - Netlify
+
 CACHE:
 ../img.jpg
 ../style.css
@@ -18,10 +18,8 @@ fan-threshold70.bin
 fan-threshold75.bin
 goldhen_2.4b18.9.bin
 index.html
-lapse.mjs
-psfree.mjs
-send.mjs
 kpatch/900.elf
+lapse.mjs
 module/chain.mjs
 module/constants.mjs
 module/int64.mjs
@@ -31,4 +29,6 @@ module/offset.mjs
 module/rw.mjs
 module/utils.mjs
 module/view.mjs
+psfree.mjs
 rop/900.mjs
+send.mjs

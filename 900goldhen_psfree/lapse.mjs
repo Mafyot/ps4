@@ -1817,104 +1817,58 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-// --- 1. VARIABLES Y SISTEMA DE NOTIFICACIÓN ---
-var LoadedMSG = "";
+function PayloadLoader(Pfile)
+{
+    var loader_addr = chain.sysp(
+  'mmap',
+  new Int(0, 0),                         
+  0x1000,                               
+  PROT_READ | PROT_WRITE | PROT_EXEC,    
+  0x41000,                              
+  -1,
+  0
+);
 
-function allset() {
-    // 1. Actualizamos el texto en la interfaz web
-    document.getElementById("msgs").innerHTML = LoadedMSG;
-    
-    // 2. Notificación estilo GoldHEN (Puerto 9090)
-    // Usamos el objeto Image para saltar el bloqueo de HTTPS sin soltar un alert() feo
-    try {
-        var msgLimpio = LoadedMSG.replace(/ /g, "%20");
-        var logger = new Image();
-        logger.src = "http://127.0.0.1:9090/status?message=" + msgLimpio;
-    } catch (e) {
-        console.log("No se pudo enviar la notificación al puerto 9090");
-    }
+ var tmpStubArray = array_from_address(loader_addr, 1);
+ tmpStubArray[0] = 0x00C3E7FF;
+
+ var req = new XMLHttpRequest();
+ req.responseType = "arraybuffer";
+ req.open('GET',Pfile);
+ req.send();
+ req.onreadystatechange = function () {
+  if (req.readyState == 4) {
+   var PLD = req.response;
+   var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
+   var pl = array_from_address(payload_buffer, PLD.byteLength*4);
+   var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+   var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+   tmp.set(new Uint8Array(req.response), 0);
+   tmp.set(padding, req.response.byteLength);
+   var shellcode = new Uint32Array(tmp.buffer);
+   pl.set(shellcode,0);
+   var pthread = malloc(0x10);
+   
+    call_nze(
+        'pthread_create',
+        pthread,
+        0,
+        loader_addr,
+        payload_buffer,
+    );	
+   }
+ };
+
+
 }
 
-function PayloadLoader(Pfile) {
-    document.getElementById("msgs").innerHTML = "Cargando: " + Pfile + "...";
-    
-    var loader_addr = chain.sysp('mmap', new Int(0, 0), 0x1000, 7, 0x41000, -1, 0);
-    var tmpStubArray = array_from_address(loader_addr, 1);
-    tmpStubArray[0] = 0x00C3E7FF;
-
-    var req = new XMLHttpRequest();
-    req.responseType = "arraybuffer";
-    req.open('GET', Pfile, true);
-    
-    req.onerror = function() {
-        // Solo usamos alert en caso de error real de archivo
-        alert("ERROR: No se encontró " + Pfile + " en el servidor.");
-    };
-
-    req.onreadystatechange = function () {
-        if (req.readyState == 4) {
-            if (req.status == 200) {
-                var PLD = req.response;
-                var payload_buffer = chain.sysp('mmap', 0, 0x300000, 7, 0x41000, -1, 0);
-                var pl = array_from_address(payload_buffer, PLD.byteLength * 4);
-                var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-                var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-                tmp.set(new Uint8Array(req.response), 0);
-                tmp.set(padding, req.response.byteLength);
-                var shellcode = new Uint32Array(tmp.buffer);
-                pl.set(shellcode, 0);
-                var pthread = malloc(0x10);
-                
-                call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
-                
-                // Ejecutamos la notificación silenciosa
-                allset();
-            } else {
-                // Si el archivo no carga por red
-                document.getElementById("msgs").innerHTML = "Error " + req.status + " al cargar " + Pfile;
-            }
-        }
-    };
-    req.send();
-}
-
-// --- 2. FLUJO DE EJECUCIÓN (KEXPLOIT + CARGA AUTOMÁTICA) ---
 kexploit().then(() => {
-    // PASO A: Parchear AIO (Automático)
-    LoadedMSG = "AIO Patches Aplicados";
-    PayloadLoader("aio_patches.bin");
 
-    setTimeout(() => {
-        // PASO B: Cargar GoldHEN (Automático)
-        LoadedMSG = "GoldHEN v2.4b18.9 Cargado";
-        PayloadLoader("goldhen_2.4b18.9.bin");
-        
-        setTimeout(() => {
-            // PASO C: Mostrar el menú de usuario
-            document.getElementById('buttonsContainer').style.display = 'block';
-            document.getElementById('msgs').innerHTML = "Menú GamerHack Listo";
-            document.getElementById('msgs').style.color = "#00FF00";
+//Load ABC fix as a regular Payload
+setTimeout(PayloadLoader("aio_patches.bin"),500);
+log("AIO Fixes Applied.!");
+//Load GoldHEN :)
+setTimeout(PayloadLoader("goldhen_2.4b18.9.bin"),500);
+msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded ...";
 
-            // --- CONFIGURACIÓN DE LOS BOTONES ---
-
-            document.getElementById('btnEnableUpdates').onclick = () => {
-                LoadedMSG = "Updates Habilitadas";
-                PayloadLoader("enable-updates.bin");
-            };
-
-            document.getElementById('btnDisableUpdates').onclick = () => {
-                LoadedMSG = "Updates Deshabilitadas";
-                PayloadLoader("disable-updates.bin");
-            };
-
-            document.getElementById('btnApplyFan').onclick = () => {
-                var val = document.getElementById('tempSelect').value;
-                LoadedMSG = "Ventilador ajustado a " + val + "C";
-                PayloadLoader("fan-threshold" + val + ".bin");
-            };
-
-        }, 5000); // Tiempo para que GoldHEN termine de inicializar
-    }, 3000); // Tiempo entre AIO y GoldHEN
-}).catch((err) => {
-    alert("Fallo crítico en el exploit de Kernel: " + err);
-});
+})
