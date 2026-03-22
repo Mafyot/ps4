@@ -1808,8 +1808,7 @@ function array_from_address(addr, size) {
 }
 
 // Hacemos global la función para que el index la vea
-window.PayloadLoader = function(Pfile)
-{
+window.PayloadLoader = function(Pfile) {
     var loader_addr = chain.sysp(
   'mmap',
   new Int(0, 0),                         
