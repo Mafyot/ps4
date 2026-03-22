@@ -1,4 +1,131 @@
 <!DOCTYPE html>
+<html manifest="cache.manifest">
+<head>
+<meta charset="UTF-8">
+<title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+    /* Diseño centrado y moderno */
+    body {
+        background-color: #1a1a1a;
+        color: white;
+        font-family: sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    .main-container { text-align: center; width: 100%; max-width: 600px; }
+
+    .menu-box {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid #003791;
+        border-radius: 20px;
+        padding: 25px;
+        margin: 20px auto;
+        backdrop-filter: blur(10px);
+    }
+
+    .btn {
+        background: linear-gradient(180deg, #004cc4 0%, #003791 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        margin: 10px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        min-width: 170px;
+    }
+
+    .btn:hover { background: #005cf1; }
+
+    select {
+        background: #222;
+        color: white;
+        border: 1px solid #003791;
+        padding: 10px;
+        border-radius: 8px;
+        margin-right: 5px;
+    }
+
+    #msgs { font-size: 28px; color: #aaa; margin-top: 20px; }
+    hr { width: 80%; border: 0.5px solid #444; }
+</style>
+</head>
+<body>
+
+<script>
+    // Lógica original de Cache e Historial
+    history.replaceState(null,null,'index.html');
+    var histlength=history.length;
+    history.go(-histlength);
+
+    function DLProgress(e){
+        Percent=(Math.round(e.loaded / e.total * 100));
+        setTimeout(function(){window.msgs.innerHTML="Installing Offline Cache: " + Percent + "%";},500);
+    }
+
+    function DisplayCacheProgress(){
+        setTimeout(function(){window.msgs.innerHTML="Cache Installed Successfully ✔";},1500);
+        setTimeout(function(){window.msgs.innerHTML="Now Close And Re-Open Your Browser ...";},3500);
+    }
+
+    window.applicationCache.addEventListener("progress",DLProgress,false);
+    window.applicationCache.oncached=function(e){DisplayCacheProgress();};
+    window.applicationCache.onupdateready=function(e){DisplayCacheProgress();};
+
+    // Funciones para cargar Payloads
+    function cargarPayload(archivo) {
+        document.getElementById('msgs').innerHTML = "Enviando: " + archivo + "...";
+        setTimeout(function(){ window.location.href = archivo; }, 500);
+    }
+
+    function aplicarTemp() {
+        var grados = document.getElementById('tempSelect').value;
+        cargarPayload("fan-threshold" + grados + ".bin");
+    }
+</script>
+
+<div class="main-container">
+    <pre id='console'></pre>
+    <h1>PS4 9.00 GoldHEN Host</h1>
+    <p style="color: #0081ff; margin: 0;">Psfree + Lapse Edition</p>
+    <hr>
+
+    <!-- RECUADRO CON BOTONES -->
+    <div class="menu-box">
+        <button class="btn" onclick="cargarPayload('disable-updates.bin')">Disable Updates</button>
+        
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #444;">
+            <p style="margin-bottom: 10px;">Control de Temperatura</p>
+            <select id="tempSelect">
+                <option value="40">40°C</option>
+                <option value="45">45°C</option>
+                <option value="50">50°C</option>
+                <option value="55">55°C</option>
+                <option value="60" selected>60°C</option>
+                <option value="65">65°C</option>
+                <option value="70">70°C</option>
+                <option value="75">75°C</option>
+            </select>
+            <button class="btn" onclick="aplicarTemp()">Activar Temperatura</button>
+        </div>
+    </div>
+
+    <!-- Mensaje de estado -->
+    <h1 id="msgs">Wait a Moment...</h1>
+</div>
+
+<!-- Mantenemos tu script original al final -->
+<script type='module' src='alert.mjs'></script>
+</body>
+</html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
