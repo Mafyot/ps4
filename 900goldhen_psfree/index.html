@@ -115,27 +115,33 @@
         window.msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded Successfully ✔";
     };
 
-        function enviarPayload(archivo) {
-        window.msgs.innerHTML = "Enviando: " + archivo + "...";
+            function enviarPayload(archivo) {
+        // Mensaje inicial de carga en gris
+        window.msgs.style.color = "#ccc";
+        window.msgs.innerHTML = "Enviando Payload... Por favor, espere";
         
-        // Intentamos llamar a la función del lapse.mjs
         try {
+            // Ejecutamos la carga del payload
             if (typeof window.PayloadLoader === 'function') {
                 window.PayloadLoader(archivo);
-                // Si todo va bien, el mensaje debería cambiar tras 2 segundos
-                setTimeout(function(){ 
-                    window.msgs.style.color = "#00ff00"; // Color verde neón
-                    window.msgs.innerHTML = archivo + " enviado con éxito ✔"; 
-                }, 2000);
             } else {
-                // Si la función no responde, intentamos carga directa
+                // Fallback si la función no está lista
                 window.location.href = archivo;
             }
+
+            // Tras 3 segundos, mostramos el éxito en VERDE sin el nombre del archivo
+            setTimeout(function(){
+                window.msgs.style.color = "#00ff00"; 
+                window.msgs.innerHTML = "¡Se ha enviado con éxito! ✔";
+            }, 3000);
+
         } catch(e) {
-            window.msgs.innerHTML = "Error al cargar: " + archivo;
+            // Por si ocurre algún error inesperado
+            window.msgs.style.color = "#ff0000";
+            window.msgs.innerHTML = "Error al intentar enviar el Payload";
+            console.log(e);
         }
     }
-
 
     function aplicarTemp() {
         var grados = document.getElementById('tempSelect').value;
