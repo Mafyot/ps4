@@ -859,23 +859,28 @@ async function main() {
     log('STAGE: achieve arbitrary read/write primitive');
     await make_arw(rdr, view2, pop);
 
+    // --- NUEVO BLOQUE DE ESTABILIDAD ---
     clear_log();
+    log("WebKit OK. Esperando 3 segundos para estabilizar el Kernel...");
     
-    // Importamos lapse y esperamos a que termine su ejecución
+    // Pausa crítica para evitar el error 'pktopts'
+    await new Promise(resolve => setTimeout(resolve, 3000)); 
+
+    log("Lanzando Lapse...");
+    
     import('./lapse.mjs').then(() => {
-        // Añadimos un pequeño retraso para asegurar que GoldHEN se inyectó
+        // El resto de tu código para mostrar botones...
         setTimeout(() => {
             const btnContainer = document.getElementById('buttonsContainer');
             const msgStatus = document.getElementById('msgs');
-            
             if (btnContainer) {
-                btnContainer.style.display = 'block'; // Muestra los botones
-                if (msgStatus) msgStatus.innerHTML = "GoldHEN v2.4b18.2 Loaded Successfully!";
-                console.log("Botones activados correctamente.");
+                btnContainer.style.display = 'block';
+                if (msgStatus) msgStatus.innerHTML = "GoldHEN Cargado con Éxito!";
             }
-        }, 5000); // 5 segundos de espera tras cargar Lapse
+        }, 2000); // Puedes bajar este a 2 seg ya que pusimos el delay arriba
     }).catch(err => {
-        log("Error cargando Lapse: " + err);
+        alert("Fallo en Kernel (pktopts). Por favor, reinicia el navegador.");
+        log("Error: " + err);
     });
 }
 main();
