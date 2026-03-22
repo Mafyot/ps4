@@ -1817,6 +1817,9 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
+// --- 1. VARIABLES Y SISTEMA DE NOTIFICACIÓN ---
+var LoadedMSG = "";
+
 function PayloadLoader(Pfile)
 {
     var loader_addr = chain.sysp(
