@@ -859,8 +859,33 @@ async function main() {
     log('STAGE: achieve arbitrary read/write primitive');
     await make_arw(rdr, view2, pop);
 
+    // --- NUEVO BLOQUE DE ESTABILIDAD ---
     clear_log();
+<<<<<<< HEAD
     // path to your script that will use the exploit
     import('./lapse.mjs');
+=======
+    log("WebKit OK. Esperando 3 segundos para estabilizar el Kernel...");
+    
+    // Pausa crítica para evitar el error 'pktopts'
+    await new Promise(resolve => setTimeout(resolve, 3000)); 
+
+    log("Lanzando Lapse...");
+    
+    import('./lapse.mjs').then(() => {
+        // El resto de tu código para mostrar botones...
+        setTimeout(() => {
+            const btnContainer = document.getElementById('buttonsContainer');
+            const msgStatus = document.getElementById('msgs');
+            if (btnContainer) {
+                btnContainer.style.display = 'block';
+                if (msgStatus) msgStatus.innerHTML = "GoldHEN Cargado con Éxito!";
+            }
+        }, 2000); // Puedes bajar este a 2 seg ya que pusimos el delay arriba
+    }).catch(err => {
+        alert("Fallo en Kernel (pktopts). Por favor, reinicia el navegador.");
+        log("Error: " + err);
+    });
+>>>>>>> 496fbb362b0313686117ca01309255bb31829719
 }
 main();
