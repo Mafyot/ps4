@@ -1686,17 +1686,6 @@ function runBinLoader() {
     log('BinLoader is ready. Send a payload to port 9020 now');
 }
 
-// overview:
-// * double free a aio_entry (resides at a 0x80 malloc zone)
-// * type confuse a evf and a ip6_rthdr
-// * use evf/rthdr to read out the contents of the 0x80 malloc zone
-// * leak a address in the 0x100 malloc zone
-// * write the leaked address to a aio_entry
-// * double free the leaked address
-// * corrupt a ip6_pktopts for restricted r/w
-// * corrupt a pipe for arbitrary r/w
-//
-// the exploit implementation also assumes that we are pinned to one core
 export async function kexploit() {
     const _init_t1 = performance.now();
     await init();
@@ -1710,22 +1699,22 @@ export async function kexploit() {
     }
     
      if (localStorage.ExploitLoaded === "yes" && sessionStorage.ExploitLoaded!="yes") {
-		   setTimeout(PayloadLoader("aio_patches.bin"),500);
-		   setTimeout(PayloadLoader("goldhen_2.4b18.6.bin"),500);
-		   msgs.innerHTML = "GoldHEN v2.4b18.6 Loaded ...";
+		   setTimeout(function(){ PayloadLoader("aio_patches.bin"); }, 500);
+		   setTimeout(function(){ PayloadLoader("goldhen_2.4b18.9.bin"); }, 1500);
+		   msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded ...";
+           
+           // Esperamos a que GoldHEN cargue para mostrar el menú
+           setTimeout(function(){ 
+               if(window.mostrarMenuFinal) window.mostrarMenuFinal(); 
+           }, 4000);
+
 		   return new Promise(() => {});
       }
  
-    // fun fact:
-    // if the first thing you do since boot is run the web browser, WebKit can
-    // use all the cores
     const main_mask = new Long();
     get_our_affinity(main_mask);
     log(`main_mask: ${main_mask}`);
 
-    // pin to 1 core so that we only use 1 per-cpu bucket. this will make heap
-    // spraying and grooming easier
-    log(`pinning process to core #${main_core}`);
     set_our_affinity(new Long(1 << main_core));
     get_our_affinity(main_mask);
     log(`main_mask: ${main_mask}`);
@@ -1807,6 +1796,7 @@ function malloc32(sz) {
     ptr.backing = new Uint32Array(backing.buffer);
     return ptr;
 }
+
 function array_from_address(addr, size) {
    var og_array = new Uint32Array(0x1000);
     var og_array_i = mem.addrof(og_array).add(0x10);
@@ -1817,7 +1807,8 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-function PayloadLoader(Pfile)
+// Hacemos global la función para que el index la vea
+window.PayloadLoader = function(Pfile)
 {
     var loader_addr = chain.sysp(
   'mmap',
@@ -1858,17 +1849,22 @@ function PayloadLoader(Pfile)
     );	
    }
  };
-
-
 }
 
+// EJECUCIÓN FINAL
 kexploit().then(() => {
+    setTimeout(function(){
+        PayloadLoader("aio_patches.bin");
+        log("AIO Fixes Applied.!");
+    }, 500);
 
-//Load ABC fix as a regular Payload
-setTimeout(PayloadLoader("aio_patches.bin"),500);
-log("AIO Fixes Applied.!");
-//Load GoldHEN :)
-setTimeout(PayloadLoader("goldhen_2.4b18.9.bin"),500);
-msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded ...";
+    setTimeout(function(){
+        PayloadLoader("goldhen_2.4b18.9.bin");
+        msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded ...";
+    }, 1500);
 
-})
+    // Disparar el menú en el index tras cargar GoldHEN
+    setTimeout(function(){
+        if(window.mostrarMenuFinal) window.mostrarMenuFinal();
+    }, 4000);
+});
