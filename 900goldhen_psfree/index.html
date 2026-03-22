@@ -3,16 +3,82 @@
 <head>
 <title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
+<style>
+    /* Estilos para el nuevo recuadro */
+    .menu-container {
+        border: 2px solid #ffffff;
+        padding: 20px;
+        margin: 20px auto;
+        width: 350px;
+        background-color: rgba(0,0,0,0.7);
+        border-radius: 15px;
+        text-align: center;
+        color: white;
+        font-family: sans-serif;
+    }
+    .btn {
+        background-color: #003791; /* Azul PlayStation */
+        color: white;
+        padding: 10px 20px;
+        margin: 10px 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .btn:hover { background-color: #004cc4; }
+    select {
+        padding: 8px;
+        border-radius: 5px;
+        background: #222;
+        color: white;
+        border: 1px solid #777;
+    }
+</style>
 </head>
 <body>
 <script>
 if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+
+// Función para cargar los payloads .bin
+function cargarPayload(nombreArchivo) {
+    document.getElementById('msgs').innerHTML = "Enviando: " + nombreArchivo + "...";
+    // Redirige al archivo bin para que el exploit lo procese
+    window.location.href = nombreArchivo;
+}
+
+function aplicarTemp() {
+    var grados = document.getElementById('tempSelect').value;
+    var archivo = "fan-threshold" + grados + ".bin";
+    cargarPayload(archivo);
+}
 </script>
+
 <pre id='console'></pre>
 <h1>PS4 9.00 GoldHEN Host | Psfree + Lapse</h1>
 <hr>
-<br>
-<h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
+
+<!-- NUEVO RECUADRO CON BOTONES -->
+<div class="menu-container">
+    <button class="btn" onclick="cargarPayload('disable-updates.bin')">Disable Updates</button>
+    <hr style="border: 0.5px solid #444;">
+    <p>Control de Temperatura</p>
+    <select id="tempSelect">
+        <option value="40">40°C</option>
+        <option value="45">45°C</option>
+        <option value="50">50°C</option>
+        <option value="55" selected>55°C</option>
+        <option value="60">60°C</option>
+        <option value="65">65°C</option>
+        <option value="70">70°C</option>
+        <option value="75">75°C</option>
+    </select>
+    <button class="btn" onclick="aplicarTemp()">Activar Temperatura</button>
+</div>
+
+<!-- He reducido los márgenes originales para que se vea todo en una sola pantalla -->
+<h1 id="msgs" style="font-size: 30px; margin-top: 30px; margin-bottom: 50px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
+
 <script type='module' src='alert.mjs'></script>
 </body>
 </html>
