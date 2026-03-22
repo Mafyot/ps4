@@ -1,83 +1,143 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+<meta charset="UTF-8">
 <title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
 <style>
-    /* Estilos para el nuevo recuadro */
-    .menu-container {
-        border: 2px solid #ffffff;
-        padding: 20px;
-        margin: 20px auto;
-        width: 350px;
-        background-color: rgba(0,0,0,0.7);
-        border-radius: 15px;
+    /* Centrado total de la página */
+    body {
+        background-color: #1a1a1a; /* Color oscuro de fondo por si falla el CSS externo */
+        color: white;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden; /* Evita scroll innecesario en la PS4 */
+    }
+
+    h1 { margin: 10px 0; }
+    hr { width: 80%; border: 0.5px solid #444; }
+
+    /* Contenedor principal centrado */
+    .main-container {
         text-align: center;
-        color: white;
-        font-family: sans-serif;
+        width: 100%;
+        max-width: 600px;
     }
+
+    /* Recuadro de herramientas */
+    .menu-box {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid #003791;
+        border-radius: 20px;
+        padding: 30px;
+        margin: 20px auto;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    /* Botones estilizados */
     .btn {
-        background-color: #003791; /* Azul PlayStation */
+        background: linear-gradient(180deg, #004cc4 0%, #003791 100%);
         color: white;
-        padding: 10px 20px;
-        margin: 10px 5px;
         border: none;
-        border-radius: 5px;
-        cursor: pointer;
+        padding: 12px 25px;
+        margin: 10px;
+        border-radius: 8px;
         font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.3s;
+        min-width: 180px;
     }
-    .btn:hover { background-color: #004cc4; }
+
+    .btn:hover {
+        background: #005cf1;
+        transform: scale(1.05);
+    }
+
+    /* Selector de temperatura */
     select {
-        padding: 8px;
-        border-radius: 5px;
         background: #222;
         color: white;
-        border: 1px solid #777;
+        border: 1px solid #003791;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-right: 10px;
+        outline: none;
+    }
+
+    /* Mensaje de estado inferior */
+    #msgs {
+        font-size: 24px;
+        font-weight: 300;
+        color: #aaa;
+        margin-top: 20px;
+    }
+
+    .temp-section {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #444;
     }
 </style>
 </head>
 <body>
+
 <script>
-if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+    if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
 
-// Función para cargar los payloads .bin
-function cargarPayload(nombreArchivo) {
-    document.getElementById('msgs').innerHTML = "Enviando: " + nombreArchivo + "...";
-    // Redirige al archivo bin para que el exploit lo procese
-    window.location.href = nombreArchivo;
-}
+    // Función para enviar payloads
+    function cargarPayload(archivo) {
+        document.getElementById('msgs').innerHTML = "Cargando: " + archivo + "...";
+        // Redirección directa al archivo .bin
+        setTimeout(function(){ 
+            window.location.href = archivo; 
+        }, 500);
+    }
 
-function aplicarTemp() {
-    var grados = document.getElementById('tempSelect').value;
-    var archivo = "fan-threshold" + grados + ".bin";
-    cargarPayload(archivo);
-}
+    function aplicarTemp() {
+        var seleccion = document.getElementById('tempSelect').value;
+        var nombreBin = "fan-threshold" + seleccion + ".bin";
+        cargarPayload(nombreBin);
+    }
 </script>
 
-<pre id='console'></pre>
-<h1>PS4 9.00 GoldHEN Host | Psfree + Lapse</h1>
-<hr>
+<div class="main-container">
+    <pre id='console'></pre>
+    <h1>PS4 9.00 GoldHEN Host</h1>
+    <p style="color: #0081ff;">Psfree + Lapse Edition</p>
+    <hr>
 
-<!-- NUEVO RECUADRO CON BOTONES -->
-<div class="menu-container">
-    <button class="btn" onclick="cargarPayload('disable-updates.bin')">Disable Updates</button>
-    <hr style="border: 0.5px solid #444;">
-    <p>Control de Temperatura</p>
-    <select id="tempSelect">
-        <option value="40">40°C</option>
-        <option value="45">45°C</option>
-        <option value="50">50°C</option>
-        <option value="55" selected>55°C</option>
-        <option value="60">60°C</option>
-        <option value="65">65°C</option>
-        <option value="70">70°C</option>
-        <option value="75">75°C</option>
-    </select>
-    <button class="btn" onclick="aplicarTemp()">Activar Temperatura</button>
+    <div class="menu-box">
+        <!-- Botón Disable Updates -->
+        <button class="btn" onclick="cargarPayload('disable-updates.bin')">Disable Updates</button>
+
+        <!-- Sección Temperatura -->
+        <div class="temp-section">
+            <p>Ajustar Ventilador</p>
+            <select id="tempSelect">
+                <option value="40">40°C</option>
+                <option value="45">45°C</option>
+                <option value="50">50°C</option>
+                <option value="55">55°C</option>
+                <option value="60" selected>60°C</option>
+                <option value="65">65°C</option>
+                <option value="70">70°C</option>
+                <option value="75">75°C</option>
+            </select>
+            <button class="btn" onclick="aplicarTemp()">Activar Temperatura</button>
+        </div>
+    </div>
+
+    <!-- Mensaje de carga -->
+    <h1 id="msgs">Loading GoldHEN v2.4b18.9... Please Wait</h1>
 </div>
-
-<!-- He reducido los márgenes originales para que se vea todo en una sola pantalla -->
-<h1 id="msgs" style="font-size: 30px; margin-top: 30px; margin-bottom: 50px;">Loading GoldHEN v2.4b18.9... Please Wait</h1>
 
 <script type='module' src='alert.mjs'></script>
 </body>
