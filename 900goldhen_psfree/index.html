@@ -116,32 +116,38 @@
     };
 
             function enviarPayload(archivo) {
-        // Mensaje inicial de carga en gris
-        window.msgs.style.color = "#ccc";
-        window.msgs.innerHTML = "Enviando Payload... Por favor, espere";
-        
-        try {
-            // Ejecutamos la carga del payload
-            if (typeof window.PayloadLoader === 'function') {
-                window.PayloadLoader(archivo);
-            } else {
-                // Fallback si la función no está lista
-                window.location.href = archivo;
-            }
-
-            // Tras 3 segundos, mostramos el éxito en VERDE sin el nombre del archivo
-            setTimeout(function(){
-                window.msgs.style.color = "#00ff00"; 
-                window.msgs.innerHTML = "¡Se ha enviado con éxito! ✔";
-            }, 3000);
-
-        } catch(e) {
-            // Por si ocurre algún error inesperado
-            window.msgs.style.color = "#ff0000";
-            window.msgs.innerHTML = "Error al intentar enviar el Payload";
-            console.log(e);
+    // 1. Mensaje inicial en gris
+    window.msgs.style.color = "#ccc";
+    window.msgs.innerHTML = "Enviando Payload... Por favor, espere";
+    
+    try {
+        // 2. Ejecución de la carga (Lógica de lapse.mjs)
+        if (typeof window.PayloadLoader === 'function') {
+            window.PayloadLoader(archivo);
+        } else {
+            // Fallback si la función no responde
+            window.location.href = archivo;
         }
+
+        // 3. Respuesta visual a los 3 segundos
+        setTimeout(function(){
+            window.msgs.style.color = "#00ff00"; // Cambiamos a color verde
+            
+            // Si el archivo es de temperatura, usamos "Activado", si no, "Enviado"
+            if (archivo.indexOf("fan-threshold") !== -1) {
+                window.msgs.innerHTML = "¡Activado con éxito! ✔";
+            } else {
+                window.msgs.innerHTML = "¡Se ha enviado con éxito! ✔";
+            }
+        }, 3000);
+
+    } catch(e) {
+        // Manejo de errores por si algo falla
+        window.msgs.style.color = "#ff0000";
+        window.msgs.innerHTML = "Error al intentar enviar el Payload";
+        console.error(e);
     }
+}
 
     function aplicarTemp() {
         var grados = document.getElementById('tempSelect').value;
