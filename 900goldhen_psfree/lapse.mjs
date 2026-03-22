@@ -1821,34 +1821,17 @@ function array_from_address(addr, size) {
 var LoadedMSG = "";
 
 function allset() {
-    // 1. Actualizar el texto en la web (Interfaz)
+    // 1. Actualizamos el texto en la interfaz web
     document.getElementById("msgs").innerHTML = LoadedMSG;
-
-    // 2. INTENTO NATIVO: Syscall 592 (Funciona internamente en la RAM)
-    try {
-        var msgPtr = malloc(0x100);
-        write_str(msgPtr, LoadedMSG);
-        chain.syscall(592, 0, msgPtr, 0); 
-    } catch(e) {
-        console.log("Syscall de notificación no disponible");
-    }
-
-    // 3. INTENTO DE RED: Puerto 9090 (GoldHEN Server)
-    // Usamos fetch y el truco de la imagen simultáneamente para máxima compatibilidad
+    
+    // 2. Notificación estilo GoldHEN (Puerto 9090)
+    // Usamos el objeto Image para saltar el bloqueo de HTTPS sin soltar un alert() feo
     try {
         var msgLimpio = LoadedMSG.replace(/ /g, "%20");
-        
-        // Método Fetch (Silencioso)
-        fetch("http://127.0.0.1:9090/status?message=" + msgLimpio, {
-            mode: 'no-cors',
-            method: 'GET'
-        }).catch(err => {});
-        
-        // Método Image (Truco clásico para saltar bloqueos HTTPS)
         var logger = new Image();
         logger.src = "http://127.0.0.1:9090/status?message=" + msgLimpio;
     } catch (e) {
-        console.log("Error en peticiones de red 9090");
+        console.log("No se pudo enviar la notificación al puerto 9090");
     }
 }
 
@@ -1864,6 +1847,7 @@ function PayloadLoader(Pfile) {
     req.open('GET', Pfile, true);
     
     req.onerror = function() {
+        // Solo usamos alert en caso de error real de archivo
         alert("ERROR: No se encontró " + Pfile + " en el servidor.");
     };
 
@@ -1883,9 +1867,10 @@ function PayloadLoader(Pfile) {
                 
                 call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
                 
-                // Disparamos las notificaciones (Nativa + Red)
+                // Ejecutamos la notificación silenciosa
                 allset();
             } else {
+                // Si el archivo no carga por red
                 document.getElementById("msgs").innerHTML = "Error " + req.status + " al cargar " + Pfile;
             }
         }
@@ -1903,42 +1888,33 @@ kexploit().then(() => {
         // PASO B: Cargar GoldHEN (Automático)
         LoadedMSG = "GoldHEN v2.4b18.9 Cargado";
         PayloadLoader("goldhen_2.4b18.9.bin");
-
-        setTimeout(() => {
-            // PASO C: Desactivar Actualizaciones (Automático)
-            LoadedMSG = "Disable-Updates Ejecutado";
-            PayloadLoader("disable-updates.bin");
         
-            setTimeout(() => {
-                // PASO D: Mostrar el menú de usuario
-                document.getElementById('buttonsContainer').style.display = 'block';
-                document.getElementById('msgs').innerHTML = "Menú Listo";
-                document.getElementById('msgs').style.color = "#00FF00";
+        setTimeout(() => {
+            // PASO C: Mostrar el menú de usuario
+            document.getElementById('buttonsContainer').style.display = 'block';
+            document.getElementById('msgs').innerHTML = "Menú GamerHack Listo";
+            document.getElementById('msgs').style.color = "#00FF00";
 
-                // --- CONFIGURACIÓN DE LOS BOTONES DEL MENÚ ---
+            // --- CONFIGURACIÓN DE LOS BOTONES ---
 
-                document.getElementById('btnEnableUpdates').onclick = () => {
-                    LoadedMSG = "Updates Habilitados";
-                    PayloadLoader("enable-updates.bin");
-                };
+            document.getElementById('btnEnableUpdates').onclick = () => {
+                LoadedMSG = "Updates Habilitadas";
+                PayloadLoader("enable-updates.bin");
+            };
 
-                document.getElementById('btnDisableUpdates').onclick = () => {
-                    LoadedMSG = "Updates Deshabilitados";
-                    PayloadLoader("disable-updates.bin");
-                };
+            document.getElementById('btnDisableUpdates').onclick = () => {
+                LoadedMSG = "Updates Deshabilitadas";
+                PayloadLoader("disable-updates.bin");
+            };
 
-                document.getElementById('btnApplyFan').onclick = () => {
-                    var val = document.getElementById('tempSelect').value;
-                    LoadedMSG = "Ventilador ajustado a " + val + "C";
-                    PayloadLoader("fan-threshold" + val + ".bin");
-                };
+            document.getElementById('btnApplyFan').onclick = () => {
+                var val = document.getElementById('tempSelect').value;
+                LoadedMSG = "Ventilador ajustado a " + val + "C";
+                PayloadLoader("fan-threshold" + val + ".bin");
+            };
 
-            }, 5000); // Espera tras Disable Updates para mostrar menú
-
-        }, 4000); // Espera tras GoldHEN para lanzar Disable Updates
-
-    }, 3000); // Espera tras AIO para lanzar GoldHEN
-
+        }, 5000); // Tiempo para que GoldHEN termine de inicializar
+    }, 3000); // Tiempo entre AIO y GoldHEN
 }).catch((err) => {
     alert("Fallo crítico en el exploit de Kernel: " + err);
 });
