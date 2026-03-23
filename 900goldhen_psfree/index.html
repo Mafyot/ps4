@@ -36,6 +36,7 @@
         document.getElementById('menu-wrapper').style.display = 'block';
         window.msgs.style.color = "#ccc";
         window.msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded Successfully ✔";
+        // Aquí no añadimos nada porque GoldHEN ya lanza su propio pop-up
     };
 
     function enviarPayload(archivo) {
@@ -44,13 +45,21 @@
         try {
             if (typeof window.PayloadLoader === 'function') {
                 window.PayloadLoader(archivo);
+                
+                // NOTIFICACIÓN PARA TUS BOTONES
                 setTimeout(function(){
                     window.msgs.style.color = "#00ff00"; 
+                    var texto = "";
                     if (archivo.indexOf("fan") !== -1) {
-                        window.msgs.innerHTML = "¡Activado con éxito! ✔";
+                        texto = "¡Temperatura Activada! ✔";
                     } else {
-                        window.msgs.innerHTML = "¡Se ha enviado con éxito! ✔";
+                        texto = "¡Se ha enviado con éxito! ✔";
                     }
+                    window.msgs.innerHTML = texto;
+                    
+                    // ESTO DISPARA EL POP-UP NEGRO QUE TE FALTABA
+                    alert(texto); 
+
                 }, 3000);
             } else {
                 window.location.href = archivo;
