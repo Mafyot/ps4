@@ -1758,6 +1758,14 @@ export async function kexploit() {
 
         log('\nSTAGE: Patch kernel');
         await patch_kernel(kbase, kmem, p_ucred, restore_info);
+
+		 // --- AÑADE ESTO JUSTO AQUÍ (Dentro del try, al final) ---
+        window.chain = chain;
+        window.mem = mem;
+        window.malloc = malloc;
+        window.sysi = sysi;
+        window.call_nze = call_nze;
+        // -------------------------------------------------------
         
     } finally {
         close(unblock_fd);
@@ -1867,9 +1875,3 @@ kexploit().then(() => {
         if(window.mostrarMenuFinal) window.mostrarMenuFinal();
     }, 4000);
 });
-// ESTO ES LO QUE ACTIVA LAS NOTIFICACIONES NATIVAS REALES
-window.chain = chain;
-window.mem = mem;
-window.malloc = malloc;
-window.sysi = sysi;
-window.call_nze = call_nze;
