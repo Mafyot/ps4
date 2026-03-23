@@ -1,6 +1,4 @@
-# PSFree version 1.5.1
-
-PSFree is a collection of exploits for the PS4 console. The main focus of the repo is for the PS4, but we try to make things portable to PS5.
+# PSFree+Lapse v.1.5.1
 
 ## Features
 
@@ -18,29 +16,12 @@ PSFree is a collection of exploits for the PS4 console. The main focus of the re
 
 ## Supported by this Repository
 
-This table indicates firmware versions for which the _current version_ of this repository provides a functional and tested exploit chain.
 
 |               | PSFree    | Lapse     |
 | :------------ | :-------- | :-------- |
 | PlayStation 4 | 7.00-9.60 | 7.00-9.60 |
 | PlayStation 5 | N/A       | N/A       |
 
-_Note: Support for other firmwares listed in the "Vulnerability Scope" table may, or may not, be actively being worked on or may have been supported in previous versions of this repository. Please check `CHANGELOG.md` for historical support._
 
-## TODO List
 
-- [X] ~~Blackscreen/Save issue with certain games~~ Issue is patched post-exploit
-  - [ ] Determine root cause and fix more directly
-- [ ] `lapse.mjs`: Just set the bits for JIT privs
-- [ ] `view.mjs`: Assumes PS4, support PS5 as well
-- [ ] Add PS5 support
-
-## Additional features
-
-- Language switcher
-- HEN flavor selector
-- GoldHEN version selector
-- Descriptive payload selection
-- Unsuported payload loading protection
-- Load payloads with GoldHEN's PayLoader through a mirrored https://mafyot.github.io/ps4
-
+https://mafyot.github.io/ps4
