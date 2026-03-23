@@ -5,22 +5,69 @@
 <title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
 <style>
-    body { background-color: #121212; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow: hidden; }
+    /* Estilos para centrado y diseño moderno */
+    body { 
+        background-color: #121212; 
+        color: white; 
+        font-family: sans-serif; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+        min-height: 100vh; 
+        margin: 0; 
+        overflow: hidden; 
+    }
     .main-container { text-align: center; width: 100%; max-width: 550px; }
-    #menu-wrapper { display: none; background: rgba(255, 255, 255, 0.07); border: 2px solid #003791; border-radius: 20px; padding: 25px; margin: 20px auto; backdrop-filter: blur(10px); }
-    .btn { background: linear-gradient(180deg, #004cc4 0%, #003791 100%); color: white; border: none; padding: 12px 25px; margin: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; min-width: 200px; font-size: 15px; }
+    
+    #menu-wrapper { 
+        display: none; 
+        background: rgba(255, 255, 255, 0.07); 
+        border: 2px solid #003791; 
+        border-radius: 20px; 
+        padding: 25px; 
+        margin: 20px auto; 
+        backdrop-filter: blur(10px); 
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    
+    .btn { 
+        background: linear-gradient(180deg, #004cc4 0%, #003791 100%); 
+        color: white; 
+        border: none; 
+        padding: 12px 25px; 
+        margin: 8px; 
+        border-radius: 8px; 
+        font-weight: bold; 
+        cursor: pointer; 
+        min-width: 200px; 
+        font-size: 15px; 
+    }
     .btn:hover { background: #005cf1; }
-    select { background: #222; color: white; border: 1px solid #003791; padding: 10px; border-radius: 8px; font-size: 16px; color: white; outline: none; }
+    
+    select { 
+        background: #222; 
+        color: white; 
+        border: 1px solid #003791; 
+        padding: 10px; 
+        border-radius: 8px; 
+        font-size: 16px; 
+        outline: none; 
+    }
+    
     #msgs { font-size: 26px; color: #ccc; margin-top: 15px; }
     hr { width: 90%; border: 0.5px solid #333; margin: 15px auto; }
 </style>
 </head>
 <body>
+
 <script>
+    // Manejo de historial y estado inicial
     history.replaceState(null,null,'index.html');
     var histlength=history.length;
     history.go(-histlength);
 
+    // Lógica de Caché Offline
     function DLProgress(e){
         Percent=(Math.round(e.loaded / e.total * 100));
         window.msgs.innerHTML="Installing Offline Cache: " + Percent + "%";
@@ -32,34 +79,34 @@
     window.applicationCache.oncached=function(e){DisplayCacheProgress();};
     window.applicationCache.onupdateready=function(e){DisplayCacheProgress();};
 
+    // Función disparada por lapse.mjs tras el exploit
     window.mostrarMenuFinal = function() {
         document.getElementById('menu-wrapper').style.display = 'block';
         window.msgs.style.color = "#ccc";
         window.msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded Successfully ✔";
-        // Aquí no añadimos nada porque GoldHEN ya lanza su propio pop-up
     };
 
+    // Función para enviar payloads con notificación nativa
     function enviarPayload(archivo) {
         window.msgs.style.color = "#ccc";
         window.msgs.innerHTML = "Enviando Payload... Por favor, espere";
+        
         try {
             if (typeof window.PayloadLoader === 'function') {
                 window.PayloadLoader(archivo);
                 
-                // NOTIFICACIÓN PARA TUS BOTONES
                 setTimeout(function(){
                     window.msgs.style.color = "#00ff00"; 
-                    var texto = "";
-                    if (archivo.indexOf("fan") !== -1) {
-                        texto = "¡Temperatura Activada! ✔";
-                    } else {
-                        texto = "¡Se ha enviado con éxito! ✔";
-                    }
+                    var texto = (archivo.indexOf("fan") !== -1) ? "¡Temperatura Activada! ✔" : "¡Se ha enviado con éxito! ✔";
                     window.msgs.innerHTML = texto;
-                    
-                    // ESTO DISPARA EL POP-UP NEGRO QUE TE FALTABA
-                    alert(texto); 
 
+                    // INTENTO DE NOTIFICACIÓN NEGRA NATIVA (Sin ventana de alerta blanca)
+                    if (typeof window.postMessage === 'function') {
+                        window.postMessage({ type: 'ps4_notification', text: texto }, '*');
+                    }
+                    if (window.utils && window.utils.notify) {
+                        window.utils.notify(texto);
+                    }
                 }, 3000);
             } else {
                 window.location.href = archivo;
@@ -80,21 +127,29 @@
     <pre id='console'></pre>
     <h1 style="color: #0081ff;">PS4 9.00 GoldHEN Host</h1>
     <hr>
+
     <div id="menu-wrapper">
         <button class="btn" onclick="enviarPayload('disable-updates.bin')">Disable Updates</button>
-        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #444;">
-            <p style="margin-bottom: 15px;">Control de Temperatura</p>
+        
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #444;">
+            <p style="margin-bottom: 10px;">Control de Temperatura</p>
             <select id="tempC">
-                <option value="40">40</option><option value="45">45</option>
-                <option value="50">50</option><option value="55" selected>55</option>
-                <option value="60">60</option><option value="65">65</option>
-                <option value="70">70</option><option value="75">75</option>
+                <option value="40">40</option>
+                <option value="45">45</option>
+                <option value="50">50</option>
+                <option value="55" selected>55</option>
+                <option value="60">60</option>
+                <option value="65">65</option>
+                <option value="70">70</option>
+                <option value="75">75</option>
             </select> °C
             <button class="btn" onclick="aplicarTemp()" style="min-width: 150px;">Activar Temperatura</button>
         </div>
     </div>
+
     <h1 id="msgs">Wait a Moment...</h1>
 </div>
+
 <script type='module' src='alert.mjs'></script>
 </body>
 </html>
