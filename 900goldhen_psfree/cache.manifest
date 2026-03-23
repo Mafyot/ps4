@@ -1,5 +1,7 @@
 CACHE MANIFEST
-# v1.2 cambios index
+
+# v2.0
+
 CACHE:
 ../img.jpg
 ../style.css
@@ -31,4 +33,3 @@ module/utils.mjs
 module/view.mjs
 psfree.mjs
 rop/900.mjs
-send.mjs
