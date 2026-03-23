@@ -42,5 +42,5 @@ _Note: Support for other firmwares listed in the "Vulnerability Scope" table may
 - GoldHEN version selector
 - Descriptive payload selection
 - Unsuported payload loading protection
-- Load payloads with GoldHEN's PayLoader through a mirrored [http host](http://mafyot.github.io/ps4)
+- Load payloads with GoldHEN's PayLoader through a mirrored https://mafyot.github.io/ps4
 
