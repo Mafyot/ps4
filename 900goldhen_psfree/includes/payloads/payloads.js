@@ -208,7 +208,9 @@ export function load_PUPDecrypt(name){
 }
 
 export function load_FanThreshold(name){
-    const temp = sessionStorage.getItem('fanTemp');
+    // Obtenemos el ID del botón pulsado (40, 45, etc.)
+    const temp = sessionStorage.getItem('fanTemp') || "55"; 
+    // Cargamos el binario con la ruta exacta de tu repositorio
     Loadpayloadlocal(`./includes/payloads/Bins/Tools/fan-thresholds/ps4-fan-threshold${temp}.bin`, name);
 }
 
