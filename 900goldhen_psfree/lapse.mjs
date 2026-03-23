@@ -1867,3 +1867,7 @@ kexploit().then(() => {
         if(window.mostrarMenuFinal) window.mostrarMenuFinal();
     }, 4000);
 });
+// Añade esto al final de lapse.mjs para habilitar las notificaciones nativas
+window.chain = chain;
+window.mem = mem;
+window.malloc = malloc;
