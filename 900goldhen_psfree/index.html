@@ -5,10 +5,11 @@
 <title>PS4 9.00 GoldHEN Host | Psfree + Lapse</title>
 <link rel="stylesheet" href="../style.css">
 <style>
+    /* DISEÑO CENTRADO */
     body {
-        background-color: #161616;
+        background-color: #121212;
         color: white;
-        font-family: sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -17,33 +18,37 @@
         margin: 0;
         overflow: hidden;
     }
-    .main-container { text-align: center; width: 100%; max-width: 600px; }
+    .main-container { text-align: center; width: 100%; max-width: 550px; }
+    
     #menu-wrapper {
-        display: none;
+        display: none; 
         background: rgba(255, 255, 255, 0.05);
         border: 2px solid #003791;
-        border-radius: 20px;
-        padding: 30px;
-        margin: 20px auto;
+        border-radius: 25px;
+        padding: 35px;
+        margin: 25px auto;
         backdrop-filter: blur(10px);
     }
     .btn {
         background: linear-gradient(180deg, #004cc4 0%, #003791 100%);
         color: white;
         border: none;
-        padding: 12px 25px;
+        padding: 14px 28px;
         margin: 10px;
-        border-radius: 8px;
+        border-radius: 10px;
         font-weight: bold;
         cursor: pointer;
-        min-width: 200px;
+        width: 220px;
+        font-size: 16px;
     }
+    .btn:hover { background: #005cf1; transform: scale(1.02); }
     select {
         background: #222;
         color: white;
         border: 1px solid #003791;
         padding: 10px;
         border-radius: 8px;
+        font-size: 16px;
     }
     #msgs { font-size: 28px; color: #ccc; margin-top: 20px; }
     hr { width: 80%; border: 0.5px solid #333; margin: 20px auto; }
@@ -52,6 +57,7 @@
 <body>
 
 <script>
+    /* LÓGICA DE CACHÉ E HISTORIAL */
     history.replaceState(null,null,'index.html');
     var histlength=history.length;
     history.go(-histlength);
@@ -62,7 +68,6 @@
     }
 
     function DisplayCacheProgress(){
-        // Mensaje simplificado: ya no pide cerrar el navegador
         setTimeout(function(){window.msgs.innerHTML="Cache Installed Successfully ✔";},1500);
     }
 
@@ -70,63 +75,85 @@
     window.applicationCache.oncached=function(e){DisplayCacheProgress();};
     window.applicationCache.onupdateready=function(e){DisplayCacheProgress();};
 
+    /* --- FUNCIÓN DE NOTIFICACIÓN NATIVA REAL DE PS4 --- */
+    function notify(message) {
+        if (typeof chain !== 'undefined' && chain.syscall) {
+            try {
+                var buffer = chain.syscall(477, 0, 0x1000, 7, 0x1000, -1, 0); 
+                writeString(buffer, message);
+                chain.syscall(591, 0x2105, buffer);
+            } catch(e) {
+                console.log("Error en notificación nativa: " + e);
+            }
+        } else {
+            window.msgs.innerHTML = message;
+        }
+    }
+
+    /* LÓGICA POST-EXPLOIT */
     window.mostrarMenuFinal = function() {
         document.getElementById('menu-wrapper').style.display = 'block';
-        window.msgs.style.color = "#ccc";
-        window.msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded Successfully ✔";
+        window.msgs.innerHTML = "GoldHEN v2.4b18.9 Loaded ✔";
+        notify("GoldHEN v2.4b18.9 Loaded Successfully");
     };
 
     function enviarPayload(archivo) {
         window.msgs.style.color = "#ccc";
         window.msgs.innerHTML = "Enviando Payload... Por favor, espere";
         
-        try {
-            if (typeof window.PayloadLoader === 'function') {
-                window.PayloadLoader(archivo);
-            } else {
-                window.location.href = archivo;
-            }
-
-            setTimeout(function(){
-                window.msgs.style.color = "#00ff00"; 
-                if (archivo.indexOf("fan-threshold") !== -1) {
-                    window.msgs.innerHTML = "¡Activado con éxito! ✔";
-                } else {
-                    window.msgs.innerHTML = "¡Se ha enviado con éxito! ✔";
-                }
-            }, 3000);
-
-        } catch(e) {
-            window.msgs.style.color = "#ff0000";
-            window.msgs.innerHTML = "Error al intentar enviar el Payload";
+        if (typeof window.PayloadLoader === 'function') {
+            window.PayloadLoader(archivo);
+        } else {
+            window.location.href = archivo;
         }
+
+        setTimeout(function(){
+            window.msgs.style.color = "#00ff00";
+            
+            if (archivo.indexOf("fan-threshold") !== -1) {
+                window.msgs.innerHTML = "¡Activado con éxito! ✔";
+                notify("¡Temperatura Activada!");
+            } else {
+                window.msgs.innerHTML = "¡Se ha enviado con éxito! ✔";
+                notify("¡Payload Enviado con éxito!");
+            }
+        }, 3000);
     }
 
     function aplicarTemp() {
         var grados = document.getElementById('tempSelect').value;
         enviarPayload("fan-threshold" + grados + ".bin");
     }
+
+    function writeString(addr, str) {
+        for (var i = 0; i < str.length; i++) {
+            mem.write8(addr.add(i), str.charCodeAt(i));
+        }
+        mem.write8(addr.add(str.length), 0);
+    }
 </script>
 
 <div class="main-container">
     <pre id='console'></pre>
     <h1>PS4 9.00 GoldHEN Host</h1>
+    <p style="color: #0081ff; margin:0;">Psfree + Lapse Edition</p>
     <hr>
 
     <div id="menu-wrapper">
         <button class="btn" onclick="enviarPayload('disable-updates.bin')">Disable Updates</button>
+        
         <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #444;">
-            <p>Control de Temperatura</p>
+            <p style="margin-bottom: 15px; color: #aaa;">Control de Temperatura</p>
             <select id="tempSelect">
                 <option value="40">40°C</option>
                 <option value="45">45°C</option>
                 <option value="50">50°C</option>
-                <option value="55">55°C</option>
-                <option value="60" selected>60°C</option>
+                <option value="55" selected>55°C</option>
+                <option value="60">60°C</option>
                 <option value="65">65°C</option>
                 <option value="70">70°C</option>
                 <option value="75">75°C</option>
-            </select>
+            </select><br>
             <button class="btn" onclick="aplicarTemp()">Activar Temperatura</button>
         </div>
     </div>
