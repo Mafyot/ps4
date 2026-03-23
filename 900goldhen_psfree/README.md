@@ -48,15 +48,3 @@ _Note: Support for other firmwares listed in the "Vulnerability Scope" table may
   - Scans the network to find the PS4
 - Up to date
 
-## Contribution
-You can :
-- look at the [languages folder](https://github.com/ArabPixel/PSFree-Enhanced/tree/main/includes/js/languages) and PR your language!
--  improve the host by modefying, updating or adding new features!
-## Copyright and Authors:
-
-AGPL-3.0-or-later (see [LICENSE](LICENSE)). This repo belongs to the group `anonymous`. We refer to anonymous contributors as "anonymous" as well.
-
-## Credits:
-
-- anonymous for PS4 firmware kernel dumps
-- Check the appropriate files for any **extra** contributors. Unless otherwise stated, everything here can also be credited to us.
