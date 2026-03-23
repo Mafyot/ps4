@@ -103,6 +103,23 @@ function Loadpayloadonline(PLfile) {
     import('../../src/alert.mjs');
 }
 
+// Linux payloads are in firmware groups and not for each
+function getLinuxFolder() {
+    const fwMap = {
+        7.00: "fw700", 7.02: "fw700",
+        9.00: "fw900",
+        9.03: "fw903", 9.04: "fw903",
+        9.50: "fw960", 9.51: "fw960", 9.60: "fw960",
+        10.00: "fw1000", 10.01: "fw1000",
+        10.50: "fw1050", 10.70: "fw1050", 10.71: "fw1050",
+        11.00: "fw1100",
+        11.02: "fw1102",
+        11.50: "fw1150", 11.52: "fw1150",
+        12.00: "fw1200", 12.02: "fw1200",
+        12.50: "fw1250", 12.52: "fw1250",
+        13.00: "fw1300", 13.02: "fw1302",
+    };
+
     // If it's not found, it returns undefined
     return fwMap[Number(user.ps4Fw)] || undefined;
 }
@@ -208,10 +225,21 @@ export function load_PUPDecrypt(name){
 }
 
 export function load_FanThreshold(name){
-    // Obtenemos el ID del botón pulsado (40, 45, etc.)
-    const temp = sessionStorage.getItem('fanTemp') || "55"; 
-    // Cargamos el binario con la ruta exacta de tu repositorio
+    const temp = sessionStorage.getItem('fanTemp');
     Loadpayloadlocal(`./includes/payloads/Bins/Tools/fan-thresholds/ps4-fan-threshold${temp}.bin`, name);
+}
+
+// Linux
+export function load_Linux(name){
+    const sliceIndex = name.includes('MB') ? -6 : -4;
+    const size = name.slice(sliceIndex).replace(" ", "-").toLowerCase();
+    const linuxFwFolder = getLinuxFolder(user.ps4Fw);
+    if (linuxFwFolder){
+        var ps4Model = localStorage.getItem('ps4Model');
+        var southbridge = localStorage.getItem('southbridge');
+        Loadpayloadlocal("./includes/payloads/Linux/" + linuxFwFolder + "/payload-" + linuxFwFolder.replace("fw", "") + size + (ps4Model == "pro" ? "-pro" : '') + (southbridge == "baikal" ? "-" + southbridge : "") + ".elf", name);
+        needsGoldHEN = true;
+    }else alert(window.lang.unsupportedFirmware + user.ps4Fw);
 }
 
 export function load_npFakeSignin(name){
