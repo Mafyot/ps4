@@ -34,8 +34,6 @@ const ui = {
   consoleElement: document.getElementById('console'),
   toolsSection: document.getElementById('tools'),
   toolsTab: document.getElementById('tools-tab'),
-  linuxSection: document.getElementById('linux'),
-  linuxTab: document.getElementById('linux-tab'),
   advancedPayloadsSection: document.getElementById('advanced'),
   advancedPayloadsTab: document.getElementById('advanced-tab'),
   advancedPayloadsContainer: document.querySelector('.advancedPayloadsTab'),
@@ -193,62 +191,6 @@ const payloads = [
   },
 ];
 
-var linuxPayloads = [
-  {
-    id: "Linux1gb",
-    name: "Linux Loader 1GB",
-    author: "ps4boot",
-    description: "Linux Loader for {southbridge} PS4 {model} Southbridge with 1GB VRAM. Select for first install",
-    specificFW: "7.00 - 13.02",
-    category: "linux",
-    funcName: "load_Linux"
-  },
-  {
-    id: "Linux2gb",
-    name: "Linux Loader 2GB",
-    author: "ps4boot",
-    description: "Linux Loader for {southbridge} PS4 {model} Southbridge with 2GB VRAM.",
-    specificFW: "7.00 - 13.02",
-    category: "linux",
-    funcName: "load_Linux"
-  },
-  {
-    id: "Linux3gb",
-    name: "Linux Loader 3GB",
-    author: "ps4boot",
-    description: "Linux Loader for {southbridge} PS4 {model} Southbridge with 3GB VRAM.",
-    specificFW: "7.00 - 13.02",
-    category: "linux",
-    funcName: "load_Linux"
-  },
-  {
-    id: "Linux4gb",
-    name: "Linux Loader 4GB",
-    author: "ps4boot",
-    description: "Linux Loader for {southbridge} Southbridge with 4GB VRAM.",
-    specificFW: "7.00 - 13.02",
-    category: "linux",
-    funcName: "load_Linux"
-  },
-  {
-    id: "Linux256mb",
-    name: "Linux Loader 256MB",
-    author: "ps4boot",
-    description: "Linux Loader for {southbridge} Southbridge with 256MB VRAM.",
-    specificFW: "7.00 - 13.02",
-    category: "linux",
-    funcName: "load_Linux"
-  },
-  {
-    id: "Linux512mb",
-    name: "Linux Loader 512MB",
-    author: "ps4boot",
-    description: "Linux Loader for {southbridge} Southbridge with 512MB VRAM.",
-    specificFW: "7.00 - 13.02",
-    category: "linux",
-    funcName: "load_Linux"
-  }
-];
 
 const advancedPayloads = [
   {
@@ -349,12 +291,10 @@ ui.psLogoContainer.addEventListener('click', () => {
 ui.toolsTab.addEventListener('click', () =>{
   if (ui.toolsSection.classList.contains('hidden')){
     ui.toolsSection.classList.remove('hidden');
-    ui.linuxSection.classList.add('hidden');
     ui.advancedPayloadsSection.classList.add('hidden');
     ui.customPayloadsSection.classList.add('hidden');
 
     ui.toolsTab.setAttribute("aria-selected", "true");
-    ui.linuxTab.setAttribute("aria-selected", "false");
     ui.advancedPayloadsTab.setAttribute("aria-selected", "false");
     ui.customPayloadsTab.setAttribute("aria-selected", "false");
   }
@@ -363,32 +303,13 @@ ui.toolsTab.addEventListener('click', () =>{
   saveLastTab('tools');
 })
 
-ui.linuxTab.addEventListener('click', () =>{
-  if (ui.linuxSection.classList.contains('hidden')){
-    ui.toolsSection.classList.add('hidden');
-    ui.linuxSection.classList.remove('hidden');
-    ui.advancedPayloadsSection.classList.add('hidden');
-    ui.customPayloadsSection.classList.add('hidden');
-
-    ui.toolsTab.setAttribute("aria-selected", "false");
-    ui.linuxTab.setAttribute("aria-selected", "true");
-    ui.advancedPayloadsTab.setAttribute("aria-selected", "false");
-    ui.customPayloadsTab.setAttribute("aria-selected", "false");
-  }
-  ui.payloadsList.scrollTop = 0;
-  // Update lastTap
-  saveLastTab('linux');
-});
-
 ui.advancedPayloadsTab.addEventListener('click', () =>{
   if (ui.advancedPayloadsSection.classList.contains('hidden')){
     ui.toolsSection.classList.add('hidden');
-    ui.linuxSection.classList.add('hidden');
     ui.advancedPayloadsSection.classList.remove('hidden');
     ui.customPayloadsSection.classList.add('hidden');
 
     ui.toolsTab.setAttribute("aria-selected", "false");
-    ui.linuxTab.setAttribute("aria-selected", "false");
     ui.advancedPayloadsTab.setAttribute("aria-selected", "true");
     ui.customPayloadsTab.setAttribute("aria-selected", "false");
   }
@@ -401,12 +322,10 @@ ui.advancedPayloadsTab.addEventListener('click', () =>{
 ui.customPayloadsTab.addEventListener('click', () =>{
   if (ui.customPayloadsSection.classList.contains('hidden')){
     ui.toolsSection.classList.add('hidden');
-    ui.linuxSection.classList.add('hidden');
     ui.advancedPayloadsSection.classList.add('hidden');
     ui.customPayloadsSection.classList.remove('hidden');
 
     ui.toolsTab.setAttribute("aria-selected", "false");
-    ui.linuxTab.setAttribute("aria-selected", "false");
     ui.advancedPayloadsTab.setAttribute("aria-selected", "false");
     ui.customPayloadsTab.setAttribute("aria-selected", "true");
   }
@@ -697,11 +616,7 @@ function applyLanguage(lang) {
   updateText(document.querySelector('#exploit-status-panel h2'), 'exploitStatusHeader');
   updateText(ui.payloadsSectionTitle, 'payloadsHeader');
   updateText(ui.toolsTab, 'payloadsToolsHeader');
-  updateText(ui.linuxTab, 'payloadsLinuxHeader');
   updateText(ui.advancedPayloadsTab, 'advanced');
-  if (!linuxPayloadsRendered){
-    updateText(document.querySelector("#" + ui.linuxSection.id + " button") , 'selectSouthbridge');
-  }
   updateText(ui.consoleElement.querySelector('center'), 'waitingUserInput');
 
   // Change direction of 'Default' option text for the fan threshold panel
@@ -736,13 +651,6 @@ function saveLanguage() {
   initLanguage();
 };
 
-function loadLinuxPayloads(){
-  if (user.southbridge && user.ps4Model){
-    renderPayloads(linuxPayloads);
-    linuxPayloadsRendered = true;
-    document.querySelector("#" + ui.linuxSection.id + " button").remove();
-  }
-}
 
 function loadSouthbridge(){
   if (user.southbridge){
@@ -853,7 +761,6 @@ function loadSettings() {
     renderPayloads(payloads);
     loadAdvancedPayloads();
     loadLastTab();
-    loadLinuxPayloads()
     loadGoldHENVer();
   } catch (e) {
     alert("Error in loadSettings: " + e.message);
@@ -863,7 +770,6 @@ function loadSettings() {
 function getPayloadCategoryClass(category) {
   switch (category) {
     case 'tools': return 'category-tools';
-    case 'linux': return 'category-linux';
     case 'advanced': return 'category-advanced';
     default: return '';
   }
@@ -903,9 +809,6 @@ function renderPayloads(payloads) {
       case "tools":
         ui.toolsSection.appendChild(payloadCard);
         break;
-      case "linux":
-        ui.linuxSection.appendChild(payloadCard);
-        break;
       case "advanced":
         ui.advancedPayloadsSection.appendChild(payloadCard);
         break;
@@ -944,12 +847,7 @@ function ps4Info(southbridge, model){
   }
   
   // Update payloads list
-  if (user.southbridge && user.ps4Model){
-    ui.linuxSection.innerHTML = "";
-      renderPayloads(linuxPayloads)
-  }
-}
-
+ 
 function setAdvancedPayloads(inputState){
   // Update variable/localstorage value
   user.advancedPayloads = inputState;
